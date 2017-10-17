@@ -9,29 +9,29 @@
  */
 package org.openmrs.module.sync2;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains the logic that is run every time this module is either started or shutdown
  */
 public class Sync2ModuleActivator extends BaseModuleActivator {
 	
-	private Log log = LogFactory.getLog(this.getClass());
+	private static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleActivator.class);
 	
 	/**
 	 * @see #started()
 	 */
 	public void started() {
-		log.info("Started Sync2 Module");
+		LOGGER.info("Started Sync2 Module");
 	}
 	
 	/**
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
-		log.info("Shutdown Sync2 Module");
+		LOGGER.info("Shutdown Sync2 Module");
 	}
 	
 }
