@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class Sync2ModuleController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
 	
 	@RequestMapping(value = "/module/sync2/sync2", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
