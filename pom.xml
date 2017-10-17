@@ -15,6 +15,17 @@
 	<name>Sync2 Module</name>
 	<description>Module for Sync 2</description>
 
+	<developers>
+		<developer>
+			<name>SolDevelo Developers</name>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>SolDevelo</name>
+		<url>https://www.soldevelo.com</url>
+	</organization>
+
 	<url>https://wiki.openmrs.org/display/projects/Sync+2.0</url>
 
 	<scm>
@@ -54,5 +65,6 @@
 
     <properties>
         <openmrsPlatformVersion>2.0.5</openmrsPlatformVersion>
+		<legacyVersion>1.3.1</legacyVersion>
     </properties>
 </project>
