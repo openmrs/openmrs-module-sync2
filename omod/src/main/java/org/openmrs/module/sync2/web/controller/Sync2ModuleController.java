@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.sync2.web.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class Sync2ModuleController {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	protected static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
 	
 	@RequestMapping(value = "/module/sync2/sync2", method = RequestMethod.GET)
 	public void manage(ModelMap model) {

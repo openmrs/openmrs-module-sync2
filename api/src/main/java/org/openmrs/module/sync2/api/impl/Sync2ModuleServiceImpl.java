@@ -11,7 +11,9 @@ package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.sync2.api.Sync2ModuleService;
+import org.springframework.stereotype.Component;
 
+@Component("sync2.Sync2ModuleService")
 public class Sync2ModuleServiceImpl extends BaseOpenmrsService implements Sync2ModuleService {
 	
 }
