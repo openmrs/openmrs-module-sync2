@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/openmrs/openmrs-module-sync2.svg?branch=master)](https://travis-ci.org/openmrs/openmrs-module-sync2)
 # openmrs-module-sync2
 
 Description
