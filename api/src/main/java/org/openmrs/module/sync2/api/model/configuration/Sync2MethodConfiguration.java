@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SyncMethodConfiguration {
+public class Sync2MethodConfiguration {
 
     private boolean enabled;
     private Integer schedule;
     private List<ClassConfiguration> classes;
 
-    public SyncMethodConfiguration() {
+    public Sync2MethodConfiguration() {
         classes = new ArrayList<ClassConfiguration>();
     }
 
-    public SyncMethodConfiguration(boolean enabled, Integer schedule, List<ClassConfiguration> classes) {
+    public Sync2MethodConfiguration(boolean enabled, Integer schedule, List<ClassConfiguration> classes) {
         this.enabled = enabled;
         this.schedule = schedule;
         this.classes = classes;
@@ -52,10 +52,10 @@ public class SyncMethodConfiguration {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SyncMethodConfiguration that = (SyncMethodConfiguration) o;
-        return enabled == that.enabled &&
-                Objects.equals(schedule, that.schedule) &&
-                Objects.equals(classes, that.classes);
+        Sync2MethodConfiguration that = (Sync2MethodConfiguration) o;
+        return enabled == that.enabled
+                && Objects.equals(schedule, that.schedule)
+                && Objects.equals(classes, that.classes);
     }
 
     @Override

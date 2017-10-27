@@ -1,0 +1,32 @@
+{
+  "general" : {
+    "parentFeedLocation" : "",
+    "localFeedLocation" : "defaultAddress2"
+  },
+  "push" : {
+    "enabled" : false,
+    "schedule" : 24,
+    "classes" : [ {
+      "classTitle" : "Encounter",
+      "openMrsClass" : "org.openmrs.Encounter",
+      "enabled" : false
+    }, {
+      "classTitle" : "Visit",
+      "openMrsClass" : "org.openmrs.Visit",
+      "enabled" : false
+    } ]
+  },
+  "pull" : {
+    "enabled" : false,
+    "schedule" : 24,
+    "classes" : [ {
+      "classTitle" : "Encounter",
+      "openMrsClass" : "org.openmrs.Encounter",
+      "enabled" : false
+    }, {
+      "classTitle" : "Visit",
+      "openMrsClass" : "org.openmrs.Visit",
+      "enabled" : false
+    } ]
+  }
+}

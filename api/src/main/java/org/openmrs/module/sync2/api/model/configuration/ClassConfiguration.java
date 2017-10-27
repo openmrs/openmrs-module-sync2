@@ -49,9 +49,9 @@ public class ClassConfiguration {
             return false;
         }
         ClassConfiguration that = (ClassConfiguration) o;
-        return enabled == that.enabled &&
-                Objects.equals(classTitle, that.classTitle) &&
-                Objects.equals(openMrsClass, that.openMrsClass);
+        return enabled == that.enabled
+                && Objects.equals(classTitle, that.classTitle)
+                && Objects.equals(openMrsClass, that.openMrsClass);
     }
 
     @Override

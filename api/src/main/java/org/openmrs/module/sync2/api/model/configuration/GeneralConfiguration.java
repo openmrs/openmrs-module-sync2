@@ -39,8 +39,8 @@ public class GeneralConfiguration {
             return false;
         }
         GeneralConfiguration that = (GeneralConfiguration) o;
-        return Objects.equals(parentFeedLocation, that.parentFeedLocation) &&
-                Objects.equals(localFeedLocation, that.localFeedLocation);
+        return Objects.equals(parentFeedLocation, that.parentFeedLocation)
+                && Objects.equals(localFeedLocation, that.localFeedLocation);
     }
 
     @Override
