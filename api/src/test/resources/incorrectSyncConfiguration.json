@@ -1,0 +1,32 @@
+{
+  "general" : {
+    "parentFeedLocation" : "",
+    "localFeedLocation" : "defaultAddress"
+  },
+  "push" : {
+    "enabled" : true,
+    "schedule" : 12,
+    "classes" : [ {
+      "classTitle" : "Location",
+      "openMrsClass" : "org.openmrs.Location",
+      "enabled" : true
+    }, {
+      "classTitle" : "Observation",
+      "openMrsClass" : "org.openmrs.Obs",
+      "enabled" : true
+    } ],
+  },
+  "pull" : {
+    "enabled" : true,
+    "schedule" : 12,
+    "classes" : [ {
+      "classTitle" : "Location",
+      "openMrsClass" : "org.openmrs.Location",
+      "enabled" : true
+    }, {
+      "classTitle" : "Observation",
+      "openMrsClass" : "org.openmrs.Obs",
+      "enabled" : true
+    } ]
+  }
+}

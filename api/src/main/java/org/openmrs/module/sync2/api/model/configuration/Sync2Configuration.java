@@ -2,15 +2,15 @@ package org.openmrs.module.sync2.api.model.configuration;
 
 import java.util.Objects;
 
-public class SyncConfiguration {
+public class Sync2Configuration {
 
     private GeneralConfiguration general;
-    private SyncMethodConfiguration push;
-    private SyncMethodConfiguration pull;
+    private Sync2MethodConfiguration push;
+    private Sync2MethodConfiguration pull;
 
-    public SyncConfiguration() { }
+    public Sync2Configuration() { }
 
-    public SyncConfiguration(GeneralConfiguration general, SyncMethodConfiguration push, SyncMethodConfiguration pull) {
+    public Sync2Configuration(GeneralConfiguration general, Sync2MethodConfiguration push, Sync2MethodConfiguration pull) {
         this.general = general;
         this.push = push;
         this.pull = pull;
@@ -24,19 +24,19 @@ public class SyncConfiguration {
         this.general = general;
     }
 
-    public SyncMethodConfiguration getPush() {
+    public Sync2MethodConfiguration getPush() {
         return push;
     }
 
-    public void setPush(SyncMethodConfiguration push) {
+    public void setPush(Sync2MethodConfiguration push) {
         this.push = push;
     }
 
-    public SyncMethodConfiguration getPull() {
+    public Sync2MethodConfiguration getPull() {
         return pull;
     }
 
-    public void setPull(SyncMethodConfiguration pull) {
+    public void setPull(Sync2MethodConfiguration pull) {
         this.pull = pull;
     }
 
@@ -48,10 +48,10 @@ public class SyncConfiguration {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        SyncConfiguration that = (SyncConfiguration) o;
-        return Objects.equals(general, that.general) &&
-                Objects.equals(push, that.push) &&
-                Objects.equals(pull, that.pull);
+        Sync2Configuration that = (Sync2Configuration) o;
+        return Objects.equals(general, that.general)
+                && Objects.equals(push, that.push)
+                && Objects.equals(pull, that.pull);
     }
 
     @Override
