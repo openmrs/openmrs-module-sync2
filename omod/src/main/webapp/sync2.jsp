@@ -2,7 +2,7 @@
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
-<h2><spring:message code="sync2.title" /></h2>
+<%@ include file="template/localHeader.jsp" %>
 
 <p>Hello ${user.systemId}!</p>
 

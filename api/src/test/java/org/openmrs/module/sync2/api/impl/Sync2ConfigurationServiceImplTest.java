@@ -40,7 +40,7 @@ public class Sync2ConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
         Sync2Configuration syncConfiguration = Sync2Utils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
-        Sync22ConfigurationServiceImpl sync2ConfigurationService = new Sync22ConfigurationServiceImpl();
+        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());
@@ -64,7 +64,7 @@ public class Sync2ConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
         String json = Sync2Utils.readResourceFile(sampleFeedConfigurationPath2);
-        Sync22ConfigurationServiceImpl sync2ConfigurationService = new Sync22ConfigurationServiceImpl();
+        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(json);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());

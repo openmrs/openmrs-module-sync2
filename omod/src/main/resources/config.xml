@@ -17,7 +17,16 @@
 
 	<!-- /Base Module Properties -->
 	
-	<require_version>2.0.5</require_version>
+	<require_version>${openmrsPlatformVersion}</require_version>
+
+	<require_modules>
+		<require_module version="${uiframeworkVersion}">
+			org.openmrs.module.uiframework
+		</require_module>
+		<require_module version="${uicommonsVersion}">
+			org.openmrs.module.uicommons
+		</require_module>
+	</require_modules>
 	
 	<!-- Extensions -->
 	<extension>
@@ -45,6 +54,10 @@
 		<file>messages_es.properties</file>
 	</messages>
 	<!-- /Internationalization -->
-	
+
+	<privilege>
+		<name>Load Sync2 config</name>
+		<description>Ability to load Sync 2 configuration from file.</description>
+	</privilege>
 </module>
 

@@ -85,6 +85,13 @@ public class Sync2UtilsTest {
         Assert.assertFalse(Sync2Utils.isValidateJson(json));
     }
 
+    @Test
+    public void writeSyncConfigurationToJsonString() throws Sync2Exception {
+        String result = Sync2Utils.writeSyncConfigurationToJsonString(expectedConfiguration);
+        String expected = Sync2Utils.readResourceFile(sampleSyncConfigurationPath);
+
+        Assert.assertEquals(expected, result);
+    }
 
     @Test
     public void writeSyncConfigurationToJsonFile() throws Sync2Exception {
