@@ -6,12 +6,12 @@ import org.openmrs.module.sync2.api.model.configuration.Sync2Configuration;
 import org.openmrs.module.sync2.api.utils.Sync2Utils;
 import org.springframework.stereotype.Component;
 
-@Component
-public class Sync22ConfigurationServiceImpl implements Sync2ConfigurationService {
+@Component("sync2.sync2ConfigurationService")
+public class Sync2ConfigurationServiceImpl implements Sync2ConfigurationService {
 
     private Sync2Configuration sync2Configuration;
 
-    public Sync22ConfigurationServiceImpl() {
+    public Sync2ConfigurationServiceImpl() {
         if (Sync2Utils.resourceFileExists(Sync2Constants.SYNC2_PATH_TO_CUSTOM_CONFIGURATION)) {
             this.sync2Configuration =
                     Sync2Utils.parseJsonFileToSyncConfiguration(Sync2Constants.SYNC2_PATH_TO_CUSTOM_CONFIGURATION);

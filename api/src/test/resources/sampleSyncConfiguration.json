@@ -8,10 +8,12 @@
     "schedule" : 12,
     "classes" : [ {
       "classTitle" : "Location",
+      "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
       "enabled" : true
     }, {
       "classTitle" : "Observation",
+      "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
       "enabled" : true
     } ]
@@ -21,10 +23,12 @@
     "schedule" : 12,
     "classes" : [ {
       "classTitle" : "Location",
+      "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
       "enabled" : true
     }, {
       "classTitle" : "Observation",
+      "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
       "enabled" : true
     } ]

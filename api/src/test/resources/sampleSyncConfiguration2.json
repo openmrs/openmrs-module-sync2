@@ -8,10 +8,12 @@
     "schedule" : 24,
     "classes" : [ {
       "classTitle" : "Encounter",
+      "category" : "encounter",
       "openMrsClass" : "org.openmrs.Encounter",
       "enabled" : false
     }, {
       "classTitle" : "Visit",
+      "category" : "visit",
       "openMrsClass" : "org.openmrs.Visit",
       "enabled" : false
     } ]
@@ -21,10 +23,12 @@
     "schedule" : 24,
     "classes" : [ {
       "classTitle" : "Encounter",
+      "category" : "encounter",
       "openMrsClass" : "org.openmrs.Encounter",
       "enabled" : false
     }, {
       "classTitle" : "Visit",
+      "category" : "visit",
       "openMrsClass" : "org.openmrs.Visit",
       "enabled" : false
     } ]
