@@ -29,8 +29,10 @@ public class Sync2ConfigurationServiceImplTest {
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress");
         expectedSyncConfiguration.setGeneral(general);
 
-        ClassConfiguration locationClass = new ClassConfiguration("Location", "org.openmrs.Location", true);
-        ClassConfiguration observationClass = new ClassConfiguration("Observation", "org.openmrs.Obs", true);
+        ClassConfiguration locationClass = new ClassConfiguration("Location",
+                "location", "org.openmrs.Location", true);
+        ClassConfiguration observationClass = new ClassConfiguration("Observation",
+                "observation", "org.openmrs.Obs", true);
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
 
         Sync2MethodConfiguration push = new Sync2MethodConfiguration(true, 12, classes);
@@ -40,7 +42,7 @@ public class Sync2ConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
         Sync2Configuration syncConfiguration = Sync2Utils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
-        Sync22ConfigurationServiceImpl sync2ConfigurationService = new Sync22ConfigurationServiceImpl();
+        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());
@@ -53,8 +55,10 @@ public class Sync2ConfigurationServiceImplTest {
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2");
         expectedSyncConfiguration.setGeneral(general);
 
-        ClassConfiguration encounterClass = new ClassConfiguration("Encounter", "org.openmrs.Encounter", false);
-        ClassConfiguration visitClass = new ClassConfiguration("Visit", "org.openmrs.Visit", false);
+        ClassConfiguration encounterClass = new ClassConfiguration("Encounter",
+                "encounter", "org.openmrs.Encounter", false);
+        ClassConfiguration visitClass = new ClassConfiguration("Visit",
+                "visit", "org.openmrs.Visit", false);
         List<ClassConfiguration> classes = Arrays.asList(encounterClass, visitClass);
 
         Sync2MethodConfiguration push = new Sync2MethodConfiguration(false, 24, classes);
@@ -64,7 +68,7 @@ public class Sync2ConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
         String json = Sync2Utils.readResourceFile(sampleFeedConfigurationPath2);
-        Sync22ConfigurationServiceImpl sync2ConfigurationService = new Sync22ConfigurationServiceImpl();
+        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(json);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());
