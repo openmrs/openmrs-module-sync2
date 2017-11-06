@@ -24,8 +24,10 @@ public class Sync2UtilsTest {
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress");
         expectedConfiguration.setGeneral(general);
 
-        ClassConfiguration locationClass = new ClassConfiguration("Location", "org.openmrs.Location", true);
-        ClassConfiguration observationClass = new ClassConfiguration("Observation", "org.openmrs.Obs", true);
+        ClassConfiguration locationClass = new ClassConfiguration("Location",
+                "location", "org.openmrs.Location", true);
+        ClassConfiguration observationClass = new ClassConfiguration("Observation",
+                "observation", "org.openmrs.Obs", true);
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
 
         Sync2MethodConfiguration push = new Sync2MethodConfiguration(true, 12, classes);
