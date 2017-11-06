@@ -56,6 +56,16 @@ public class Sync2Utils {
         return true;
     }
 
+    public static String writeSyncConfigurationToJsonString(Sync2Configuration sync2Configuration) throws Sync2Exception{
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+        try {
+            return writer.writeValueAsString(sync2Configuration);
+        } catch (IOException e) {
+            throw new Sync2Exception(e);
+        }
+    }
+
     public static void writeSyncConfigurationToJsonFile(Sync2Configuration syncConfigurations, String file)
             throws Sync2Exception {
         ObjectMapper mapper = new ObjectMapper();

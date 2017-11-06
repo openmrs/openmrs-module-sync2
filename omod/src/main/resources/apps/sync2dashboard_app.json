@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sync2.manageSync2Dashboard.configuration",
+    "description": "sync2.configuration.description",
+    "order": 2,
+    "extensions": [
+      {
+        "id": "sync2.configuration",
+        "extensionPointId": "sync2/sync2.apps",
+        "type": "link",
+        "order": 5,
+        "label": "sync2.configuration.label",
+        "url": "sync2/loadSync2Config.page",
+        "icon": "icon-dashboard"
+      }
+    ]
+  }
+]

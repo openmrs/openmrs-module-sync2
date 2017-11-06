@@ -1,0 +1,18 @@
+[
+  {
+    "id": "sync2.manageSync2Dashboard",
+    "description": "sync2.description",
+    "extensions": [
+      {
+        "id": "sync2.homepage",
+        "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+        "type": "link",
+        "order": 5,
+        "label": "sync2.label",
+        "url": "sync2/sync2.page",
+        "icon": "icon-upload",
+        "requiredPrivilege": "Load Sync2 config"
+      }
+    ]
+  }
+]
