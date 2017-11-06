@@ -28,7 +28,7 @@
         </label>
         <input id="json-file" type="file" name="file"/>
     </p>
-    <input type="submit" class="confirm right" value="${ ui.message("sync2.configuration.import.label") }"/>
+    <input type="submit" id="import-button" class="confirm right" value="${ ui.message("sync2.configuration.import.label") }" disabled="disabled"/>
 </form>
 
 <form class="simple-form-ui" method="POST" action="loadSync2Config.page">
@@ -38,7 +38,6 @@
     <span id="server-error-msg" class="field-error" style="display: none">
         ${ui.message("sync2.configuration.errors.serverError")}
     </span>
-    <input type="hidden" name="action" value="add" />
     <p>
         <label for="json-field">
             <span class="title">

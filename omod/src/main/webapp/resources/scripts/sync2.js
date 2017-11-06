@@ -18,6 +18,10 @@ jq(document).ajaxError(function() {
     jq('#server-error-msg').show();
 });
 
+jq(document).on('change','#json-file' , function() {
+    jq('#import-button').removeAttr('disabled');
+});
+
 function requireValues() {
     if(jq.trim(jq('#json-field').val()) != '') {
         return true;

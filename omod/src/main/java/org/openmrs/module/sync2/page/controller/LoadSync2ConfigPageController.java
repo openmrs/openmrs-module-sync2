@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.apache.commons.io.IOUtils;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.sync2.api.Sync2ConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.Sync2Exception;
 import org.openmrs.module.sync2.api.model.configuration.Sync2Configuration;
@@ -14,6 +15,7 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,14 +38,19 @@ public class LoadSync2ConfigPageController {
     @Autowired
     Sync2ConfigurationService sync2ConfigurationService;
 
+    @Autowired
+    @Qualifier("messageSourceService")
+    private MessageSourceService messageSourceService;
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(LoadSync2ConfigPageController.class);
 
     public String get(PageModel model,
+                      @RequestParam(value = "importStatus", required = false) String importStatus,
                       @SpringBean("sync2.sync2ConfigurationService") Sync2ConfigurationService sync2ConfigurationService) {
         String configuration =
                 Sync2Utils.writeSyncConfigurationToJsonString(sync2ConfigurationService.getSync2Configuration());
         model.addAttribute("configuration", configuration);
-        model.addAttribute("importStatus", "");
+        model.addAttribute("importStatus", importStatus);
         return VIEW_PROVIDER;
     }
 
@@ -92,7 +99,7 @@ public class LoadSync2ConfigPageController {
             return "redirect:/sync2/sync2.page";
         } catch (Sync2Exception e) {
             LOGGER.warn("Error during import configuration:", e);
-            model.addAttribute("importStatus", "Invalid file");
+            model.addAttribute("importStatus", messageSourceService.getMessage("sync2.configuration.errors.invalidFile"));
         } finally {
             IOUtils.closeQuietly(writer);
         }
