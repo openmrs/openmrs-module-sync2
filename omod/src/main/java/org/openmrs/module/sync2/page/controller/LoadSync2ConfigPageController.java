@@ -68,7 +68,7 @@ public class LoadSync2ConfigPageController {
             session.setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_ERROR_MESSAGE, ui.message(SAVE_CONFIG_ERROR));
         }
 
-        return null;
+        return "redirect:/sync2/loadSync2Config.page";
     }
 
     @ResponseBody
