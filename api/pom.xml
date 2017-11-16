@@ -11,4 +11,17 @@
 	<packaging>jar</packaging>
 	<name>Sync2 Module API</name>
 	<description>API project for Sync2 Module</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
+		</dependency>
+	</dependencies>
 </project>
