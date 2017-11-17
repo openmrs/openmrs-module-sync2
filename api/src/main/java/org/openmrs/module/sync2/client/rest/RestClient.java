@@ -11,28 +11,28 @@ public class RestClient {
 
     // http://localhost:8080/openmrs/ws/rest/v1/patient/a
 
-    private static String address = "http://localhost:8080";
-    private static String restPrefix = "/openmrs/ws/rest/v1";
-
-    private static String patientUrl = "/patient/%s?v=full";
-
     private static String username = "admin";
     private static String password = "Admin123";
 
-    public Object getObject(String id) {
+    private static final String PATIENT_CATEGORY = "patient";
+
+    public Object getObject(String category, String url) {
 
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
 
-        String url = address + restPrefix + String.format(patientUrl, id);
-
-
-        RestResource restResource = restTemplate.getForObject(url, Patient.class);
-
+        RestResource restResource = (RestResource) restTemplate.getForObject(url, resolveCategory(category));
 
         return restResource.getOpenMrsObject();
     }
 
+    private Class resolveCategory(String category) {
+        if (category.equals(PATIENT_CATEGORY)) {
+            return Patient.class;
+        } else {
+            return null;
+        }
+    }
 
 }

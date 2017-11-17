@@ -66,11 +66,9 @@ public class Patient implements RestResource {
         patient.setCauseOfDeath(person.getCauseOfDeath());
         patient.setNames(Collections.singleton(
                 (PersonName) person.getPreferredName().getOpenMrsObject()));
-
         patient.setVoided(person.getVoided());
         patient.setDeathdateEstimated(person.getDeathdateEstimated());
         patient.setBirthtime(person.getBirthtime());
-
 
         return patient;
     }

@@ -18,9 +18,6 @@ public class Person {
     private Date deathDate;
     private Concept causeOfDeath;
     private PersonName preferredName;
-    /**
-     * [...]
-     */
     private Boolean voided;
     private Boolean deathdateEstimated;
     private Date birthtime;
