@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.rest;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.web.client.RestTemplate;
@@ -9,14 +10,11 @@ import java.util.Arrays;
 
 public class RestClient {
 
-    // http://localhost:8080/openmrs/ws/rest/v1/patient/a
-
-    private static String username = "admin";
-    private static String password = "Admin123";
-
     private static final String PATIENT_CATEGORY = "patient";
 
     public Object getObject(String category, String url) {
+        final String username = Context.getAdministrationService().getGlobalProperty("sync2.user.login");
+        final String password = Context.getAdministrationService().getGlobalProperty("sync2.user.password");
 
         RestTemplate restTemplate = new RestTemplate();
 

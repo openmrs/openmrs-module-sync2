@@ -55,6 +55,20 @@
 	</messages>
 	<!-- /Internationalization -->
 
+
+	<!--Global Properties-->
+	<globalProperty>
+		<property>${project.parent.artifactId}.user.login</property>
+		<defaultValue>admin</defaultValue>
+		<description>This is username for master user.</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>${project.parent.artifactId}.user.password</property>
+		<defaultValue>Admin123</defaultValue>
+		<description>This is password to master user.</description>
+	</globalProperty>
+
 	<privilege>
 		<name>Load Sync2 config</name>
 		<description>Ability to load Sync 2 configuration from file.</description>
