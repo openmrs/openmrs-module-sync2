@@ -9,9 +9,7 @@ public class SyncClient {
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_CLIENT_KEY = "fhir";
 
-    public PulledObject pullDataFromParent(String category, Map<String, String> resourceLinks) {
-        String address = "http://localhost:8080/";
-
+    public PulledObject pullDataFromParent(String category, Map<String, String> resourceLinks, String address) {
         // get preferred link
         String preferredLink = resourceLinks.get(REST_CLIENT_KEY);
         if (preferredLink != null && !preferredLink.isEmpty()) {

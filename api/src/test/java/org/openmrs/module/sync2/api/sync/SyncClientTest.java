@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
+import org.openmrs.module.sync2.api.Sync2ConfigurationService;
+import org.openmrs.module.sync2.api.impl.Sync2ConfigurationServiceImpl;
 import org.openmrs.module.sync2.client.rest.RestClient;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -48,7 +50,7 @@ public class SyncClientTest {
         doReturn(createPatient()).when(restClientMock).getObject(PATIENT_CATEGORY, url);
         whenNew(RestClient.class).withNoArguments().thenReturn(restClientMock);
 
-        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links);
+        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
         assertThat(pulledObject.getClientType().getSimpleName(), is(RestClient.class.getSimpleName()));
         assertThat(pulledObject.getResourceObject(), is(expectedPatient));
@@ -61,7 +63,7 @@ public class SyncClientTest {
         Map<String, String> links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
 
-        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links);
+        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
         assertThat(pulledObject, is(nullValue()));
 
