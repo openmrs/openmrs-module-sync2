@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.client.rest;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.web.client.RestTemplate;
@@ -12,10 +11,7 @@ public class RestClient {
 
     private static final String PATIENT_CATEGORY = "patient";
 
-    public Object getObject(String category, String url) {
-        final String username = Context.getAdministrationService().getGlobalProperty("sync2.user.login");
-        final String password = Context.getAdministrationService().getGlobalProperty("sync2.user.password");
-
+    public Object getObject(String category, String url, String username, String password) {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));

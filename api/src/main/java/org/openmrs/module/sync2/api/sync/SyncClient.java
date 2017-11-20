@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.client.rest.RestClient;
 
 import java.util.Map;
@@ -15,7 +16,9 @@ public class SyncClient {
         if (preferredLink != null && !preferredLink.isEmpty()) {
             RestClient restClient = new RestClient();
             String url = address + preferredLink;
-            return new RestPulledObject(restClient.getObject(category, url));
+            return new RestPulledObject(restClient.getObject(category, url,
+                    Context.getAdministrationService().getGlobalProperty("sync2.user.login"),
+                    Context.getAdministrationService().getGlobalProperty("sync2.user.password")));
         }
         preferredLink = resourceLinks.get(FHIR_CLIENT_KEY);
         if (preferredLink != null && !preferredLink.isEmpty()) {
