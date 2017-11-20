@@ -23,5 +23,11 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.9</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>fhir-api</artifactId>
+			<version>${fhirVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
