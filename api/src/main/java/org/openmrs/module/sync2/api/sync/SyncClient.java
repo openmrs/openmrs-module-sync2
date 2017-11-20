@@ -4,7 +4,7 @@ import org.openmrs.module.sync2.client.rest.RestClient;
 
 import java.util.Map;
 
-public class SyncResourceManager {
+public class SyncClient {
 
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_CLIENT_KEY = "fhir";

@@ -22,8 +22,8 @@ import static org.hamcrest.core.Is.is;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SyncResourceManager.class })
-public class SyncResourceManagerTest {
+@PrepareForTest({ SyncClient.class })
+public class SyncClientTest {
 
     private static final String PATIENT_UUID = "patientUuid";
     private static final String FHIR_CLIENT_KEY = "fhir";
@@ -37,7 +37,7 @@ public class SyncResourceManagerTest {
     public void pullDataFromParent_shouldCallRestClient() throws Exception {
         Patient expectedPatient = createPatient();
 
-        SyncResourceManager resourceManager = new SyncResourceManager();
+        SyncClient resourceManager = new SyncClient();
         Map<String, String> links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
         links.put(REST_CLIENT_KEY, REST_RESOURCE_LINK + PATIENT_UUID);
@@ -57,7 +57,7 @@ public class SyncResourceManagerTest {
 
     @Test
     public void pullDataFromParent_shouldCallFHIRClient() throws Exception {
-        SyncResourceManager resourceManager = new SyncResourceManager();
+        SyncClient resourceManager = new SyncClient();
         Map<String, String> links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
 
