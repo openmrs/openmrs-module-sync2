@@ -9,6 +9,8 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.fhir.api.client.FHIRClient;
+import org.openmrs.module.sync2.client.ClientFactory;
 import org.openmrs.module.sync2.client.rest.RestClient;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -41,9 +43,10 @@ public class SyncClientTest {
 
     private AdministrationService administrationServiceMock;
     private Patient expectedPatient;
+    private Map<String, String> links;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         expectedPatient = createPatient();
 
         administrationServiceMock = mock(AdministrationService.class);
@@ -55,13 +58,7 @@ public class SyncClientTest {
         doReturn(USERNAME).when(administrationServiceMock).getGlobalProperty("sync2.user.login");
         doReturn(PASSWORD).when(administrationServiceMock).getGlobalProperty("sync2.user.password");
 
-    }
-    @Test
-    public void pullDataFromParent_shouldCallRestClient() throws Exception {
-        doReturn(REST_CLIENT_KEY).when(administrationServiceMock).getGlobalProperty("sync2.resource.preferred.client");
-
-        SyncClient resourceManager = new SyncClient();
-        Map<String, String> links = new HashMap<>();
+        links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
         links.put(REST_CLIENT_KEY, REST_RESOURCE_LINK + PATIENT_UUID);
 
@@ -69,7 +66,20 @@ public class SyncClientTest {
 
         RestClient restClientMock = mock(RestClient.class);
         doReturn(createPatient()).when(restClientMock).getObject(PATIENT_CATEGORY, url, USERNAME, PASSWORD);
-        whenNew(RestClient.class).withNoArguments().thenReturn(restClientMock);
+
+        FHIRClient fhirClientMock = mock(FHIRClient.class);
+        doReturn(createPatient()).when(fhirClientMock).getObject(PATIENT_CATEGORY, url, USERNAME, PASSWORD);
+
+        ClientFactory clientFactory = mock(ClientFactory.class);
+        doReturn(restClientMock).when(clientFactory).createClient(REST_CLIENT_KEY);
+        doReturn(fhirClientMock).when(clientFactory).createClient(FHIR_CLIENT_KEY);
+        whenNew(ClientFactory.class).withNoArguments().thenReturn(clientFactory);
+    }
+    @Test
+    public void pullDataFromParent_shouldCallRestClient() {
+        doReturn(REST_CLIENT_KEY).when(administrationServiceMock).getGlobalProperty("sync2.resource.preferred.client");
+
+        SyncClient resourceManager = new SyncClient();
 
         Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
@@ -77,7 +87,9 @@ public class SyncClientTest {
     }
 
     @Test
-    public void pullDataFromParent_shouldCallFHIRClient() throws Exception {
+    public void pullDataFromParent_shouldCallFHIRClient() {
+        doReturn(FHIR_CLIENT_KEY).when(administrationServiceMock).getGlobalProperty("sync2.resource.preferred.client");
+
         SyncClient resourceManager = new SyncClient();
         Map<String, String> links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
@@ -85,7 +97,6 @@ public class SyncClientTest {
         Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
         assertThat(pulledObject, is(nullValue()));
-
     }
 
     private Patient createPatient() {
