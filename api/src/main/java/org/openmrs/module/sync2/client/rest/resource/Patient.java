@@ -50,7 +50,7 @@ public class Patient implements RestResource {
      * @return
      */
     @Override
-    public org.openmrs.BaseOpenmrsData getOpenMrsObject() {
+    public org.openmrs.BaseOpenmrsObject getOpenMrsObject() {
         org.openmrs.Patient patient = new org.openmrs.Patient();
         patient.setUuid(uuid);
 

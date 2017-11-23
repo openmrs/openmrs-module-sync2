@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.PatientIdentifierType;
 
 import java.util.List;
 
@@ -8,17 +9,16 @@ public class Identifier implements RestResource {
     private String display;
     private String uuid;
     private String identifier;
-    /**
-     * field identifierType omitted because it's Metadata not Data
-     *
-     * field location omitted because it's Metadata not Data
-     */
+    private IdentifierType identifierType;
+    private Location location;
     private Boolean preferred;
     private Boolean voided;
 
     private List<Link> links;
     private String resourceVersion;
 
+
+    // region getters
     public String getUuid() {
         return uuid;
     }
@@ -29,6 +29,14 @@ public class Identifier implements RestResource {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public IdentifierType getIdentifierType() {
+        return identifierType;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     public Boolean getPreferred() {
@@ -46,7 +54,9 @@ public class Identifier implements RestResource {
     public String getResourceVersion() {
         return resourceVersion;
     }
+    // endregion
 
+    // region setters
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -57,6 +67,14 @@ public class Identifier implements RestResource {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public void setIdentifierType(IdentifierType identifierType) {
+        this.identifierType = identifierType;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public void setPreferred(Boolean preferred) {
@@ -74,12 +92,19 @@ public class Identifier implements RestResource {
     public void setResourceVersion(String resourceVersion) {
         this.resourceVersion = resourceVersion;
     }
+    // endregion
 
     @Override
-    public BaseOpenmrsData getOpenMrsObject() {
+    public BaseOpenmrsObject getOpenMrsObject() {
         org.openmrs.PatientIdentifier patientIdentifier = new org.openmrs.PatientIdentifier();
         patientIdentifier.setUuid(uuid);
         patientIdentifier.setIdentifier(identifier);
+        if (identifierType != null) {
+            patientIdentifier.setIdentifierType((PatientIdentifierType) identifierType.getOpenMrsObject());
+        }
+        if (location != null) {
+            patientIdentifier.setLocation((org.openmrs.Location) location.getOpenMrsObject());
+        }
         patientIdentifier.setPreferred(preferred);
         patientIdentifier.setVoided(voided);
 
