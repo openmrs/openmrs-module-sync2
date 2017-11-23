@@ -37,7 +37,6 @@
 	<modules>
 		<module>api</module>
 		<module>omod</module>
-		<module>build-tools</module>
 	</modules>
 
 	<build>
@@ -139,10 +138,15 @@
 
 	<reporting>
 		<plugins>
-			<plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-pmd-plugin</artifactId><version>3.8</version><configuration>
-				<rulesets><ruleset>pmd.xml</ruleset>
-				</rulesets>
-			</configuration>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.8</version>
+				<configuration>
+					<rulesets>
+						<ruleset>pmd.xml</ruleset>
+					</rulesets>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
