@@ -25,7 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>fhir</artifactId>
+			<artifactId>fhir-api</artifactId>
 			<scope>provided</scope>
 			<version>${fhirVersion}</version>
 		</dependency>
