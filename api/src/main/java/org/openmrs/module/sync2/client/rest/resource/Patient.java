@@ -3,9 +3,8 @@ package org.openmrs.module.sync2.client.rest.resource;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Patient implements RestResource {
     private String uuid;
@@ -54,7 +53,7 @@ public class Patient implements RestResource {
         org.openmrs.Patient patient = new org.openmrs.Patient();
         patient.setUuid(uuid);
 
-        Set<PatientIdentifier> patientIdentifierList = new HashSet<>();
+        Set<PatientIdentifier> patientIdentifierList = new TreeSet<>();
         for (Identifier identifier : identifiers) {
             patientIdentifierList.add((PatientIdentifier) identifier.getOpenMrsObject());
         }
@@ -64,8 +63,9 @@ public class Patient implements RestResource {
         patient.setDead(person.getDead());
         patient.setDeathDate(person.getDeathDate());
         patient.setCauseOfDeath(person.getCauseOfDeath());
-        patient.setNames(Collections.singleton(
-                (PersonName) person.getPreferredName().getOpenMrsObject()));
+        Set<PersonName> personNameSet = new TreeSet<>();
+        personNameSet.add((PersonName) person.getPreferredName().getOpenMrsObject());
+        patient.setNames(personNameSet);
         patient.setVoided(person.getVoided());
         patient.setDeathdateEstimated(person.getDeathdateEstimated());
         patient.setBirthtime(person.getBirthtime());
