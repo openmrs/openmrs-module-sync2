@@ -31,7 +31,7 @@
     <input type="submit" id="import-button" class="confirm right" value="${ ui.message("sync2.configuration.import.label") }" disabled="disabled"/>
 </form>
 
-<form class="simple-form-ui" method="POST" action="loadSync2Config.page">
+<form class="simple-form-ui" method="POST" action="LoadSyncConfig.page">
     <span id="errorMsg" class="field-error" style="display: none">
         ${ui.message("sync2.configuration.errors.invalidJson")}
     </span>

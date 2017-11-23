@@ -3,16 +3,12 @@ package org.openmrs.module.sync2.api.sync;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.sync2.api.Sync2ConfigurationService;
-import org.openmrs.module.sync2.api.impl.Sync2ConfigurationServiceImpl;
 import org.openmrs.module.sync2.client.rest.RestClient;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 

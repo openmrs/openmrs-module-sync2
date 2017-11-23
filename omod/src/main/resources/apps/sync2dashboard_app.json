@@ -10,7 +10,7 @@
         "type": "link",
         "order": 5,
         "label": "sync2.configuration.label",
-        "url": "sync2/loadSync2Config.page",
+        "url": "sync2/LoadSyncConfig.page",
         "icon": "icon-dashboard"
       }
     ]
