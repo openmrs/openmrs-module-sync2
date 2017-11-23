@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -38,11 +39,14 @@ public class SyncClientTest {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
-    @Test
-    public void pullDataFromParent_shouldCallRestClient() throws Exception {
-        Patient expectedPatient = createPatient();
+    private AdministrationService administrationServiceMock;
+    private Patient expectedPatient;
 
-        AdministrationService administrationServiceMock = mock(AdministrationService.class);
+    @Before
+    public void setUp() {
+        expectedPatient = createPatient();
+
+        administrationServiceMock = mock(AdministrationService.class);
 
         mockStatic(Context.class);
         BDDMockito.given(Context.getAdministrationService()).willReturn(administrationServiceMock);
@@ -50,6 +54,11 @@ public class SyncClientTest {
 
         doReturn(USERNAME).when(administrationServiceMock).getGlobalProperty("sync2.user.login");
         doReturn(PASSWORD).when(administrationServiceMock).getGlobalProperty("sync2.user.password");
+
+    }
+    @Test
+    public void pullDataFromParent_shouldCallRestClient() throws Exception {
+        doReturn(REST_CLIENT_KEY).when(administrationServiceMock).getGlobalProperty("sync2.resource.preferred.client");
 
         SyncClient resourceManager = new SyncClient();
         Map<String, String> links = new HashMap<>();
@@ -62,11 +71,9 @@ public class SyncClientTest {
         doReturn(createPatient()).when(restClientMock).getObject(PATIENT_CATEGORY, url, USERNAME, PASSWORD);
         whenNew(RestClient.class).withNoArguments().thenReturn(restClientMock);
 
-        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
+        Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
-        assertThat(pulledObject.getClientType().getSimpleName(), is(RestClient.class.getSimpleName()));
-        assertThat(pulledObject.getResourceObject(), is(expectedPatient));
-
+        assertThat(pulledObject, is(expectedPatient));
     }
 
     @Test
@@ -75,7 +82,7 @@ public class SyncClientTest {
         Map<String, String> links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
 
-        PulledObject pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
+        Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, links, PARENT_ADDRESS);
 
         assertThat(pulledObject, is(nullValue()));
 

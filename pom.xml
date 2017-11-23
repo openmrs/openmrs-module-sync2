@@ -175,8 +175,10 @@
 		<uiframeworkVersion>3.11.0</uiframeworkVersion>
 		<uicommonsVersion>2.3.0</uicommonsVersion>
 		<javaCompilerVersion>1.8</javaCompilerVersion>
-    </properties>
-	
+    	<fhirVersion>1.8.0-SNAPSHOT</fhirVersion>
+		<commonsCodecVersion>1.9</commonsCodecVersion>
+	</properties>
+
     <distributionManagement>
         <repository>
             <id>openmrs-repo-modules</id>
