@@ -7,13 +7,15 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2;
 
-import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.sync2.api.Sync2ModuleService;
 import org.springframework.stereotype.Component;
 
-@Component("sync2.Sync2ModuleService")
-public class Sync2ModuleServiceImpl extends BaseOpenmrsService implements Sync2ModuleService {
+/**
+ * Contains module's config.
+ */
+@Component("sync2.SyncModuleConfig")
+public class SyncModuleConfig {
 	
+	public final static String MODULE_PRIVILEGE = "Sync2 Module Privilege";
 }
