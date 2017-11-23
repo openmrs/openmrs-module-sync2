@@ -26,7 +26,7 @@
 		<require_module version="${uicommonsVersion}">
 			org.openmrs.module.uicommons
 		</require_module>
-		<require_module version="${fhirVersionVersion}">
+		<require_module version="${fhirVersion}">
 			org.openmrs.module.fhir
 		</require_module>
 	</require_modules>
@@ -63,13 +63,19 @@
 	<globalProperty>
 		<property>${project.parent.artifactId}.user.login</property>
 		<defaultValue>admin</defaultValue>
-		<description>This is username for master user.</description>
+		<description>This is username for the parent instance.</description>
 	</globalProperty>
 
 	<globalProperty>
 		<property>${project.parent.artifactId}.user.password</property>
 		<defaultValue>Admin123</defaultValue>
-		<description>This is password to master user.</description>
+		<description>This is password to the parent instance.</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>${project.parent.artifactId}.resource.preferred.client</property>
+		<defaultValue>rest</defaultValue>
+		<description>Preferred client for pulling resources.</description>
 	</globalProperty>
 
 	<privilege>

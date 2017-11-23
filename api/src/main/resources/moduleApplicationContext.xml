@@ -26,13 +26,13 @@
     <context:component-scan base-package="org.openmrs.module.sync2" />
 
 
-    <!-- Adds Sync2ModuleService to OpenMRS context so it can be accessed
-    calling Context.getService(Sync2ModuleService.class) -->
+    <!-- Adds SyncModuleService to OpenMRS context so it can be accessed
+    calling Context.getService(SyncModuleService.class) -->
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.sync2.api.Sync2ModuleService</value>
-                <ref bean="sync2.Sync2ModuleService" />
+                <value>org.openmrs.module.sync2.api.SyncModuleService</value>
+                <ref bean="sync2.SyncModuleService" />
             </list>
         </property>
     </bean>

@@ -11,7 +11,7 @@
 </script>
 
 <div id="apps">
-    <a class="button app big" href="${ui.pageLink("sync2", "loadSync2Config")}"
+    <a class="button app big" href="${ui.pageLink("sync2", "LoadSyncConfig")}"
        id="sync.configuration">
         <i class="icon-calendar"></i>
         ${ ui.message("sync2.configuration.label") }

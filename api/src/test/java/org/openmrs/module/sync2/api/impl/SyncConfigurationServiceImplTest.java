@@ -3,28 +3,28 @@ package org.openmrs.module.sync2.api.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.sync2.api.exceptions.Sync2Exception;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
-import org.openmrs.module.sync2.api.model.configuration.Sync2Configuration;
-import org.openmrs.module.sync2.api.model.configuration.Sync2MethodConfiguration;
-import org.openmrs.module.sync2.api.utils.Sync2Utils;
+import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class Sync2ConfigurationServiceImplTest {
+public class SyncConfigurationServiceImplTest {
 
     private static final String sampleFeedConfigurationPath = "sampleSyncConfiguration.json";
     private static final String sampleFeedConfigurationPath2 = "sampleSyncConfiguration2.json";
 
     @Before
-    public void setUp() throws Sync2Exception {
+    public void setUp() throws SyncException {
     }
 
     @Test
-    public void saveConfiguration_shouldLoadTheSyncConfigurationFromObjectCorrectly() throws Sync2Exception {
-        final Sync2Configuration expectedSyncConfiguration = new Sync2Configuration();
+    public void saveConfiguration_shouldLoadTheSyncConfigurationFromObjectCorrectly() throws SyncException {
+        final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress");
         expectedSyncConfiguration.setGeneral(general);
@@ -35,22 +35,22 @@ public class Sync2ConfigurationServiceImplTest {
                 "observation", "org.openmrs.Obs", true);
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
 
-        Sync2MethodConfiguration push = new Sync2MethodConfiguration(true, 12, classes);
+        SyncMethodConfiguration push = new SyncMethodConfiguration(true, 12, classes);
         expectedSyncConfiguration.setPush(push);
 
-        Sync2MethodConfiguration pull = new Sync2MethodConfiguration(true, 12, classes);
+        SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
         expectedSyncConfiguration.setPull(pull);
 
-        Sync2Configuration syncConfiguration = Sync2Utils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
-        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
+        SyncConfiguration syncConfiguration = SyncUtils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
+        SyncConfigurationServiceImpl sync2ConfigurationService = new SyncConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
 
-        Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());
+        Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());
     }
 
     @Test
-    public void saveConfiguration_shouldLoadTheSyncConfigurationFromStringCorrectly() throws Sync2Exception {
-        final Sync2Configuration expectedSyncConfiguration = new Sync2Configuration();
+    public void saveConfiguration_shouldLoadTheSyncConfigurationFromStringCorrectly() throws SyncException {
+        final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2");
         expectedSyncConfiguration.setGeneral(general);
@@ -61,17 +61,17 @@ public class Sync2ConfigurationServiceImplTest {
                 "visit", "org.openmrs.Visit", false);
         List<ClassConfiguration> classes = Arrays.asList(encounterClass, visitClass);
 
-        Sync2MethodConfiguration push = new Sync2MethodConfiguration(false, 24, classes);
+        SyncMethodConfiguration push = new SyncMethodConfiguration(false, 24, classes);
         expectedSyncConfiguration.setPush(push);
 
-        Sync2MethodConfiguration pull = new Sync2MethodConfiguration(false, 24, classes);
+        SyncMethodConfiguration pull = new SyncMethodConfiguration(false, 24, classes);
         expectedSyncConfiguration.setPull(pull);
 
-        String json = Sync2Utils.readResourceFile(sampleFeedConfigurationPath2);
-        Sync2ConfigurationServiceImpl sync2ConfigurationService = new Sync2ConfigurationServiceImpl();
+        String json = SyncUtils.readResourceFile(sampleFeedConfigurationPath2);
+        SyncConfigurationServiceImpl sync2ConfigurationService = new SyncConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(json);
 
-        Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSync2Configuration());
+        Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());
     }
 
 }

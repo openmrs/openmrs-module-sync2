@@ -15,6 +15,6 @@ import org.openmrs.api.OpenmrsService;
  * The main service of this module, which is exposed for other modules. See
  * moduleApplicationContext.xml on how it is wired up.
  */
-public interface Sync2ModuleService extends OpenmrsService {
+public interface SyncModuleService extends OpenmrsService {
 	
 }
