@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsObject;
 
 import java.util.List;
 
@@ -94,7 +94,7 @@ public class PersonName implements RestResource {
     // endregion
 
     @Override
-    public BaseOpenmrsData getOpenMrsObject() {
+    public BaseOpenmrsObject getOpenMrsObject() {
         org.openmrs.PersonName personName = new org.openmrs.PersonName();
         personName.setUuid(uuid);
         personName.setGivenName(givenName);

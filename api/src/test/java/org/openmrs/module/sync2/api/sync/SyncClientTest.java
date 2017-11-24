@@ -13,17 +13,19 @@ import org.openmrs.module.sync2.client.rest.RestClient;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
-import java.util.Collections;
+import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ SyncClient.class, Context.class })
@@ -98,7 +100,7 @@ public class SyncClientTest {
         patientIdentifier.setPreferred(true);
         patientIdentifier.setVoided(false);
 
-        Set<PatientIdentifier> patientIdentifierList = new HashSet<>();
+        Set<PatientIdentifier> patientIdentifierList = new TreeSet<>();
             patientIdentifierList.add(patientIdentifier);
 
         patient.setIdentifiers(patientIdentifierList);
@@ -116,7 +118,9 @@ public class SyncClientTest {
         personName.setFamilyName2(null);
         personName.setVoided(false);
 
-        patient.setNames(Collections.singleton(personName));
+        Set<PersonName> personNameSet = new TreeSet<>();
+        personNameSet.add(personName);
+        patient.setNames(personNameSet);
 
         patient.setVoided(false);
         patient.setDeathdateEstimated(false);
