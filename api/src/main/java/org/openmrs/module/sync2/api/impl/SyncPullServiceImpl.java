@@ -13,10 +13,10 @@ public class SyncPullServiceImpl implements SyncPullService {
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
 
-    public void pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address) {
+    public void pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
 
         Object pulledObject = syncClient.pullDataFromParent(category, resourceLinks, address);
 
-        syncPersistence.persistRetrievedData(pulledObject);
+        syncPersistence.persistRetrievedData(pulledObject, action);
     }
 }
