@@ -50,6 +50,12 @@
 			<version>${uicommonsVersion}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>atomfeed-api</artifactId>
+			<scope>provided</scope>
+			<version>${atomfeedVersion}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

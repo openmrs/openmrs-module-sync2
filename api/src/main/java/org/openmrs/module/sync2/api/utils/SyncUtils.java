@@ -3,12 +3,17 @@ package org.openmrs.module.sync2.api.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
@@ -81,5 +86,31 @@ public class SyncUtils {
     public static boolean resourceFileExists(String path) {
         InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(path);
         return in != null;
+    }
+
+
+    public static Map<String, String> getLinks(String json) {
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+
+        try {
+            HashMap<String, String> result = mapper.readValue(json, typeRef);
+
+            return result;
+        } catch (IOException e) {
+            throw new SyncException(String.format("Invalid resource links JSON Object: %s  ", json), e);
+        }
+    }
+
+    public static String getBaseUrl(String stringUri) {
+
+        try {
+            URI uri = new URI(stringUri);
+
+            return uri.getScheme() + "://" + uri.getAuthority() + "/";
+        } catch(URISyntaxException e) {
+            throw new SyncException(String.format("Bad Atomfeed URI: %s. ", stringUri), e);
+        }
+
     }
 }

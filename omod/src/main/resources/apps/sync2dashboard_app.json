@@ -12,6 +12,15 @@
         "label": "sync2.configuration.label",
         "url": "sync2/LoadSyncConfig.page",
         "icon": "icon-dashboard"
+      },
+      {
+        "id": "sync2.sync",
+        "extensionPointId": "sync2/sync2.apps",
+        "type": "link",
+        "order": 5,
+        "label": "sync2.sync.manual.label",
+        "url": "sync2/ManualSync.page",
+        "icon": "icon-random"
       }
     ]
   }
