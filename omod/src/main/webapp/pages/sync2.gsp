@@ -16,6 +16,11 @@
         <i class="icon-calendar"></i>
         ${ ui.message("sync2.configuration.label") }
     </a>
+    <a class="button app big" href="${ui.pageLink("sync2", "ManualSync")}"
+       id="sync.sync">
+        <i class="icon-random"></i>
+        ${ ui.message("sync2.sync.manual.label") }
+    </a>
 </div>
 
 <% } %>

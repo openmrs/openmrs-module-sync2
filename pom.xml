@@ -175,7 +175,8 @@
 		<uiframeworkVersion>3.11.0</uiframeworkVersion>
 		<uicommonsVersion>2.3.0</uicommonsVersion>
 		<javaCompilerVersion>1.8</javaCompilerVersion>
-    	<fhirVersion>1.8.0-SNAPSHOT</fhirVersion>
+		<fhirVersion>1.8.0-SNAPSHOT</fhirVersion>
+		<atomfeedVersion>1.0.0-SNAPSHOT</atomfeedVersion>
 		<commonsCodecVersion>1.9</commonsCodecVersion>
 	</properties>
 
