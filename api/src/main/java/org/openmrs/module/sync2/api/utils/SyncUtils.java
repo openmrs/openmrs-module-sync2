@@ -113,4 +113,20 @@ public class SyncUtils {
         }
 
     }
+
+    public static String getCategoryAndActionByTag(String tag) {
+        Map<String, String> map = parseTag(tag);
+        return map.get("Category.term");
+    }
+
+    private static HashMap<String, String> parseTag(String tag) {
+        final HashMap<String, String> map = new HashMap<>();
+
+        for (String pair : tag.split("\n")) {
+            String[] keyValue = pair.split("=");
+            map.put(keyValue[0], keyValue[1]);
+        }
+
+        return map;
+    }
 }

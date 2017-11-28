@@ -8,6 +8,8 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class SyncFeedWorker implements FeedEventWorker {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncFeedWorker.class);
 
@@ -17,10 +19,12 @@ public class SyncFeedWorker implements FeedEventWorker {
     public void process(Event event) {
         LOGGER.info("Started feed event processing (id: {})", event.getId());
         pullService = Context.getRegisteredComponent("sync2.syncPullService", SyncPullService.class);
-
-        //TODO: Extract category and action from event.getCategories().
-        pullService.pullDataFromParentAndSave("patient", SyncUtils.getLinks(event.getContent()),
-                SyncUtils.getBaseUrl(event.getFeedUri()), "CREATED");
+        List tags = event.getCategories();
+        
+        pullService.pullDataFromParentAndSave(
+                SyncUtils.getCategoryAndActionByTag(tags.get(1).toString()),
+                SyncUtils.getLinks(event.getContent()), SyncUtils.getBaseUrl(event.getFeedUri()),
+                SyncUtils.getCategoryAndActionByTag(tags.get(0).toString()));
     }
 
     @Override
