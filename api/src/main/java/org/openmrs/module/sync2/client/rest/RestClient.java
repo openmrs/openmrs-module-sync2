@@ -15,6 +15,7 @@ public class RestClient {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
+        restTemplate.setRequestFactory(new RestClientFactory());
 
         RestResource restResource = (RestResource) restTemplate.getForObject(url, resolveCategory(category));
 
