@@ -1,7 +1,9 @@
 {
   "general" : {
-    "parentFeedLocation" : "",
-    "localFeedLocation" : "defaultAddress"
+    "parentFeedLocation" : "http://parentLocation:8080/openmrs",
+    "localFeedLocation" : "http://local:8080/openmrs",
+    "persistSuccessAudit" : true,
+    "persistFailureAudit" : true
   },
   "push" : {
     "enabled" : true,
