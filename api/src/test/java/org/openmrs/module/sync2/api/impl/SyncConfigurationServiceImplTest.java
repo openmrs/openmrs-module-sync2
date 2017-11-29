@@ -26,7 +26,7 @@ public class SyncConfigurationServiceImplTest {
     public void saveConfiguration_shouldLoadTheSyncConfigurationFromObjectCorrectly() throws SyncException {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress");
+        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress", false, false);
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
@@ -52,7 +52,7 @@ public class SyncConfigurationServiceImplTest {
     public void saveConfiguration_shouldLoadTheSyncConfigurationFromStringCorrectly() throws SyncException {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2");
+        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2", false, false);
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration encounterClass = new ClassConfiguration("Encounter",

@@ -22,6 +22,7 @@ import javax.persistence.Table;
 @Entity(name = "sync2.syncauditmessage")
 @Table(name = "sync_audit_message")
 public class AuditMessage extends BaseOpenmrsData {
+    private static final long serialVersionUID = 6106269076155338045L;
 
     @Id
     @GeneratedValue
@@ -56,15 +57,12 @@ public class AuditMessage extends BaseOpenmrsData {
     public AuditMessage() {
     }
 
-    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String resourceUrl,
-                        String error, String action) {
+    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String resourceUrl) {
         this.id = id;
         this.success = success;
-        this.timestamp = timestamp;
+        this.timestamp = new Date(timestamp.getTime());
         this.resourceName = resourceName;
         this.resourceUrl = resourceUrl;
-        this.error = error;
-        this.action = action;
     }
 
     @Override
@@ -96,11 +94,11 @@ public class AuditMessage extends BaseOpenmrsData {
     }
 
     public Date getTimestamp() {
-        return timestamp;
+        return new Date(timestamp.getTime());
     }
 
     public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp = new Date(timestamp.getTime());
     }
 
     public String getResourceName() {

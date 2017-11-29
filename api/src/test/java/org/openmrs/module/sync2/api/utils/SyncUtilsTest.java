@@ -21,7 +21,7 @@ public class SyncUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress");
+        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress", false, false);
         expectedConfiguration.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",

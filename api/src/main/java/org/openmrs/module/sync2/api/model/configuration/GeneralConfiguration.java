@@ -6,12 +6,17 @@ public class GeneralConfiguration {
 
     private String parentFeedLocation;
     private String localFeedLocation;
+    private boolean persistSuccessAudit;
+    private boolean persistFailureAudit;
 
     public GeneralConfiguration() { }
 
-    public GeneralConfiguration(String parentFeedLocation, String localFeedLocation) {
+    public GeneralConfiguration(String parentFeedLocation, String localFeedLocation, boolean persistSuccessAudit,
+                                boolean persistFailureAudit) {
         this.parentFeedLocation = parentFeedLocation;
         this.localFeedLocation = localFeedLocation;
+        this.persistSuccessAudit = persistSuccessAudit;
+        this.persistFailureAudit = persistFailureAudit;
     }
 
     public String getParentFeedLocation() {
@@ -30,6 +35,22 @@ public class GeneralConfiguration {
         this.localFeedLocation = localFeedLocation;
     }
 
+    public boolean isPersistSuccessAudit() {
+        return persistSuccessAudit;
+    }
+
+    public void setPersistSuccessAudit(boolean persistSuccessAudit) {
+        this.persistSuccessAudit = persistSuccessAudit;
+    }
+
+    public boolean isPersistFailureAudit() {
+        return persistFailureAudit;
+    }
+
+    public void setPersistFailureAudit(boolean persistFailureAudit) {
+        this.persistFailureAudit = persistFailureAudit;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -40,11 +61,13 @@ public class GeneralConfiguration {
         }
         GeneralConfiguration that = (GeneralConfiguration) o;
         return Objects.equals(parentFeedLocation, that.parentFeedLocation)
-                && Objects.equals(localFeedLocation, that.localFeedLocation);
+                && Objects.equals(localFeedLocation, that.localFeedLocation)
+                && Objects.equals(persistSuccessAudit, that.persistSuccessAudit)
+                && Objects.equals(persistFailureAudit, that.persistFailureAudit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(parentFeedLocation, localFeedLocation);
+        return Objects.hash(parentFeedLocation, localFeedLocation, persistSuccessAudit, persistFailureAudit);
     }
 }

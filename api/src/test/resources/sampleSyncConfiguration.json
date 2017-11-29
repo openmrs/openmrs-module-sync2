@@ -1,7 +1,9 @@
 {
   "general" : {
     "parentFeedLocation" : "",
-    "localFeedLocation" : "defaultAddress"
+    "localFeedLocation" : "defaultAddress",
+    "persistSuccessAudit" : false,
+    "persistFailureAudit" : false
   },
   "push" : {
     "enabled" : true,
