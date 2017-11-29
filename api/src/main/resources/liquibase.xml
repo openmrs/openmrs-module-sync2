@@ -4,6 +4,25 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
-    
- 
+
+    <changeSet id="sync2-2017-11-29" author="Soldevelo">
+        <comment>
+            Creating the sync_audit_message table
+        </comment>
+        <createTable tableName="sync_audit_message">
+            <column name="sync_audit_message_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(38)" autoIncrement="true"/>
+            <column name="success" type="boolean" />
+            <column name="timestamp" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_name" type="varchar(255)" />
+            <column name="resource_url" type="varchar(255)" />
+            <column name="action" type="varchar(255)" />
+            <column name="error" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
