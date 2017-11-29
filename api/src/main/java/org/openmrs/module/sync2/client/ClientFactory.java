@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.client;
 
 import org.openmrs.module.fhir.api.client.Client;
-import org.openmrs.module.fhir.api.client.fhir.FHIRClient;
+import org.openmrs.module.fhir.api.client.fhir.FHIRClientFactory;
 import org.openmrs.module.sync2.client.rest.RestClient;
 
 public class ClientFactory {
@@ -14,7 +14,7 @@ public class ClientFactory {
             case REST_CLIENT_KEY:
                 return new RestClient();
             case FHIR_CLIENT_KEY:
-                return new FHIRClient();
+                return FHIRClientFactory.createClient();
             default:
                 return null;
         }
