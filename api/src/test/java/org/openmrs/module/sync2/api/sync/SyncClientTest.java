@@ -9,7 +9,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.api.client.FHIRClient;
+import org.openmrs.module.fhir.api.client.fhir.FHIRClient;
 import org.openmrs.module.sync2.client.ClientFactory;
 import org.openmrs.module.sync2.client.rest.RestClient;
 import org.powermock.core.classloader.annotations.PrepareForTest;

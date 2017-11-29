@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.rest;
 
+import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.web.client.RestTemplate;
@@ -7,10 +8,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 
 
-public class RestClient {
+public class RestClient implements Client {
 
     private static final String PATIENT_CATEGORY = "patient";
 
+    @Override
     public Object getObject(String category, String url, String username, String password) {
         RestTemplate restTemplate = new RestTemplate();
 
