@@ -13,7 +13,6 @@
             <column name="sync_audit_message_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="uuid" type="varchar(38)" autoIncrement="true"/>
             <column name="success" type="boolean" />
             <column name="timestamp" type="datetime" >
                 <constraints nullable="false"/>
