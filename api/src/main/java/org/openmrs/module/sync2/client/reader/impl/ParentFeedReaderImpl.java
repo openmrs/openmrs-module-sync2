@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
-import org.openmrs.module.atomfeed.client.impl.AtomFeedClientImpl;
+import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
@@ -23,7 +23,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
 
 
     public ParentFeedReaderImpl() {
-        this.atomFeedClient = new AtomFeedClientImpl(new SyncFeedWorker());
+        this.atomFeedClient = AtomFeedClientFactory.createClient(new SyncFeedWorker());
     }
 
     public void readAllFeedsForPull() {
