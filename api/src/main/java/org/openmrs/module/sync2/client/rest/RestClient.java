@@ -15,7 +15,6 @@ public class RestClient implements Client {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-
     public RestClient(ClientHttpRequestFactory clientHttpRequestFactory) {
         restTemplate.setRequestFactory(clientHttpRequestFactory);
     }
