@@ -6,9 +6,15 @@ import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.strategies.patient.PatientStrategyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SyncPersistence {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncPersistence.class);
 
+    private static final String FHIR = "fhir";
+    private static final String REST = "rest";
+    private static final String CATEGORY_PATIENT = "patient";
     private static final String ACTION_DELETED = "DELETED";
     private static final String ACTION_UPDATED = "UPDATED";
     private static final String VOIDING_REASON = "Voided by Sync 2";
@@ -18,6 +24,39 @@ public class SyncPersistence {
             persistRetrievedRestData(retrievedObject, action);
         } else if (retrievedObject instanceof DomainResource) {
             persistRetrievedFhirData(retrievedObject, action);
+        }
+    }
+
+    public Object retrieveData(String client, String category, String uuid) {
+        switch (client) {
+            case FHIR:
+                return retrieveFhirObject(category, uuid);
+            case REST:
+                return retrieveRestObject(category, uuid);
+            default:
+                LOGGER.warn(String.format("Unrecognized client %s, falling back to core OpenMrs object"), client);
+                return retrieveRestObject(category, uuid);
+        }
+    }
+
+    private Object retrieveFhirObject(String category, String uuid) {
+        switch (category) {
+            case CATEGORY_PATIENT:
+                return PatientStrategyUtil.getPatientStrategy().getPatient(uuid);
+            default:
+                LOGGER.warn(String.format("Unrecognized category %s"), category);
+                return null;
+        }
+    }
+
+    private Object retrieveRestObject(String category, String uuid) {
+        switch (category) {
+            case CATEGORY_PATIENT:
+                PatientService service = Context.getPatientService();
+                return service.getPatientByUuid(uuid);
+            default:
+                LOGGER.warn(String.format("Unrecognized category %s"), category);
+                return null;
         }
     }
 
