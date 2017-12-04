@@ -18,4 +18,5 @@ import org.springframework.stereotype.Component;
 public class SyncModuleConfig {
 	
 	public final static String MODULE_PRIVILEGE = "Sync2 Module Privilege";
+	public final static String SYNC_AUDIT_PRIVILEGE = "Sync2 Audit Privilege";
 }

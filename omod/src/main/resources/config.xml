@@ -85,5 +85,11 @@
 		<name>Load Sync2 config</name>
 		<description>Ability to load Sync 2 configuration from file.</description>
 	</privilege>
+
+	<privilege>
+		<name>Sync2 Audit Privilege</name>
+		<description>Ability to view Sync 2 audit messages</description>
+	</privilege>
+
 </module>
 
