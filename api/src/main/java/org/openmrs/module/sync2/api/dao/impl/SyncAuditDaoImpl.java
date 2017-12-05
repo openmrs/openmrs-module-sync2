@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.api.db;
+package org.openmrs.module.sync2.api.dao.impl;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-@Repository("sync2.SyncAuditDao")
-public class SyncAuditDao {
+@Repository
+public class SyncAuditDaoImpl implements SyncAuditDao {
 
     @Autowired
     DbSessionFactory sessionFactory;

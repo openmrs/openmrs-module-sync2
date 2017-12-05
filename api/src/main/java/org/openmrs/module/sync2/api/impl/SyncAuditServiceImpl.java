@@ -7,7 +7,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
-import org.openmrs.module.sync2.api.db.SyncAuditDao;
+import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,23 +16,23 @@ import java.util.List;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
 
-    SyncAuditDao syncAuditDao;
+    SyncAuditDao dao;
 
     @Autowired
     private SyncConfigurationService configuration;
 
-    public void setSyncAuditDao(SyncAuditDao dao) {
-        this.syncAuditDao = dao;
+    public void setDao(SyncAuditDao dao) {
+        this.dao = dao;
     }
 
     @Override
     public AuditMessage getMessageById(Integer id) throws APIException {
-        return syncAuditDao.getMessageById(id);
+        return dao.getMessageById(id);
     }
 
     @Override
     public String getJsonMessageById(Integer id) throws APIException, JsonParseException {
-        AuditMessage auditMessage = syncAuditDao.getMessageById(id);
+        AuditMessage auditMessage = dao.getMessageById(id);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
@@ -44,8 +44,8 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
 
     @Override
     public String getPaginatedMessages(Integer page, Integer pageSize) throws APIException {
-        List<AuditMessage> auditMessageList = syncAuditDao.getPaginatedMessages(page, pageSize);
-        AuditMessageList result = new AuditMessageList(syncAuditDao.getCountOfMessages(), page, pageSize, auditMessageList);
+        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize);
+        AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
         return serializeResults(result);
     }
 
@@ -53,7 +53,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     public AuditMessage saveItem(AuditMessage auditMessage) throws APIException {
         if (auditMessage.getSuccess() && configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()
                 || !auditMessage.getSuccess() && configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
-            return syncAuditDao.saveItem(auditMessage);
+            return dao.saveItem(auditMessage);
         }
         return null;
     }

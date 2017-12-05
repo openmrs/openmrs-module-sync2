@@ -91,5 +91,10 @@
 		<description>Ability to view Sync 2 audit messages</description>
 	</privilege>
 
+	<!-- Maps hibernate file's, if present -->
+	<mappingFiles>
+		SyncAuditMessage.hbm.xml
+	</mappingFiles>
+
 </module>
 

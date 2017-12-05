@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.openmrs.module.sync2.api.model.audit">
+    <class name="AuditMessage" table="sync_audit_message">
+        <id column="sync_audit_message_id" name="id" unsaved-value="0" />
+
+        <property column="uuid" name="uuid"/>
+        <property column="success" name="success" type="boolean" />
+        <property column="timestamp" name="timestamp" type="java.util.Date"/>
+        <property column="resource_name" name="resourceName" type="java.lang.String" />
+        <property column="resource_url" name="resourceUrl" type="java.lang.String" />
+        <property column="action" name="action" type="java.lang.String" />
+        <property column="error" name="error" type="java.lang.String" />
+        <property column="changed_by" name="changedBy" type="java.lang.String" />
+        <property column="creator" name="creator" type="java.lang.String" />
+        <property column="date_changed" name="dateChanged" type="java.util.Date" />
+        <property column="date_voided" name="dateVoided" type="java.util.Date" />
+        <property column="void_reason" name="voidReason" type="java.lang.String" />
+        <property column="voided" name="voided" type="boolean" />
+        <property column="voided_by" name="voidedBy" type="boolean" />
+
+    </class>
+</hibernate-mapping>

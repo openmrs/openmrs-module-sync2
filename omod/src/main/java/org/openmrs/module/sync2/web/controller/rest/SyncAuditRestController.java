@@ -26,17 +26,6 @@ public class SyncAuditRestController {
     @Autowired
     SyncAuditService syncAuditService;
 
-    @RequestMapping(value = "/messages", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public AuditMessage getMessageById(@RequestParam(value = "id", required = true)  Integer id) {
-        LOGGER.debug("Get single message with " + id + "id");
-        if (Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            LOGGER.debug("Get Single message reached by message id");
-            return syncAuditService.getMessageById(id);
-        }
-        return null;
-    }
-
     @RequestMapping(value = "/messages/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String getJsonMessageById(@PathVariable Integer id) throws JsonParseException {

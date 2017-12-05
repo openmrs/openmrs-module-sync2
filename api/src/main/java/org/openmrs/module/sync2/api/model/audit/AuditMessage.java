@@ -9,6 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import org.hibernate.annotations.Persister;
+import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.openmrs.BaseOpenmrsData;
 
 import javax.persistence.Basic;
@@ -19,7 +21,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 
-@Entity(name = "sync2.syncauditmessage")
+@Persister(impl = SingleTableEntityPersister.class)
+@Entity
 @Table(name = "sync_audit_message")
 public class AuditMessage extends BaseOpenmrsData {
     private static final long serialVersionUID = 6106269076155338045L;
@@ -46,12 +49,12 @@ public class AuditMessage extends BaseOpenmrsData {
     private String resourceUrl;
 
     @Basic
-    @Column(name = "error")
-    private String error;
-
-    @Basic
     @Column(name = "action")
     private String action;
+
+    @Basic
+    @Column(name = "error")
+    private String error;
 
 
     public AuditMessage() {

@@ -5,13 +5,19 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="sync2-2017-11-29" author="Soldevelo">
+    <changeSet id="sync2-2017-12-06" author="Soldevelo">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="sync_audit_message"/></not>
+        </preConditions>
         <comment>
-            Creating the sync_audit_message table
+            Creating the outgoingmessageexceptions_message table
         </comment>
         <createTable tableName="sync_audit_message">
             <column name="sync_audit_message_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="success" type="boolean" />
             <column name="timestamp" type="datetime" >
@@ -21,6 +27,19 @@
             <column name="resource_url" type="varchar(255)" />
             <column name="action" type="varchar(255)" />
             <column name="error" type="varchar(255)"/>
+
+            <column name="changed_by" type="varchar(255)" />
+            <column name="creator" type="int"/>
+            <column name="date_changed" type="datetime" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" />
+            <column name="voided" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="varchar(255)"/>
         </createTable>
     </changeSet>
 
