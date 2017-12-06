@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
 
-    SyncAuditDao dao;
+    private SyncAuditDao dao;
 
     @Autowired
     private SyncConfigurationService configuration;

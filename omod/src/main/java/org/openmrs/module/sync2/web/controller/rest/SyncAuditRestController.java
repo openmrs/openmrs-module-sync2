@@ -24,7 +24,7 @@ public class SyncAuditRestController {
     private final Logger LOGGER = LoggerFactory.getLogger(SyncAuditRestController.class);
 
     @Autowired
-    SyncAuditService syncAuditService;
+    private SyncAuditService syncAuditService;
 
     @RequestMapping(value = "/messages/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody

@@ -19,7 +19,7 @@ import java.util.List;
 public class SyncAuditDaoImpl implements SyncAuditDao {
 
     @Autowired
-    DbSessionFactory sessionFactory;
+    private DbSessionFactory sessionFactory;
 
     private DbSession getSession() {
         return sessionFactory.getCurrentSession();

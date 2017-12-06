@@ -10,7 +10,7 @@
             <not><tableExists tableName="sync_audit_message"/></not>
         </preConditions>
         <comment>
-            Creating the outgoingmessageexceptions_message table
+            Creating the sync_audit_message table
         </comment>
         <createTable tableName="sync_audit_message">
             <column name="sync_audit_message_id" type="int" autoIncrement="true">
