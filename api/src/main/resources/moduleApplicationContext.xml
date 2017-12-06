@@ -25,6 +25,28 @@
 
     <context:component-scan base-package="org.openmrs.module.sync2" />
 
+    <bean id="sync2.SyncAuditDao" class="org.openmrs.module.sync2.api.dao.impl.SyncAuditDaoImpl" />
+
+
+    <!-- Wraps SyncAuditService methods in DB transactions and OpenMRS interceptors,
+    which set audit info like dateCreated, changedBy, etc.-->
+    <bean id="syncAuditService"
+            class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager" />
+        </property>
+        <property name="target">
+            <bean class="org.openmrs.module.sync2.api.impl.SyncAuditServiceImpl">
+                <property name="dao" ref="sync2.SyncAuditDao" />
+            </bean>
+        </property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors" />
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource" />
+        </property>
+    </bean>
 
     <!-- Adds SyncModuleService to OpenMRS context so it can be accessed
     calling Context.getService(SyncModuleService.class) -->
@@ -36,4 +58,5 @@
             </list>
         </property>
     </bean>
+
 </beans>
