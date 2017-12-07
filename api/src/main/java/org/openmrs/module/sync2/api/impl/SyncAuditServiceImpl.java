@@ -43,8 +43,8 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public String getPaginatedMessages(Integer page, Integer pageSize) throws APIException {
-        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize);
+    public String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName) throws APIException {
+        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize, success, action, resourceName);
         AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
         return serializeResults(result);
     }
