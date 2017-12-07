@@ -69,9 +69,8 @@ public class SyncAuditRestController {
     }
 
     private String extractAction(String enumValue) {
-
         try {
-            return Action.valueOf(enumValue).name() == Action.ALL.name() ?
+            return Action.valueOf(enumValue).name().equals(Action.ALL.name()) ?
                     "" : Action.valueOf(enumValue).name();
 
         } catch(IllegalArgumentException e) {
@@ -81,7 +80,7 @@ public class SyncAuditRestController {
 
     private String extractResourceName(String enumValue) {
         try {
-            return Resources.valueOf(enumValue).name() == Resources.ALL.name() ?
+            return Resources.valueOf(enumValue).name().equals(Resources.ALL.name()) ?
                     "" : Resources.valueOf(enumValue).getName();
         } catch(IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable resource: %s.", enumValue));
