@@ -2,7 +2,11 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.openmrs.module.sync2.api.model.audit">
     <class name="AuditMessage" table="sync_audit_message">
-        <id column="sync_audit_message_id" name="id" unsaved-value="0" />
+        <id column="sync_audit_message_id" name="id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">sync_audit_message_id_seq</param>
+            </generator>
+        </id>
 
         <property column="uuid" name="uuid"/>
         <property column="success" name="success" type="boolean" />
@@ -11,13 +15,26 @@
         <property column="resource_url" name="resourceUrl" type="java.lang.String" />
         <property column="action" name="action" type="java.lang.String" />
         <property column="error" name="error" type="java.lang.String" />
-        <property column="changed_by" name="changedBy" type="java.lang.String" />
-        <property column="creator" name="creator" type="java.lang.String" />
-        <property column="date_changed" name="dateChanged" type="java.util.Date" />
-        <property column="date_voided" name="dateVoided" type="java.util.Date" />
-        <property column="void_reason" name="voidReason" type="java.lang.String" />
-        <property column="voided" name="voided" type="boolean" />
-        <property column="voided_by" name="voidedBy" type="boolean" />
+
+        <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
+
+        <many-to-one column="creator" name="creator" class="org.openmrs.User" />
+
+        <property name="dateCreated" type="java.util.Date"
+                  column="date_created" not-null="true" length="19" />
+
+        <property name="dateChanged" type="java.util.Date"
+                  column="date_changed" length="19" />
+
+        <property name="dateVoided" type="java.util.Date"
+                  column="date_voided" length="19" />
+
+        <property name="voidReason" type="java.lang.String"
+                  column="void_reason" length="255" />
+
+        <property column="voided" name="voided" type="boolean" length="1" not-null="true" />
+
+        <many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by" />
 
     </class>
 </hibernate-mapping>
