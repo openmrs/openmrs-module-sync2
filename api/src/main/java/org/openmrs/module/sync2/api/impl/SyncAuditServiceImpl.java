@@ -12,6 +12,7 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
@@ -50,10 +51,33 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public AuditMessage saveItem(AuditMessage auditMessage) throws APIException {
-        if (auditMessage.getSuccess() && configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()
-                || !auditMessage.getSuccess() && configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
-            return dao.saveItem(auditMessage);
+    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String action, String error) throws APIException {
+        if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
+            AuditMessage newItem = new AuditMessage();
+            newItem.setSuccess(true);
+            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            newItem.setResourceName(resourceName);
+            newItem.setResourceUrl(resourceUrl);
+            newItem.setAction(action);
+            newItem.setError(error);
+
+            return dao.saveItem(newItem);
+        }
+        return null;
+    }
+
+    @Override
+    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String error) throws APIException {
+        if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
+            AuditMessage newItem = new AuditMessage();
+            newItem.setSuccess(false);
+            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            newItem.setResourceName(resourceName);
+            newItem.setResourceUrl(resourceUrl);
+            newItem.setAction(action);
+            newItem.setError(error);
+
+            return dao.saveItem(newItem);
         }
         return null;
     }

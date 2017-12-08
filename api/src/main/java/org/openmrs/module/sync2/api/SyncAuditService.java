@@ -24,5 +24,8 @@ public interface SyncAuditService extends OpenmrsService {
     String getPaginatedMessages(Integer page, Integer pageSize) throws APIException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
-    AuditMessage saveItem(AuditMessage auditMessage) throws APIException;
+    AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String action, String error) throws APIException;
+
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String error) throws APIException;
 }
