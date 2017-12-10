@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
@@ -25,9 +26,9 @@ public class SyncPullServiceImpl implements SyncPullService {
         try {
             Object pulledObject = syncClient.pullDataFromParent(category, resourceLinks, address);
             syncPersistence.persistRetrievedData(pulledObject, action);
-            auditService.saveSuccessfulAudit(category, address, action, PULL_SUCCESS_MESSAGE);
+            auditService.saveSuccessfulAudit(category, getPreferredUrl(resourceLinks), action, PULL_SUCCESS_MESSAGE);
         } catch (Exception e) {
-            auditService.saveFailedAudit(category, address, action, e.getMessage());
+            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), action, e.getMessage());
         }
     }
 }

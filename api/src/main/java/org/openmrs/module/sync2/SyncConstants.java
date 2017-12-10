@@ -8,4 +8,6 @@ public class SyncConstants {
     public static final String ID_COLUMN_NAME = "id";
 
     public static final String PULL_SUCCESS_MESSAGE = "Success";
+
+    public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
 }
