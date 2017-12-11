@@ -2,13 +2,12 @@ package org.openmrs.module.sync2.client;
 
 import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.fhir.api.client.FHIRClientFactory;
-import org.openmrs.module.sync2.client.reader.SyncFeedWorker;
 import org.openmrs.module.sync2.client.rest.RestClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClientFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncFeedWorker.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientFactory.class);
 
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_CLIENT_KEY = "fhir";

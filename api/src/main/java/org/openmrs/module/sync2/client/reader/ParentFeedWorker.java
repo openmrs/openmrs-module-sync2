@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class SyncFeedWorker implements FeedEventWorker {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncFeedWorker.class);
+public class ParentFeedWorker implements FeedEventWorker {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParentFeedWorker.class);
 
     SyncPullService pullService;
 

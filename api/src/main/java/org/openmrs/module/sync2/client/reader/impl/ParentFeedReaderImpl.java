@@ -6,7 +6,7 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.sync2.client.reader.SyncFeedWorker;
+import org.openmrs.module.sync2.client.reader.ParentFeedWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
 
 
     public ParentFeedReaderImpl() {
-        this.atomFeedClient = AtomFeedClientFactory.createClient(new SyncFeedWorker());
+        this.atomFeedClient = AtomFeedClientFactory.createClient(new ParentFeedWorker());
     }
 
     public void readAllFeedsForPull() {
