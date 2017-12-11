@@ -19,6 +19,8 @@ import org.springframework.core.io.Resource;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -147,10 +149,12 @@ public class SyncAuditServiceImplTest {
         newMessage.setResourceName(AUDIT_NAME);
         newMessage.setResourceUrl(AUDIT_URL);
         newMessage.setSuccess(success);
+
         String createDate = "2017-12-07 00:00:00";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date parsedDate = dateFormat.parse(createDate);
-        newMessage.setTimestamp(new java.sql.Timestamp(parsedDate.getTime()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime parsedDate = LocalDateTime.parse(createDate, formatter);
+
+        newMessage.setTimestamp(parsedDate);
         newMessage.setUuid("9f3dccc9-6bc3-4a2b-862d-af4ce41caa28");
         return newMessage;
     }
