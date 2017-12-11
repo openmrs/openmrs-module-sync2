@@ -1,43 +1,53 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
+import com.google.gson.annotations.Expose;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonName;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Patient implements RestResource {
+
     private String uuid;
     private String display;
-    private Set<Identifier> identifiers;
+
+    @Expose
+    private List<Identifier> identifiers = new ArrayList<Identifier>();
+    @Expose
     private Person person;
+
+    public Patient() {
+    }
 
     public String getUuid() {
         return uuid;
-    }
-
-    public String getDisplay() {
-        return display;
-    }
-
-    public Set<Identifier> getIdentifiers() {
-        return identifiers;
-    }
-
-    public Person getPerson() {
-        return person;
     }
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
+    public String getDisplay() {
+        return display;
+    }
+
     public void setDisplay(String display) {
         this.display = display;
     }
 
-    public void setIdentifiers(Set<Identifier> identifiers) {
+    public List<Identifier> getIdentifiers() {
+        return identifiers;
+    }
+
+    public void setIdentifiers(List<Identifier> identifiers) {
         this.identifiers = identifiers;
+    }
+
+    public Person getPerson() {
+        return person;
     }
 
     public void setPerson(Person person) {
@@ -64,7 +74,9 @@ public class Patient implements RestResource {
         patient.setDeathDate(person.getDeathDate());
         patient.setCauseOfDeath(person.getCauseOfDeath());
         Set<PersonName> personNameSet = new TreeSet<>();
-        personNameSet.add((PersonName) person.getPreferredName().getOpenMrsObject());
+        if (person.getPreferredName() != null) {
+            personNameSet.add((PersonName) person.getPreferredName().getOpenMrsObject());
+        }
         patient.setNames(personNameSet);
         patient.setVoided(person.getVoided());
         patient.setDeathdateEstimated(person.getDeathdateEstimated());
