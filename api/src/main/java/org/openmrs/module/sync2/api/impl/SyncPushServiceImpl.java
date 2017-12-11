@@ -5,9 +5,11 @@ import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.sync.SyncPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Component("sync2.syncPushService")
 public class SyncPushServiceImpl implements SyncPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPushService.class);
 
