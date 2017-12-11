@@ -29,7 +29,8 @@ public class RestClient implements Client {
     }
 
     @Override
-    public Object getObject(String category, String url, String username, String password) {
+    public Object getObject(String category, String url, String username, String password)
+            throws RestClientException {
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
 
         RestResource restResource = (RestResource) restTemplate.getForObject(url, resolveCategory(category));
@@ -37,7 +38,8 @@ public class RestClient implements Client {
     }
 
     @Override
-    public ResponseEntity<String> postObject(String category, String url, String username, String password, Object object) throws RestClientException {
+    public ResponseEntity<String> postObject(String url, String username, String password, Object object)
+            throws RestClientException {
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
 
         RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsData) object);
