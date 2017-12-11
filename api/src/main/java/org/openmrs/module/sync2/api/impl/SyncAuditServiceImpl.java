@@ -13,6 +13,7 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
@@ -55,7 +56,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(true);
-            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            newItem.setTimestamp(LocalDateTime.now());
             newItem.setResourceName(resourceName);
             newItem.setResourceUrl(resourceUrl);
             newItem.setAction(action);
@@ -71,7 +72,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(false);
-            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            newItem.setTimestamp(LocalDateTime.now());
             newItem.setResourceName(resourceName);
             newItem.setResourceUrl(resourceUrl);
             newItem.setAction(action);

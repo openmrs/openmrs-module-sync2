@@ -2,7 +2,8 @@ package org.openmrs.module.sync2.api.model.audit;
 
 
 import java.lang.reflect.Type;
-import java.util.Date;
+import java.time.LocalDateTime;
+
 import java.util.Objects;
 
 import com.google.gson.JsonElement;
@@ -38,7 +39,7 @@ public class AuditMessage extends BaseOpenmrsData {
 
     @Basic
     @Column(name = "timestamp")
-    private Date timestamp;
+    private LocalDateTime timestamp;
 
     @Basic
     @Column(name = "resource_name")
@@ -60,10 +61,10 @@ public class AuditMessage extends BaseOpenmrsData {
     public AuditMessage() {
     }
 
-    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String resourceUrl) {
+    public AuditMessage(Integer id, Boolean success, LocalDateTime timestamp, String resourceName, String resourceUrl) {
         this.id = id;
         this.success = success;
-        this.timestamp = new Date(timestamp.getTime());
+        this.timestamp = timestamp;
         this.resourceName = resourceName;
         this.resourceUrl = resourceUrl;
     }
@@ -96,12 +97,12 @@ public class AuditMessage extends BaseOpenmrsData {
         this.success = success;
     }
 
-    public Date getTimestamp() {
-        return new Date(timestamp.getTime());
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = new Date(timestamp.getTime());
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getResourceName() {
