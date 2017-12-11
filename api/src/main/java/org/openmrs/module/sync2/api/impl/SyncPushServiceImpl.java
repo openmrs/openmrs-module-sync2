@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.sync.SyncClient;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
+
 @Component("sync2.syncPushService")
 public class SyncPushServiceImpl implements SyncPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPushService.class);
@@ -22,20 +27,27 @@ public class SyncPushServiceImpl implements SyncPushService {
     @Autowired
     private SyncConfigurationService configurationService;
 
+    @Autowired
+    SyncAuditService auditService;
+
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
 
     @Override
     public void readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, address, action));
-        // TODO: stub!
 
         String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
 
-        String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
-        Object data = syncPersistence.retrieveData(preferredClient, category, uuid);
+        try {
+            String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
+            Object data = syncPersistence.retrieveData(preferredClient, category, uuid);
 
-        syncClient.pushDataToParent(data, resourceLinks, getParentUri());
+            syncClient.pushDataToParent(data, resourceLinks, getParentUri());
+            auditService.saveSuccessfulAudit(category, getPreferredUrl(resourceLinks), action, PUSH_SUCCESS_MESSAGE);
+        } catch (Exception e) {
+            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), action, e.getMessage());
+        }
     }
 
     private String getParentUri() {

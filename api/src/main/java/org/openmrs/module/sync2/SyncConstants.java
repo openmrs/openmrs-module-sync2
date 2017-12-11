@@ -9,6 +9,8 @@ public class SyncConstants {
 
     public static final String PULL_SUCCESS_MESSAGE = "Success";
 
+    public static final String PUSH_SUCCESS_MESSAGE = "Success";
+
     public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
   
     public static final String ACTION_COLUMN_NAME = "action";

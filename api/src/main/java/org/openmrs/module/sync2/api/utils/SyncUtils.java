@@ -157,7 +157,6 @@ public class SyncUtils {
         }
 
         LOGGER.error("Couldn't find any supported client to extract uuid from.");
-
         return null;
     }
 
@@ -171,5 +170,27 @@ public class SyncUtils {
         String[] tokens = link.split("/");
         // todo throw custom sync2 exception if tokens.length != 5
         return tokens[4];
+    }
+
+    public static String getResourceUrl(String client, String url) {
+        switch (client) {
+            case FHIR:
+                return getFhirResourceUrl(url);
+            case REST:
+                return getRestResourceUrl(url);
+            default:
+                LOGGER.error("Couldn't find any supported client to extract resource url from.");
+                return null;
+        }
+    }
+
+    private static String getRestResourceUrl(String url) {
+        return url.substring(0, url.lastIndexOf("/"));
+        // todo throw custom sync2 exception if tokens.length != 6
+    }
+
+    private static String getFhirResourceUrl(String url) {
+        return url.substring(0, url.lastIndexOf("/"));
+        // todo throw custom sync2 exception if tokens.length != 5
     }
 }
