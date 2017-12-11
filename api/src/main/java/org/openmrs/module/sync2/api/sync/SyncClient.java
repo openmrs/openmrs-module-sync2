@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.sync;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.Client;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientFactory;
 
 import java.util.Map;
