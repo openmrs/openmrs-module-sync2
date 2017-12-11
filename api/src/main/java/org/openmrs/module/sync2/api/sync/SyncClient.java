@@ -24,4 +24,15 @@ public class SyncClient {
 
         return client.getObject(category, url, username, password);
     }
+
+    public Object pushDataToParent(Object object, Map<String, String> resourceLinks, String address) {
+        String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
+        String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
+        String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
+        String url = address + resourceLinks.get(preferredClient);
+
+        ClientFactory clientFactory = new ClientFactory();
+
+        return clientFactory.createClient(preferredClient).postObject(url, username, password, object);
+    }
 }

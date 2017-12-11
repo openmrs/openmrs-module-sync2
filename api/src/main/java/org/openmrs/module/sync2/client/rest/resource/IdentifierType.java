@@ -1,7 +1,6 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 
 import java.util.List;
@@ -9,6 +8,8 @@ import java.util.List;
 public class IdentifierType implements RestResource {
     private String uuid;
     private String display;
+    private String name;
+    private String description;
     private List<Link> links;
 
     // region getters
@@ -22,6 +23,14 @@ public class IdentifierType implements RestResource {
 
     public List<Link> getLinks() {
         return links;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
     // endregion
 
@@ -37,12 +46,20 @@ public class IdentifierType implements RestResource {
     public void setLinks(List<Link> links) {
         this.links = links;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // endregion
 
     @Override
     public BaseOpenmrsObject getOpenMrsObject() {
-        PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByUuid(uuid);
-        return patientIdentifierType;
+        return Context.getPatientService().getPatientIdentifierTypeByUuid(uuid);
     }
 
 }

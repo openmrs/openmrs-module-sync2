@@ -1,8 +1,10 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
+import com.google.gson.annotations.Expose;
 import org.openmrs.Concept;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Order of fields is taken from webservices
@@ -10,142 +12,162 @@ import java.util.Date;
 public class Person {
     private String uuid;
     private String display;
-    private String gender;
-    private int age;
-    private Date birthdate;
-    private Boolean birthdateEstimated;
-    private Boolean dead;
-    private Date deathDate;
-    private Concept causeOfDeath;
     private PersonName preferredName;
+    private Address preferredAddress;
+
+    @Expose
+    private List<PersonName> names;
+    @Expose
+    private List<Address> addresses;
+    @Expose
+    private Date birthdate;
+    @Expose
+    private Boolean birthdateEstimated;
+    @Expose
+    private Integer age;
+    @Expose
+    private String gender;
+    @Expose
+    private Boolean dead;
+    @Expose
+    private Concept causeOfDeath;
+    @Expose
+    private Date deathDate;
+    @Expose
     private Boolean voided;
+    @Expose
     private Boolean deathdateEstimated;
+    @Expose
     private Date birthtime;
 
-    // getters
+    public Person() {
+    }
+
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getDisplay() {
         return display;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public Date getBirthdate() {
-        if (birthdate == null) {
-            return null;
-        }
-        return new Date(birthdate.getTime());
-    }
-
-    public Boolean getBirthdateEstimated() {
-        return birthdateEstimated;
-    }
-
-    public Boolean getDead() {
-        return dead;
-    }
-
-    public Date getDeathDate() {
-        if (deathDate == null) {
-            return null;
-        }
-        return new Date(deathDate.getTime());
-    }
-
-    public Concept getCauseOfDeath() {
-        return causeOfDeath;
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     public PersonName getPreferredName() {
         return preferredName;
     }
 
-    public Boolean getVoided() {
-        return voided;
+    public void setPreferredName(PersonName preferredName) {
+        this.preferredName = preferredName;
     }
 
-    public Boolean getDeathdateEstimated() {
-        return deathdateEstimated;
+    public List<PersonName> getNames() {
+        return names;
     }
 
-    public Date getBirthtime() {
-        if (birthtime == null) {
-            return null;
-        }
-        return new Date(birthtime.getTime());
+    public void setNames(List<PersonName> names) {
+        this.names = names;
     }
 
-    // setters
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public Address getPreferredAddress() {
+        return preferredAddress;
     }
 
-    public void setDisplay(String display) {
-        this.display = display;
+    public void setPreferredAddress(Address preferredAddress) {
+        this.preferredAddress = preferredAddress;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Date getBirthdate() {
+        return birthdate;
     }
 
     public void setBirthdate(Date birthdate) {
-        if (birthdate == null) {
-            this.birthdate = null;
-        } else {
-            this.birthdate = new Date(birthdate.getTime());
-        }
+        this.birthdate = birthdate;
+    }
+
+    public Boolean getBirthdateEstimated() {
+        return birthdateEstimated;
     }
 
     public void setBirthdateEstimated(Boolean birthdateEstimated) {
         this.birthdateEstimated = birthdateEstimated;
     }
 
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Boolean getDead() {
+        return dead;
+    }
+
     public void setDead(Boolean dead) {
         this.dead = dead;
     }
 
-    public void setDeathDate(Date deathDate) {
-        if (deathDate == null) {
-            this.deathDate = null;
-        } else {
-            this.deathDate = new Date(deathDate.getTime());
-        }
+    public Concept getCauseOfDeath() {
+        return causeOfDeath;
     }
 
     public void setCauseOfDeath(Concept causeOfDeath) {
         this.causeOfDeath = causeOfDeath;
     }
 
-    public void setPreferredName(PersonName preferredName) {
-        this.preferredName = preferredName;
+    public Date getDeathDate() {
+        return deathDate;
+    }
+
+    public void setDeathDate(Date deathDate) {
+        this.deathDate = deathDate;
+    }
+
+    public Boolean getVoided() {
+        return voided;
     }
 
     public void setVoided(Boolean voided) {
         this.voided = voided;
     }
 
+    public Boolean getDeathdateEstimated() {
+        return deathdateEstimated;
+    }
+
     public void setDeathdateEstimated(Boolean deathdateEstimated) {
         this.deathdateEstimated = deathdateEstimated;
     }
 
+    public Date getBirthtime() {
+        return birthtime;
+    }
+
     public void setBirthtime(Date birthtime) {
-        if (birthtime == null) {
-            this.birthtime = null;
-        } else {
-            this.birthtime = new Date(birthtime.getTime());
-        }
+        this.birthtime = birthtime;
     }
 }
