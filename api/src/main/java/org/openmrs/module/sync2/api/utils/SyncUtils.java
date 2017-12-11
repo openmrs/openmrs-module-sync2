@@ -1,13 +1,5 @@
 package org.openmrs.module.sync2.api.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
@@ -18,11 +10,25 @@ import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 
 
 public class SyncUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
+
+    private static final String FHIR = "fhir";
+    private static final String REST = "rest";
 
     public static String readResourceFile(String file) throws SyncException {
         try (InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(file)) {
@@ -137,5 +143,33 @@ public class SyncUtils {
     public static String getPreferredUrl(Map<String, String> resourceLinks) {
         String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
         return resourceLinks.get(preferredClient);
+    }
+
+    public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
+        for (String client : resourceLinks.keySet()) {
+            switch (client) {
+                case REST:
+                    return extractUUIDFromRestResource(resourceLinks.get(client));
+                case FHIR:
+                    return extractUUIDFromFHIRResource(resourceLinks.get(client));
+                default:
+            }
+        }
+
+        LOGGER.error("Couldn't find any supported client to extract uuid from.");
+
+        return null;
+    }
+
+    private static String extractUUIDFromRestResource(String link) {
+        String[] tokens = link.split("/");
+        // todo throw custom sync2 exception if tokens.length != 6
+        return tokens[5].split("\\?")[0];
+    }
+
+    private static String extractUUIDFromFHIRResource(String link) {
+        String[] tokens = link.split("/");
+        // todo throw custom sync2 exception if tokens.length != 5
+        return tokens[4];
     }
 }
