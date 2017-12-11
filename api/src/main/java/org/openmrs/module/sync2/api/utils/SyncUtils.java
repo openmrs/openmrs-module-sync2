@@ -15,8 +15,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+
+import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
+
 
 public class SyncUtils {
 
@@ -128,5 +132,10 @@ public class SyncUtils {
         }
 
         return map;
+    }
+
+    public static String getPreferredUrl(Map<String, String> resourceLinks) {
+        String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
+        return resourceLinks.get(preferredClient);
     }
 }
