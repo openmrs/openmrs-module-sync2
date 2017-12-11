@@ -1,7 +1,10 @@
 package org.openmrs.module.sync2.api.dao.impl;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -12,6 +15,7 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -32,12 +36,13 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
                 .uniqueResult();
     }
 
-    public List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize) {
-        return (List<AuditMessage>) getSession()
-                .createCriteria(AuditMessage.class)
-                .setFirstResult((page - 1) * pageSize)
-                .setMaxResults(pageSize)
-                .list();
+    public List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName) {
+        Criteria selectCriteria = createSelectCriteria(success, action, resourceName);
+
+        selectCriteria.setFirstResult((page - 1) * pageSize);
+        selectCriteria.setMaxResults(pageSize);
+
+        return (List<AuditMessage>) selectCriteria.list();
     }
 
     public Long getCountOfMessages() {
@@ -68,5 +73,23 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
             }
         }
         return auditMessage;
+    }
+
+    private Criteria createSelectCriteria(Boolean success, String action, String resourceName) {
+        Criteria selectCriteria = getSession().createCriteria(AuditMessage.class);
+
+        if (success != null) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.STATUS_COLUMN_NAME, success));
+        }
+
+        if (StringUtils.isNotEmpty(action)) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.ACTION_COLUMN_NAME, action));
+        }
+
+        if (StringUtils.isNotEmpty(resourceName)) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.RESOURCE_NAME_COLUMN_NAME, resourceName));
+        }
+
+        return selectCriteria;
     }
 }

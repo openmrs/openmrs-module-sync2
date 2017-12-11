@@ -21,6 +21,16 @@
         "label": "sync2.sync.manual.label",
         "url": "sync2/ManualSync.page",
         "icon": "icon-random"
+      },
+      {
+        "id": "sync2.audit",
+        "extensionPointId":"sync2/sync2.apps",
+        "type": "link",
+        "order": 5,
+        "label": "sync2.audit.label",
+        "url": "sync2/auditList.page",
+        "icon": "icon-envelope",
+        "requiredPrivilege": "Sync2 Audit Privilege"
       }
     ]
   }
