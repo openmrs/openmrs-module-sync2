@@ -77,7 +77,7 @@
 
 	<globalProperty>
 		<property>${project.parent.artifactId}.resource.preferred.client</property>
-		<defaultValue>rest</defaultValue>
+		<defaultValue>fhir</defaultValue>
 		<description>Preferred client for pulling resources.</description>
 	</globalProperty>
 

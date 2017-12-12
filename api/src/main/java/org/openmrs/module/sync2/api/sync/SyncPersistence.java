@@ -34,7 +34,7 @@ public class SyncPersistence {
             case REST:
                 return retrieveRestObject(category, uuid);
             default:
-                LOGGER.warn(String.format("Unrecognized client %s, falling back to core OpenMrs object"), client);
+                LOGGER.warn(String.format("Unrecognized client %s, falling back to core OpenMrs object", client));
                 return retrieveRestObject(category, uuid);
         }
     }
@@ -44,7 +44,7 @@ public class SyncPersistence {
             case CATEGORY_PATIENT:
                 return PatientStrategyUtil.getPatientStrategy().getPatient(uuid);
             default:
-                LOGGER.warn(String.format("Unrecognized category %s"), category);
+                LOGGER.warn(String.format("Unrecognized category %s", category));
                 return null;
         }
     }
@@ -55,7 +55,7 @@ public class SyncPersistence {
                 PatientService service = Context.getPatientService();
                 return service.getPatientByUuid(uuid);
             default:
-                LOGGER.warn(String.format("Unrecognized category %s"), category);
+                LOGGER.warn(String.format("Unrecognized category %s", category));
                 return null;
         }
     }

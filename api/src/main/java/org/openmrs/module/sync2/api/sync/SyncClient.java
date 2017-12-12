@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.sync;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.Client;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientFactory;
 
 import java.util.Map;
@@ -31,7 +32,8 @@ public class SyncClient {
         String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
         String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
         String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
-        String url = address + resourceLinks.get(preferredClient);
+        String url = SyncUtils.getBaseUrl(address)
+                + SyncUtils.getResourceUrl(preferredClient, resourceLinks.get(preferredClient));
 
         ClientFactory clientFactory = new ClientFactory();
 

@@ -39,7 +39,8 @@ public class SyncClientTest {
     private static final String FHIR_RESOURCE_LINK = "openmrs/ws/fhir/Patient/";
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
     private static final String PATIENT_CATEGORY = "patient";
-    private static final String PARENT_ADDRESS = "http://localhost:8080/openmrs";
+    private static final String PARENT_ADDRESS = "http://localhost:8080/";
+    private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
 
@@ -59,6 +60,7 @@ public class SyncClientTest {
 
         doReturn(USERNAME).when(administrationServiceMock).getGlobalProperty("sync2.user.login");
         doReturn(PASSWORD).when(administrationServiceMock).getGlobalProperty("sync2.user.password");
+        doReturn(PARENT_FEED_LOCATION).when(administrationServiceMock).getGlobalProperty("sync2.general.parentFeedLocation");
 
         links = new HashMap<>();
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);

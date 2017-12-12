@@ -1,7 +1,7 @@
 {
   "general" : {
-    "parentFeedLocation" : "http://parentLocation:8080/openmrs",
-    "localFeedLocation" : "http://local:8080/openmrs",
+    "parentFeedLocation" : "http://localhost:8081/openmrs",
+    "localFeedLocation" : "http://localhost:8080/openmrs",
     "persistSuccessAudit" : true,
     "persistFailureAudit" : true
   },
@@ -13,61 +13,61 @@
         "classTitle" : "Location",
         "category" : "location",
         "openMrsClass" : "org.openmrs.Location",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Encounter",
         "category" : "encounter",
         "openMrsClass" : "org.openmrs.Encounter",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Visit",
         "category" : "visit",
         "openMrsClass" : "org.openmrs.Visit",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Provider",
         "category" : "provider",
         "openMrsClass" : "org.openmrs.Provider",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Drug",
         "category" : "drug",
         "openMrsClass" : "org.openmrs.Drug",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Order",
         "category" : "order",
         "openMrsClass" : "org.openmrs.Order",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Program Enrollment",
         "category" : "programenrollment",
         "openMrsClass" : "org.openmrs.PatientProgram",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Patient",
@@ -79,37 +79,37 @@
         "classTitle" : "Relationship",
         "category" : "relationship",
         "openMrsClass" : "org.openmrs.Relationship",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Visit Type",
         "category" : "visittype",
         "openMrsClass" : "org.openmrs.VisitType",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Concept",
         "category" : "concept",
         "openMrsClass" : "org.openmrs.Concept",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "User",
         "category" : "user",
         "openMrsClass" : "org.openmrs.User",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Program",
         "category" : "program",
         "openMrsClass": "org.openmrs.Program",
-        "enabled" : true
+        "enabled" : false
       }
     ]
   },
@@ -121,61 +121,61 @@
         "classTitle" : "Location",
         "category" : "location",
         "openMrsClass" : "org.openmrs.Location",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Encounter",
         "category" : "encounter",
         "openMrsClass" : "org.openmrs.Encounter",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Visit",
         "category" : "visit",
         "openMrsClass" : "org.openmrs.Visit",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Provider",
         "category" : "provider",
         "openMrsClass" : "org.openmrs.Provider",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Drug",
         "category" : "drug",
         "openMrsClass" : "org.openmrs.Drug",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Order",
         "category" : "order",
         "openMrsClass" : "org.openmrs.Order",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Program Enrollment",
         "category" : "programenrollment",
         "openMrsClass" : "org.openmrs.PatientProgram",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Patient",
@@ -187,37 +187,37 @@
         "classTitle" : "Relationship",
         "category" : "relationship",
         "openMrsClass" : "org.openmrs.Relationship",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Visit Type",
         "category" : "visittype",
         "openMrsClass" : "org.openmrs.VisitType",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Concept",
         "category" : "concept",
         "openMrsClass" : "org.openmrs.Concept",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "User",
         "category" : "user",
         "openMrsClass" : "org.openmrs.User",
-        "enabled" : true
+        "enabled" : false
       },
       {
         "classTitle" : "Program",
         "category" : "program",
         "openMrsClass": "org.openmrs.Program",
-        "enabled" : true
+        "enabled" : false
       }
     ]
   }

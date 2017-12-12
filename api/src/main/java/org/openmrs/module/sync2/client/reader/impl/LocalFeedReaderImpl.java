@@ -1,12 +1,12 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
-import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
+import org.openmrs.module.atomfeed.client.impl.AtomFeedClientImpl;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
-import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.sync2.client.reader.ParentFeedWorker;
+import org.openmrs.module.sync2.client.reader.LocalFeedWorker;
+import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,23 +14,23 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-@Component("sync2.parentFeedReader")
-public class ParentFeedReaderImpl implements ParentFeedReader {
+@Component("sync2.localFeedReader")
+public class LocalFeedReaderImpl implements LocalFeedReader {
     private static final String WS_ATOMFEED = "/ws/atomfeed/";
     private AtomFeedClient atomFeedClient;
     @Autowired
     private SyncConfigurationService configurationService;
 
-
-    public ParentFeedReaderImpl() {
-        this.atomFeedClient = AtomFeedClientFactory.createClient(new ParentFeedWorker());
+    public LocalFeedReaderImpl() {
+        this.atomFeedClient = new AtomFeedClientImpl(new LocalFeedWorker());
     }
 
-    public void readAllFeedsForPull() {
-        List<ClassConfiguration> pullConf = configurationService.getSyncConfiguration().getPull().getClasses();
+    @Override
+    public void readAllFeedsForPush() {
+        List<ClassConfiguration> pushConf = configurationService.getSyncConfiguration().getPush().getClasses();
 
-        for(ClassConfiguration classConf : pullConf) {
-            if(classConf.isEnabled()) {
+        for (ClassConfiguration classConf : pushConf) {
+            if (classConf.isEnabled()) {
                 readFeedByCategory(classConf.getCategory());
             }
         }
@@ -48,13 +48,9 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
         }
     }
 
-    private String getParentUri() {
-        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
-    }
-
     private String getResourceUrlWithCategory(String category) {
-        //TODO: Start reading from the last page read. Marks table.
-        return getParentUri() + WS_ATOMFEED + category + "/" + 1;
+        String localFeedUri = configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
+        // TODO: Start reading from the last page read. Marks table.
+        return localFeedUri + WS_ATOMFEED + category + "/" + 1;
     }
-
 }
