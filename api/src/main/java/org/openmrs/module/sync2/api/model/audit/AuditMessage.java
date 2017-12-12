@@ -2,8 +2,10 @@ package org.openmrs.module.sync2.api.model.audit;
 
 
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import com.google.gson.JsonElement;
@@ -39,7 +41,7 @@ public class AuditMessage extends BaseOpenmrsData {
 
     @Basic
     @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    private Date timestamp;
 
     @Basic
     @Column(name = "resource_name")
@@ -61,10 +63,10 @@ public class AuditMessage extends BaseOpenmrsData {
     public AuditMessage() {
     }
 
-    public AuditMessage(Integer id, Boolean success, LocalDateTime timestamp, String resourceName, String resourceUrl) {
+    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String resourceUrl) {
         this.id = id;
         this.success = success;
-        this.timestamp = timestamp;
+        this.timestamp = new Date(timestamp.getTime());
         this.resourceName = resourceName;
         this.resourceUrl = resourceUrl;
     }
@@ -97,12 +99,12 @@ public class AuditMessage extends BaseOpenmrsData {
         this.success = success;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = new Date(timestamp.getTime());
     }
 
     public String getResourceName() {
@@ -166,10 +168,12 @@ public class AuditMessage extends BaseOpenmrsData {
         public JsonElement serialize(AuditMessage src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
 
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
             object.addProperty("id", src.id);
             object.addProperty("uuid", src.getUuid());
             object.addProperty("success", src.success);
-            object.addProperty("timestamp", src.timestamp.toString());
+            object.addProperty("timestamp", formatter.format(src.timestamp));
             object.addProperty("resourceName", src.resourceName);
             object.addProperty("resourceUrl", src.resourceUrl);
             object.addProperty("error", src.error);

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 public class ManualSyncPushPageController  {
     protected static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
 
-    private static final String SYNC_SUCCESS = "sync2.sync.success";
+    private static final String SYNC_SUCCESS = "sync2.sync.push.success";
 
     public String controller(PageModel model,
                              @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,

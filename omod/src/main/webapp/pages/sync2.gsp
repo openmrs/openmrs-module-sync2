@@ -17,15 +17,15 @@
         ${ ui.message("sync2.configuration.label") }
     </a>
     <a class="button app big" href="${ui.pageLink("sync2", "ManualSync")}"
-       id="sync.sync">
+       id="sync.pull">
         <i class="icon-random"></i>
-        ${ ui.message("sync2.sync.manual.label") }
+        ${ ui.message("sync2.sync.manual.pull.label") }
     </a>
-        <a class="button app big" href="${ui.pageLink("sync2", "ManualSyncPush")}"
-           id="sync.sync">
-            <i class="icon-random"></i>
-            ${ ui.message("sync2.sync.manualpush.label") }
-        </a>
+    <a class="button app big" href="${ui.pageLink("sync2", "ManualSyncPush")}"
+       id="sync.push">
+        <i class="icon-random"></i>
+        ${ ui.message("sync2.sync.manual.push.label") }
+    </a>
     <a class="button app big" href="${ ui.pageLink("sync2", "auditList") }"
        id="outgoing-message-exceptions.ccd">
         <i class="icon-calendar"></i>

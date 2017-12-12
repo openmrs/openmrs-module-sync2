@@ -56,7 +56,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(true);
-            newItem.setTimestamp(LocalDateTime.now());
+            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
             newItem.setResourceUrl(resourceUrl);
             newItem.setAction(action);
@@ -72,7 +72,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(false);
-            newItem.setTimestamp(LocalDateTime.now());
+            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
             newItem.setResourceUrl(resourceUrl);
             newItem.setAction(action);
