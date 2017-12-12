@@ -51,7 +51,15 @@ jQuery(document).ready(function() {
             }, {
                 title: titles[4], name: "action" , type: "select", items: syncAction, valueField: "id", textField: "name", filtering: true, width: '10%'
             }
-        ]
+        ],
+        rowClick: function(args) {
+            $("#jsGrid").jsGrid("fieldOption", "id", "visible", true);
+            var $row = this.rowByItem(args.item);
+            var messageId = $row.children().first().text();
+            var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
+            window.location.href="details.page?messageId=" + messageId + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            $("#jsGrid").jsGrid("fieldOption", "id", "visible", false);
+        }
     });
 });
 
