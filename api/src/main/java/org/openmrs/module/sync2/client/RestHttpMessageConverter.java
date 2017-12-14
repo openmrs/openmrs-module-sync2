@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.http.HttpInputMessage;
@@ -20,6 +21,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -38,7 +40,7 @@ public class RestHttpMessageConverter extends AbstractHttpMessageConverter<RestR
     public RestHttpMessageConverter() {
         super(new MediaType(TYPE, SUBTYPE, Charset.forName(CHARSET)));
         supportedClasses = new HashSet<>();
-        supportedClasses.addAll(Collections.singleton(Patient.class));
+        supportedClasses.addAll(Arrays.asList(Patient.class, Location.class));
         jsonParser = getGson();
     }
 
