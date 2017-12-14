@@ -4,6 +4,7 @@ import org.openmrs.OpenmrsData;
 import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.RestResourceCreationUtil;
+import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 public class RestClient implements Client {
 
     private static final String PATIENT_CATEGORY = "patient";
+    private static final String LOCATION_CATEGORY = "location";
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -47,10 +49,13 @@ public class RestClient implements Client {
     }
 
     private Class resolveCategory(String category) {
-        if (category.equals(PATIENT_CATEGORY)) {
-            return Patient.class;
-        } else {
-            return null;
+        switch (category) {
+            case PATIENT_CATEGORY:
+                return Patient.class;
+            case LOCATION_CATEGORY:
+                return Location.class;
+            default:
+                return null;
         }
     }
 }
