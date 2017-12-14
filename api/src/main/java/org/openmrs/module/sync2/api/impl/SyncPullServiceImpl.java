@@ -4,6 +4,7 @@ import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.sync.SyncPersistence;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,7 @@ public class SyncPullServiceImpl implements SyncPullService {
             syncPersistence.persistRetrievedData(pulledObject, action);
             auditService.saveSuccessfulAudit(category, getPreferredUrl(resourceLinks), PULL_ACTION, PULL_SUCCESS_MESSAGE);
         } catch (Exception e) {
-            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), PULL_ACTION, e.getMessage());
+            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), PULL_ACTION, ExceptionUtils.getFullStackTrace(e));
         }
     }
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.impl;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
@@ -47,7 +48,7 @@ public class SyncPushServiceImpl implements SyncPushService {
             syncClient.pushDataToParent(data, resourceLinks, getParentUri());
             auditService.saveSuccessfulAudit(category, getPreferredUrl(resourceLinks), PUSH_ACTION, PUSH_SUCCESS_MESSAGE);
         } catch (Exception e) {
-            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), PUSH_ACTION, e.getMessage());
+            auditService.saveFailedAudit(category, getPreferredUrl(resourceLinks), PUSH_ACTION, ExceptionUtils.getFullStackTrace(e));
         }
     }
 
