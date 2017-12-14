@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.api.sync;
 
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.openmrs.Location;
-import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
@@ -25,7 +25,7 @@ public class SyncPersistence {
     private static final String VOIDING_REASON = "Voided by Sync 2";
 
     public void persistRetrievedData(Object retrievedObject, String action) {
-        if (retrievedObject instanceof OpenmrsData) {
+        if (retrievedObject instanceof OpenmrsObject) {
             persistRetrievedRestData(retrievedObject, action);
         } else if (retrievedObject instanceof DomainResource) {
             persistRetrievedFhirData(retrievedObject, action);
