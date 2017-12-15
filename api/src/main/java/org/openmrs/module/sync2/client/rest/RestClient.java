@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.client.rest;
 
-import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.RestResourceCreationUtil;
@@ -44,7 +44,7 @@ public class RestClient implements Client {
             throws RestClientException {
         restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
 
-        RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsData) object);
+        RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
         return restTemplate.postForEntity(url, restResource, String.class);
     }
 
