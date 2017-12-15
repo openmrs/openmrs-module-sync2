@@ -138,6 +138,64 @@ public class SyncAuditServiceImplTest {
 
         Assert.assertNull(fetched);
     }
+    
+    @Test
+    public void saveAuditMessage_shouldSaveSuccessfulAudit() {
+        AuditMessage auditMessage = new AuditMessage();
+        auditMessage.setSuccess(true);
+        
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
+    
+        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        
+        Assert.assertEquals(auditMessage, fetched);
+    }
+    
+    @Test
+    public void saveAuditMessage_shouldNotSaveSuccessfulAudit() {
+        AuditMessage auditMessage = new AuditMessage();
+        auditMessage.setSuccess(true);
+    
+    
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
+        
+        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        
+        Assert.assertNull(fetched);
+    }
+    
+    @Test
+    public void saveAuditMessage_shouldSaveFailureAudit() {
+        AuditMessage auditMessage = new AuditMessage();
+        auditMessage.setSuccess(false);
+        
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
+        
+        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        
+        Assert.assertEquals(auditMessage, fetched);
+    }
+    
+    @Test
+    public void saveAuditMessage_shouldNotSaveFailureAudit() {
+        AuditMessage auditMessage = new AuditMessage();
+        auditMessage.setSuccess(false);
+        
+        
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
+        
+        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        
+        Assert.assertNull(fetched);
+    }
 
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
         AuditMessage newMessage = new AuditMessage();
