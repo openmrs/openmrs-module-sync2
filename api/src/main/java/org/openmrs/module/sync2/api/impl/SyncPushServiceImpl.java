@@ -39,18 +39,18 @@ public class SyncPushServiceImpl implements SyncPushService {
     @Override
     public void readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, address, action));
-
-        String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
         
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
-        // TODO: set action & operation
-        // TODO: set links
+        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
+        auditMessage.setParentUrl(getParentUri());
+        auditMessage.setLocalUrl(getLocalUri());
+        auditMessage.setAction(action);
 
         try {
             String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
-            Object data = syncPersistence.retrieveData(preferredClient, category, uuid);
+            Object data = syncPersistence.retrieveData(getPreferredClient(), category, uuid);
             syncClient.pushDataToParent(data, resourceLinks, getParentUri());
     
             auditMessage.setSuccess(true);
@@ -64,14 +64,22 @@ public class SyncPushServiceImpl implements SyncPushService {
         }
     }
 
+    private String getPreferredClient() {
+        return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
+    }
+    
     private String getParentUri() {
         return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
+    }
+    
+    private String getLocalUri() {
+        return configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
     }
     
     private AuditMessage prepareBaseAuditMessage() {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auditMessage.setAction(PUSH_OPERATION); // TODO: rename to PUSH_OPERATION
+        auditMessage.setOperation(PUSH_OPERATION);
         return auditMessage;
     }
 }

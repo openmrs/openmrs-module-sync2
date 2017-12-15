@@ -1,11 +1,13 @@
 package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.module.sync2.api.SyncAuditService;
+import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.sync.SyncPersistence;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 public class SyncPullServiceImpl implements SyncPullService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);
+   
+    @Autowired
+    private SyncConfigurationService configurationService;
     
     @Autowired
     private SyncAuditService auditService;
@@ -35,8 +40,10 @@ public class SyncPullServiceImpl implements SyncPullService {
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
-        // TODO: set action & operation
-        // TODO: set links
+        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
+        auditMessage.setParentUrl(getParentUri());
+        auditMessage.setLocalUrl(getLocalUri());
+        auditMessage.setAction(action);
         
         try {
             Object pulledObject = syncClient.pullDataFromParent(category, resourceLinks, address);
@@ -53,10 +60,18 @@ public class SyncPullServiceImpl implements SyncPullService {
         }
     }
     
+    private String getParentUri() {
+        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
+    }
+    
+    private String getLocalUri() {
+        return configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
+    }
+    
     private AuditMessage prepareBaseAuditMessage() {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auditMessage.setAction(PULL_OPERATION); // TODO: rename to PULL_OPERATION
+        auditMessage.setOperation(PULL_OPERATION);
         return auditMessage;
     }
 }

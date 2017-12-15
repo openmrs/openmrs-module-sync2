@@ -193,4 +193,14 @@ public class SyncUtils {
         return url.substring(0, url.lastIndexOf("/"));
         // todo throw custom sync2 exception if tokens.length != 5
     }
+    
+    public static <T> String serializeMap(Map<T, T> map) {
+        try {
+            return new ObjectMapper()
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(map);
+        } catch (IOException ex) {
+            throw new SyncException("Cannot serialize map", ex);
+        }
+    }
 }
