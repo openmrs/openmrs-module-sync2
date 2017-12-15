@@ -51,15 +51,15 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String action, String error) throws APIException {
+    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String action, String details) throws APIException {
         if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(true);
             newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
-            newItem.setResourceUrl(resourceUrl);
+            newItem.setUsedResourceUrl(resourceUrl);
             newItem.setAction(action);
-            newItem.setError(error);
+            newItem.setDetails(details);
 
             return dao.saveItem(newItem);
         }
@@ -67,15 +67,15 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String error) throws APIException {
+    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String details) throws APIException {
         if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(false);
             newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
-            newItem.setResourceUrl(resourceUrl);
+            newItem.setUsedResourceUrl(resourceUrl);
             newItem.setAction(action);
-            newItem.setError(error);
+            newItem.setDetails(details);
 
             return dao.saveItem(newItem);
         }
@@ -89,6 +89,9 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         boolean persistFailureAudit = !auditMessage.getSuccess()
                 && configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit();
         if (persistFailureAudit || persistSuccessAudit) {
+            if (auditMessage.getTimestamp() == null) {
+                auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            }
             return dao.saveItem(auditMessage);
         }
         return null;
@@ -99,7 +102,6 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
 
-        gson.getAdapter(AuditMessage.AuditMessageSerializer.class);
         return gson.toJson(results);
     }
 }

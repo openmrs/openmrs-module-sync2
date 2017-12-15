@@ -31,18 +31,18 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_MESSAGE_JSON = "/audit/sampleAuditMessage.json";
     private static final String PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON = "/audit/sampleAuditMessages.json";
     private static final String AUDIT_ACTION = "testAction";
-    private static final String AUDIT_ERROR = "testError";
+    private static final String AUDIT_DETAILS = "testDetails";
     private static final String AUDIT_NAME = "test";
-    private static final String AUDIT_URL = "/test/test";
+    private static final String AUDIT_USED_URL = "/test/test";
 
     @InjectMocks
-    SyncAuditServiceImpl auditService;
+    private SyncAuditServiceImpl auditService;
 
     @Mock
-    SyncAuditDao dao;
+    private SyncAuditDao dao;
 
     @Mock
-    SyncConfigurationService configurationService;
+    private SyncConfigurationService configurationService;
 
     @Before
     public void setUp() {
@@ -98,7 +98,7 @@ public class SyncAuditServiceImplTest {
         when(dao.saveItem(any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
 
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_URL, AUDIT_ACTION, AUDIT_ERROR);
+        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
 
         Assert.assertNotNull(fetched);
     }
@@ -110,7 +110,7 @@ public class SyncAuditServiceImplTest {
         when(dao.saveItem(any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
 
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_URL, AUDIT_ACTION, AUDIT_ERROR);
+        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
 
         Assert.assertNull(fetched);
     }
@@ -122,7 +122,7 @@ public class SyncAuditServiceImplTest {
         when(dao.saveItem(any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
 
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_URL, AUDIT_ACTION, AUDIT_ERROR);
+        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
 
         Assert.assertNotNull(fetched);
     }
@@ -134,7 +134,7 @@ public class SyncAuditServiceImplTest {
         when(dao.saveItem(any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
 
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_URL, AUDIT_ACTION, AUDIT_ERROR);
+        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
 
         Assert.assertNull(fetched);
     }
@@ -196,14 +196,29 @@ public class SyncAuditServiceImplTest {
         
         Assert.assertNull(fetched);
     }
+    
+    @Test
+    public void saveAuditMessage_shouldNotSaveAuditWithNotNullTimestamp() {
+        AuditMessage auditMessage = new AuditMessage();
+        auditMessage.setSuccess(true);
+    
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
+    
+        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+    
+        Assert.assertEquals(auditMessage, fetched);
+        Assert.assertNotNull(fetched.getTimestamp());
+    }
 
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
         AuditMessage newMessage = new AuditMessage();
         newMessage.setId(1);
         newMessage.setAction(AUDIT_ACTION);
-        newMessage.setError(AUDIT_ERROR);
+        newMessage.setDetails(AUDIT_DETAILS);
         newMessage.setResourceName(AUDIT_NAME);
-        newMessage.setResourceUrl(AUDIT_URL);
+        newMessage.setUsedResourceUrl(AUDIT_USED_URL);
         newMessage.setSuccess(success);
 
         String createDate = "2017-12-07 00:00:00";

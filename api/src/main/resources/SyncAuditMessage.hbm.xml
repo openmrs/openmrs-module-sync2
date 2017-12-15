@@ -11,10 +11,16 @@
         <property column="uuid" name="uuid"/>
         <property column="success" name="success" type="boolean" />
         <property column="timestamp" name="timestamp" type="java.util.Date"/>
+
         <property column="resource_name" name="resourceName" type="java.lang.String" />
-        <property column="resource_url" name="resourceUrl" type="java.lang.String" />
+        <property column="used_resource_url" name="usedResourceUrl" type="java.lang.String" />
+        <property column="available_resource_urls" name="availableResourceUrls" type="java.lang.String" />
+        <property column="parent_url" name="parentUrl" type="java.lang.String" />
+        <property column="local_url" name="localUrl" type="java.lang.String" />
+
         <property column="action" name="action" type="java.lang.String" />
-        <property column="error" name="error" type="java.lang.String" />
+        <property column="operation" name="operation" type="java.lang.String" />
+        <property column="details" name="details" type="java.lang.String" />
 
         <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
 

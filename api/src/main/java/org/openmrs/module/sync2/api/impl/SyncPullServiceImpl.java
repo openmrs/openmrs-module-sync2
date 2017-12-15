@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PULL_ACTION;
+import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
@@ -34,7 +34,7 @@ public class SyncPullServiceImpl implements SyncPullService {
     
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
-        auditMessage.setResourceUrl(getPreferredUrl(resourceLinks));
+        auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
         // TODO: set action & operation
         // TODO: set links
         
@@ -43,11 +43,11 @@ public class SyncPullServiceImpl implements SyncPullService {
             syncPersistence.persistRetrievedData(pulledObject, action);
     
             auditMessage.setSuccess(true);
-            auditMessage.setError(PULL_SUCCESS_MESSAGE);
+            auditMessage.setDetails(PULL_SUCCESS_MESSAGE);
         } catch (Exception e) {
             LOGGER.error("Problem with pulling from parent", e);
             auditMessage.setSuccess(false);
-            auditMessage.setError(ExceptionUtils.getFullStackTrace(e));
+            auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
             auditService.saveAuditMessage(auditMessage);
         }
@@ -56,7 +56,7 @@ public class SyncPullServiceImpl implements SyncPullService {
     private AuditMessage prepareBaseAuditMessage() {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auditMessage.setAction(PULL_ACTION); // TODO: rename to PULL_OPERATION
+        auditMessage.setAction(PULL_OPERATION); // TODO: rename to PULL_OPERATION
         return auditMessage;
     }
 }

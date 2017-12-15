@@ -23,10 +23,16 @@
             <column name="timestamp" type="datetime" >
                 <constraints nullable="false"/>
             </column>
+
             <column name="resource_name" type="varchar(255)" />
-            <column name="resource_url" type="varchar(255)" />
+            <column name="used_resource_url" type="varchar(255)" />
+            <column name="available_resource_urls" type="LONGTEXT" />
+            <column name="parent_url" type="varchar(255)" />
+            <column name="local_url" type="varchar(255)" />
+
             <column name="action" type="varchar(255)" />
-            <column name="error" type="LONGTEXT"/>
+            <column name="operation" type="varchar(255)" />
+            <column name="details" type="LONGTEXT"/>
 
             <column name="changed_by" type="varchar(255)" />
             <column name="creator" type="int"/>

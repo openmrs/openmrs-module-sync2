@@ -19,8 +19,8 @@ public class SyncConstants {
 
     public static final String STATUS_COLUMN_NAME = "success";
 
-    public static final String PULL_ACTION = "PULL";
+    public static final String PULL_OPERATION = "PULL";
 
-    public static final String PUSH_ACTION = "PUSH";
+    public static final String PUSH_OPERATION = "PUSH";
 
 }

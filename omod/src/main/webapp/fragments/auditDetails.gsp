@@ -20,7 +20,7 @@
     </tr>
     <tr>
         <th class="label">${ ui.message(artifactId + ".Url") }</th>
-        <td>${ auditLog.resourceUrl }</td>
+        <td>${ auditLog.usedResourceUrl }</td>
     </tr>
     <tr>
         <th class="label">${ ui.message(artifactId + ".status") }</th>
@@ -34,7 +34,7 @@
         <th class="label">${ ui.message(artifactId + ".message") }</th>
         <td>
             <textarea style="width:100%; color: #888888; background-color: #dddddd;" readonly>
-                ${ auditLog.error }
+                ${ auditLog.details }
             </textarea>
         </td>
     </tr>

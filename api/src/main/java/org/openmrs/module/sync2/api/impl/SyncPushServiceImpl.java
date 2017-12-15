@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PUSH_ACTION;
+import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
@@ -44,7 +44,7 @@ public class SyncPushServiceImpl implements SyncPushService {
         
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
-        auditMessage.setResourceUrl(getPreferredUrl(resourceLinks));
+        auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
         // TODO: set action & operation
         // TODO: set links
 
@@ -54,11 +54,11 @@ public class SyncPushServiceImpl implements SyncPushService {
             syncClient.pushDataToParent(data, resourceLinks, getParentUri());
     
             auditMessage.setSuccess(true);
-            auditMessage.setError(PUSH_SUCCESS_MESSAGE);
+            auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);
         } catch (Exception e) {
             LOGGER.error("Problem with pushing to parent", e);
             auditMessage.setSuccess(false);
-            auditMessage.setError(ExceptionUtils.getFullStackTrace(e));
+            auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
             auditService.saveAuditMessage(auditMessage);
         }
@@ -71,7 +71,7 @@ public class SyncPushServiceImpl implements SyncPushService {
     private AuditMessage prepareBaseAuditMessage() {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auditMessage.setAction(PUSH_ACTION); // TODO: rename to PUSH_OPERATION
+        auditMessage.setAction(PUSH_OPERATION); // TODO: rename to PUSH_OPERATION
         return auditMessage;
     }
 }
