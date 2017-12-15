@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="sync2-2017-12-07" author="Soldevelo">
+    <changeSet id="sync2-2017-12-15" author="Soldevelo">
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="sync_audit_message"/></not>
         </preConditions>
@@ -26,7 +26,7 @@
             <column name="resource_name" type="varchar(255)" />
             <column name="resource_url" type="varchar(255)" />
             <column name="action" type="varchar(255)" />
-            <column name="error" type="varchar(255)"/>
+            <column name="error" type="LONGTEXT"/>
 
             <column name="changed_by" type="varchar(255)" />
             <column name="creator" type="int"/>

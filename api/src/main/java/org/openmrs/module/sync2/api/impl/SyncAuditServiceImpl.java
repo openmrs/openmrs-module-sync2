@@ -13,7 +13,6 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
@@ -82,7 +81,19 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         }
         return null;
     }
-
+    
+    @Override
+    public AuditMessage saveAuditMessage(AuditMessage auditMessage) {
+        boolean persistSuccessAudit = auditMessage.getSuccess()
+                && configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit();
+        boolean persistFailureAudit = !auditMessage.getSuccess()
+                && configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit();
+        if (persistFailureAudit || persistSuccessAudit) {
+            return dao.saveItem(auditMessage);
+        }
+        return null;
+    }
+    
     private String serializeResults(AuditMessageList results) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());

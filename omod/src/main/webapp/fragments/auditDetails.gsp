@@ -12,7 +12,7 @@
     <% if (auditLog != null) { %>
     <tr>
         <th class="label">${ ui.message(artifactId + ".resource") }</th>
-        <td><textarea style="width:100%" disabled>${ auditLog.resourceName }</textarea></td>
+        <td>${ auditLog.resourceName }</td>
     </tr>
     <tr>
         <th class="label">${ ui.message(artifactId + ".timestamp") }</th>
@@ -32,7 +32,11 @@
     </tr>
     <tr>
         <th class="label">${ ui.message(artifactId + ".message") }</th>
-        <td>${ auditLog.error }</td>
+        <td>
+            <textarea style="width:100%; color: #888888; background-color: #dddddd;" readonly>
+                ${ auditLog.error }
+            </textarea>
+        </td>
     </tr>
     <% } else { %>
     <tr>
