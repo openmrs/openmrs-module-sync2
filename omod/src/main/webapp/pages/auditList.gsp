@@ -21,7 +21,7 @@
         "${ ui.message('sync2.log.header.timestamp') }",
         "${ ui.message('sync2.log.header.Url') }",
         "${ ui.message('sync2.log.header.status') }",
-        "${ ui.message('sync2.log.header.action') }"
+        "${ ui.message('sync2.log.header.operation') }"
     ];
 
     var syncResourceName = [
