@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.client;
 
-import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAddress;
@@ -12,17 +12,24 @@ import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Person;
 import org.openmrs.module.sync2.client.rest.resource.PersonName;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class RestResourceCreationUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestResourceCreationUtil.class);
 
-    public static RestResource createRestResourceFromOpenMRSData(OpenmrsData object) {
+    public static RestResource createRestResourceFromOpenMRSData(OpenmrsObject object) {
         if (object instanceof org.openmrs.Patient) {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
+        } else if (object instanceof org.openmrs.Location) {
+            return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);
         }
+
+        LOGGER.warn(String.format("Unrecognized openmrs object type %s", object.getClass().getSimpleName()));
         return null;
     }
 
@@ -49,7 +56,7 @@ public class RestResourceCreationUtil {
             identifier.setIdentifierType(createIdentifierTypeFromOpenMRSPatientIdentifierType(patientIdentifier.getIdentifierType()));
         }
         if (patientIdentifier.getLocation() != null) {
-            identifier.setLocation(createLocationFromOpenMRSLocation(patientIdentifier.getLocation()));
+            identifier.setLocation(createLocationFromOpenMRSLocation(patientIdentifier.getLocation(), true));
         }
         identifier.setPreferred(patientIdentifier.getPreferred());
         identifier.setVoided(patientIdentifier.getVoided());
@@ -64,9 +71,37 @@ public class RestResourceCreationUtil {
         return identifierType;
     }
 
-    private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation) {
+    private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation, boolean reference) {
         Location location = new Location();
-        location.setUuid(openMRSLocation.getUuid());
+        if (reference) {
+            location.setUuid(openMRSLocation.getUuid());
+        } else
+        if (!reference) {
+            location.setName(openMRSLocation.getName());
+            location.setDescription(openMRSLocation.getDescription());
+            location.setCityVillage(openMRSLocation.getCityVillage());
+            location.setStateProvince(openMRSLocation.getStateProvince());
+            location.setCountry(openMRSLocation.getCountry());
+            location.setPostalCode(openMRSLocation.getPostalCode());
+            location.setLatitude(openMRSLocation.getLatitude());
+            location.setLongitude(openMRSLocation.getLongitude());
+            location.setCountryDistrict(openMRSLocation.getCountyDistrict());
+            location.setAddress1(openMRSLocation.getAddress1());
+            location.setAddress2(openMRSLocation.getAddress2());
+            location.setAddress3(openMRSLocation.getAddress3());
+            location.setAddress4(openMRSLocation.getAddress4());
+            location.setAddress5(openMRSLocation.getAddress5());
+            location.setAddress6(openMRSLocation.getAddress6());
+            if (openMRSLocation.getParentLocation() != null) {
+                location.setParentLocation(createLocationFromOpenMRSLocation(openMRSLocation.getParentLocation(), true));
+            }
+            List<Location> childLocations = new ArrayList<>();
+            for (org.openmrs.Location omrsLocation : openMRSLocation.getChildLocations()) {
+                childLocations.add(createLocationFromOpenMRSLocation(omrsLocation, false));
+            }
+            location.setChildLocations(childLocations);
+            location.setRetired(openMRSLocation.getRetired());
+        }
         return location;
     }
 
