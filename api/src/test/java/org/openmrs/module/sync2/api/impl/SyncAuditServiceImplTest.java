@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api.impl;
 
 import org.apache.commons.io.IOUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,12 +17,15 @@ import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -34,7 +38,10 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_DETAILS = "testDetails";
     private static final String AUDIT_NAME = "test";
     private static final String AUDIT_USED_URL = "/test/test";
-
+    private static final String AUDIT_OPERATION = "testOperation";
+    private static final String AUDIT_PARENT_URL = "parentUrl";
+    private static final String AUDIT_LOCAL_URL = "localUrl";
+    
     @InjectMocks
     private SyncAuditServiceImpl auditService;
 
@@ -211,13 +218,30 @@ public class SyncAuditServiceImplTest {
         Assert.assertEquals(auditMessage, fetched);
         Assert.assertNotNull(fetched.getTimestamp());
     }
-
+    
+    private String prepareDummyAvailableResourcesUrls() {
+        Map<String, String> availableResourceUrls = new HashMap<>();
+        availableResourceUrls.put("fhir", "testUrl1");
+        availableResourceUrls.put("rest", "testUrl2");
+        try {
+            return new ObjectMapper().writeValueAsString(availableResourceUrls);
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+    
+    
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
+        ObjectMapper objectMapper = new ObjectMapper();
         AuditMessage newMessage = new AuditMessage();
         newMessage.setId(1);
+        newMessage.setAvailableResourceUrls(prepareDummyAvailableResourcesUrls());
+        newMessage.setOperation(AUDIT_OPERATION);
         newMessage.setAction(AUDIT_ACTION);
         newMessage.setDetails(AUDIT_DETAILS);
         newMessage.setResourceName(AUDIT_NAME);
+        newMessage.setParentUrl(AUDIT_PARENT_URL);
+        newMessage.setLocalUrl(AUDIT_LOCAL_URL);
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
         newMessage.setSuccess(success);
 
@@ -230,6 +254,8 @@ public class SyncAuditServiceImplTest {
         newMessage.setUuid("9f3dccc9-6bc3-4a2b-862d-af4ce41caa28");
         return newMessage;
     }
+    
+
 
     private List<AuditMessage> prepareAuditMessages() throws ParseException {
         List<AuditMessage> result = new ArrayList<>();
