@@ -5,7 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncModuleConfig;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.enums.Action;
+import org.openmrs.module.sync2.api.model.enums.Operation;
 import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.model.enums.Status;
 import org.slf4j.Logger;
@@ -46,16 +46,16 @@ public class SyncAuditRestController {
             @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
             @RequestParam(value = "pageSize", defaultValue = "100") Integer pageSize,
             @RequestParam(value = "success", required = false) String successEnum,
-            @RequestParam(value = "action", required = false) String actionEnum,
+            @RequestParam(value = "operation", required = false) String operationEnum,
             @RequestParam(value = "resourceName", required = false) String resourceNameEnum) {
         LOGGER.debug("Get messages list with " + pageIndex + " page index and " + pageSize + " page size");
 
         Boolean success = extractStatus(successEnum);
-        String action = extractAction(actionEnum);
+        String operation = extractOperation(operationEnum);
         String resource = extractResourceName(resourceNameEnum.toUpperCase());
 
         if (Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            return syncAuditService.getPaginatedMessages(pageIndex, pageSize, success, action, resource);
+            return syncAuditService.getPaginatedMessages(pageIndex, pageSize, success, operation, resource);
         }
         return null;
     }
@@ -68,10 +68,10 @@ public class SyncAuditRestController {
         }
     }
 
-    private String extractAction(String enumValue) {
+    private String extractOperation(String enumValue) {
         try {
-            return Action.valueOf(enumValue).name().equals(Action.ALL.name()) ?
-                    "" : Action.valueOf(enumValue).name();
+            return Operation.valueOf(enumValue).name().equals(Operation.ALL.name()) ?
+                    "" : Operation.valueOf(enumValue).name();
 
         } catch(IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable action: %s.", enumValue));

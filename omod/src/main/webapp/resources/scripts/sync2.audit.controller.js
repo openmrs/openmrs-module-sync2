@@ -49,7 +49,7 @@ jQuery(document).ready(function() {
                     return result;
                 }
             }, {
-                title: titles[4], name: "action" , type: "select", items: syncAction, valueField: "id", textField: "name", filtering: true, width: '10%'
+                title: titles[4], name: "operation" , type: "select", items: syncOperation, valueField: "id", textField: "name", filtering: true, width: '10%'
             }
         ],
         rowClick: function(args) {

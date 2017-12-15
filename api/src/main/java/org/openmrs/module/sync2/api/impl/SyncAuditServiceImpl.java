@@ -43,21 +43,21 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName) throws APIException {
-        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize, success, action, resourceName);
+    public String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String operation, String resourceName) throws APIException {
+        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize, success, operation, resourceName);
         AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
         return serializeResults(result);
     }
 
     @Override
-    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String action, String details) throws APIException {
+    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String operation, String details) throws APIException {
         if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(true);
             newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
             newItem.setUsedResourceUrl(resourceUrl);
-            newItem.setAction(action);
+            newItem.setOperation(operation);
             newItem.setDetails(details);
 
             return dao.saveItem(newItem);
@@ -66,14 +66,14 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
-    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String details) throws APIException {
+    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String operation, String details) throws APIException {
         if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
             AuditMessage newItem = new AuditMessage();
             newItem.setSuccess(false);
             newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
             newItem.setResourceName(resourceName);
             newItem.setUsedResourceUrl(resourceUrl);
-            newItem.setAction(action);
+            newItem.setOperation(operation);
             newItem.setDetails(details);
 
             return dao.saveItem(newItem);
