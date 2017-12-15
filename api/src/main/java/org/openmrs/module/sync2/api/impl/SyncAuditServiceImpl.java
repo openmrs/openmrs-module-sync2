@@ -35,11 +35,10 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     public String getJsonMessageById(Integer id) throws APIException, JsonParseException {
         AuditMessage auditMessage = dao.getMessageById(id);
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
+        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
 
-        gson.getAdapter(AuditMessage.AuditMessageSerializer.class);
         return gson.toJson(auditMessage);
     }
 
@@ -98,7 +97,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
     
     private String serializeResults(AuditMessageList results) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
+        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
 
