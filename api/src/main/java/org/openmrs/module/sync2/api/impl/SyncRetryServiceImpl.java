@@ -1,11 +1,13 @@
 package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.api.APIException;
+import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.SyncRetryService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,9 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     @Autowired
     private SyncPushService syncPushService;
+
+    @Autowired
+    private SyncAuditService syncAuditService;
 
     @Autowired
     private SyncConfigurationService configuration;
@@ -49,9 +54,13 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     private AuditMessage retryPull(AuditMessage message) {
         String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
+        parentAddress = SyncUtils.getBaseUrl(parentAddress);
+
         Map<String, String> map = new HashMap<>();
         map.put(message.getLinkType(), message.getUsedResourceUrl());
-        message = syncPullService.pullDataFromParentAndSave(message.getResourceName(), map, parentAddress, message.getAction());
-        return message;
+
+        AuditMessage newMesssage = syncPullService.pullDataFromParentAndSave(message.getResourceName(), map, parentAddress, message.getAction());
+        syncAuditService.setNextAudit(message, newMesssage);
+        return newMesssage;
     }
 }

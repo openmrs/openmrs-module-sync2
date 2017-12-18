@@ -44,6 +44,8 @@ public class AuditMessage extends BaseOpenmrsData {
 
     private String linkType;
 
+    private Integer nextMessage;
+
     public AuditMessage() {
     }
 
@@ -155,6 +157,14 @@ public class AuditMessage extends BaseOpenmrsData {
         this.linkType = linkType;
     }
 
+    public Integer getNextMessage() {
+        return nextMessage;
+    }
+
+    public void setNextMessage(Integer nextMessage) {
+        this.nextMessage = nextMessage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -178,15 +188,17 @@ public class AuditMessage extends BaseOpenmrsData {
                 && Objects.equals(this.details, auditMessage.details)
                 && Objects.equals(this.action, auditMessage.action)
                 && Objects.equals(this.operation, auditMessage.operation)
-                && Objects.equals(this.linkType, auditMessage.linkType);
+                && Objects.equals(this.linkType, auditMessage.linkType)
+                && Objects.equals(this.nextMessage, auditMessage.nextMessage);
     }
 
 
 
     @Override
     public int hashCode() {
+
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
-                localUrl, action, details, action, linkType);
+                localUrl, action, details, action, linkType, nextMessage);
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
@@ -210,6 +222,7 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("operation", src.operation);
             object.addProperty("details", src.details);
             object.addProperty("linkType", src.linkType);
+            object.addProperty("nextMessage", src.nextMessage);
 
             return object;
         }

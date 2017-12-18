@@ -64,6 +64,15 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         return null;
     }
 
+    @Override
+    public AuditMessage setNextAudit(AuditMessage current, AuditMessage next) throws APIException {
+        if (current == null || next == null) {
+            return null;
+        }
+        current.setNextMessage(next.getId());
+        return dao.saveItem(current);
+    }
+
     private String serializeResults(AuditMessageList results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
