@@ -52,24 +52,7 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
     }
 
     public AuditMessage saveItem(AuditMessage auditMessage) {
-        Session session = sessionFactory.getHibernateSessionFactory().openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.saveOrUpdate(auditMessage);
-            tx.commit();
-        }
-        catch (Exception ex) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            throw ex;
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        getSession().saveOrUpdate(auditMessage);
         return auditMessage;
     }
 
