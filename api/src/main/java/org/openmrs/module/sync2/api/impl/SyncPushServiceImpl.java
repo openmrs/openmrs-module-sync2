@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredClient;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPushService")
@@ -31,28 +32,25 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncConfigurationService configurationService;
 
     @Autowired
-    private SyncAuditService auditService;
+    private SyncAuditService syncAuditService;
 
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
 
     @Override
-    public void readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
+    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, address, action));
-        
+
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
-        auditMessage.setParentUrl(getParentUri());
-        auditMessage.setLocalUrl(getLocalUri());
         auditMessage.setAction(action);
-
         try {
             String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
             Object data = syncPersistence.retrieveData(getPreferredClient(), category, uuid);
             syncClient.pushDataToParent(data, resourceLinks, getParentUri());
-    
+
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);
         } catch (Exception e) {
@@ -60,8 +58,9 @@ public class SyncPushServiceImpl implements SyncPushService {
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            auditService.saveAuditMessage(auditMessage);
+            auditMessage = syncAuditService.saveAuditMessage(auditMessage);
         }
+        return auditMessage;
     }
 
     private String getPreferredClient() {
@@ -80,6 +79,9 @@ public class SyncPushServiceImpl implements SyncPushService {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
         auditMessage.setOperation(PUSH_OPERATION);
+        auditMessage.setParentUrl(getParentUri());
+        auditMessage.setLocalUrl(getLocalUri());
+        auditMessage.setLinkType(getPreferredClient());
         return auditMessage;
     }
 }

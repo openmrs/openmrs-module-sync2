@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredClient;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPullService")
@@ -29,20 +31,18 @@ public class SyncPullServiceImpl implements SyncPullService {
     private SyncConfigurationService configurationService;
     
     @Autowired
-    private SyncAuditService auditService;
+    private SyncAuditService syncAuditService;
 
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
 
-    public void pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, address, action));
     
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
-        auditMessage.setParentUrl(getParentUri());
-        auditMessage.setLocalUrl(getLocalUri());
         auditMessage.setAction(action);
         
         try {
@@ -56,8 +56,9 @@ public class SyncPullServiceImpl implements SyncPullService {
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            auditService.saveAuditMessage(auditMessage);
+            auditMessage = syncAuditService.saveAuditMessage(auditMessage);
         }
+        return auditMessage;
     }
     
     private String getParentUri() {
@@ -72,6 +73,9 @@ public class SyncPullServiceImpl implements SyncPullService {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
         auditMessage.setOperation(PULL_OPERATION);
+        auditMessage.setParentUrl(getParentUri());
+        auditMessage.setLocalUrl(getLocalUri());
+        auditMessage.setLinkType(getPreferredClient());
         return auditMessage;
     }
 }

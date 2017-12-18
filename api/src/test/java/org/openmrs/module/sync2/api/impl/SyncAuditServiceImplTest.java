@@ -41,7 +41,9 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_OPERATION = "testOperation";
     private static final String AUDIT_PARENT_URL = "parentUrl";
     private static final String AUDIT_LOCAL_URL = "localUrl";
-    
+    private static final String AUDIT_LINK_TYPE = "test";
+    private static final Integer AUDIT_NEXT_MESSAGE = 1;
+
     @InjectMocks
     private SyncAuditServiceImpl auditService;
 
@@ -96,54 +98,6 @@ public class SyncAuditServiceImplTest {
         String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "");
 
         Assert.assertEquals(expected, fetched);
-    }
-
-    @Test
-    public void saveFailedAudit_shouldSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
-
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNotNull(fetched);
-    }
-
-    @Test
-    public void saveFailedAudit_shouldNotSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
-
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNull(fetched);
-    }
-
-    @Test
-    public void saveSuccessfulAudit_shouldSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
-
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNotNull(fetched);
-    }
-
-    @Test
-    public void saveSuccessfulAudit_shouldNotSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
-
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNull(fetched);
     }
     
     @Test
@@ -229,8 +183,7 @@ public class SyncAuditServiceImplTest {
             return null;
         }
     }
-    
-    
+
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
         ObjectMapper objectMapper = new ObjectMapper();
         AuditMessage newMessage = new AuditMessage();
@@ -243,6 +196,8 @@ public class SyncAuditServiceImplTest {
         newMessage.setParentUrl(AUDIT_PARENT_URL);
         newMessage.setLocalUrl(AUDIT_LOCAL_URL);
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
+        newMessage.setLinkType(AUDIT_LINK_TYPE);
+        newMessage.setNextMessage(AUDIT_NEXT_MESSAGE);
         newMessage.setSuccess(success);
 
         String createDate = "2017-12-07 00:00:00";

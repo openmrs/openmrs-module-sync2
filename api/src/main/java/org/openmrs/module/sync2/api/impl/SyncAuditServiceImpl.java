@@ -48,38 +48,6 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
         return serializeResults(result);
     }
-
-    @Override
-    public AuditMessage saveSuccessfulAudit(String resourceName, String resourceUrl, String operation, String details) throws APIException {
-        if (configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit()) {
-            AuditMessage newItem = new AuditMessage();
-            newItem.setSuccess(true);
-            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
-            newItem.setResourceName(resourceName);
-            newItem.setUsedResourceUrl(resourceUrl);
-            newItem.setOperation(operation);
-            newItem.setDetails(details);
-
-            return dao.saveItem(newItem);
-        }
-        return null;
-    }
-
-    @Override
-    public AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String operation, String details) throws APIException {
-        if (configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit()) {
-            AuditMessage newItem = new AuditMessage();
-            newItem.setSuccess(false);
-            newItem.setTimestamp(new Timestamp(System.currentTimeMillis()));
-            newItem.setResourceName(resourceName);
-            newItem.setUsedResourceUrl(resourceUrl);
-            newItem.setOperation(operation);
-            newItem.setDetails(details);
-
-            return dao.saveItem(newItem);
-        }
-        return null;
-    }
     
     @Override
     public AuditMessage saveAuditMessage(AuditMessage auditMessage) {
@@ -95,7 +63,16 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         }
         return null;
     }
-    
+
+    @Override
+    public AuditMessage setNextAudit(AuditMessage current, AuditMessage next) throws APIException {
+        if (current == null || next == null) {
+            return null;
+        }
+        current.setNextMessage(next.getId());
+        return dao.saveItem(current);
+    }
+
     private String serializeResults(AuditMessageList results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());

@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -15,7 +14,6 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -54,24 +52,7 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
     }
 
     public AuditMessage saveItem(AuditMessage auditMessage) {
-        Session session = sessionFactory.getHibernateSessionFactory().openSession();
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.saveOrUpdate(auditMessage);
-            tx.commit();
-        }
-        catch (Exception ex) {
-            if (tx != null) {
-                tx.rollback();
-            }
-            throw ex;
-        }
-        finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+        getSession().saveOrUpdate(auditMessage);
         return auditMessage;
     }
 

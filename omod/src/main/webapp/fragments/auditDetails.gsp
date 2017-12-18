@@ -1,5 +1,7 @@
 <%
     def messagesPrefix = "sync2.log.header"
+    def detailViewProvider = "sync2"
+    ui.includeJavascript("sync2", "sync2.audit.retry.js")
 %>
 
 <style>
@@ -10,6 +12,7 @@
 
 <table>
     <% if (auditLog != null) { %>
+    <span id="retryLogId" hidden>${auditLog.id}</span>
     <tr>
         <th class="label">${ ui.message(messagesPrefix + ".resource") }</th>
         <td>${ auditLog.resourceName }</td>
@@ -60,9 +63,26 @@
             <textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
         </td>
     </tr>
+
     <% } else { %>
     <tr>
         <th>${ ui.message(messagesPrefix + '.details.messageNotFound') }</th>
     </tr>
     <% } %>
 </table>
+
+<% if (auditLog != null && !auditLog.success) { %>
+    <br />
+    <% if (auditLog.nextMessage != null) { %>
+        <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
+            [messageId: auditLog.nextMessage, backPage: param.backPage[0], backPageIndex: param.backPageIndex]) }">
+            <i class="icon-chevron-right"></i>
+            ${ ui.message(messagesPrefix + '.nextMessage') }
+        </a>
+    <% } else {  %>
+        <a class="button confirm right" onClick="retry();">
+            <i class="icon-retweet"></i>
+            ${ ui.message(messagesPrefix + '.retry') }
+        </a>
+    <% } %>
+<% } %>
