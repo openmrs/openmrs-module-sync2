@@ -77,12 +77,12 @@
         <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
             [messageId: auditLog.nextMessage, backPage: param.backPage[0], backPageIndex: param.backPageIndex]) }">
             <i class="icon-chevron-right"></i>
-            ${ ui.message(artifactId + '.nextMessage') }
+            ${ ui.message(messagesPrefix + '.nextMessage') }
         </a>
     <% } else {  %>
         <a class="button confirm right" onClick="retry();">
             <i class="icon-retweet"></i>
-            ${ ui.message(artifactId + '.retry') }
+            ${ ui.message(messagesPrefix + '.retry') }
         </a>
     <% } %>
 <% } %>

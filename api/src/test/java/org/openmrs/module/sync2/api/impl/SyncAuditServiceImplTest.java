@@ -42,6 +42,7 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_PARENT_URL = "parentUrl";
     private static final String AUDIT_LOCAL_URL = "localUrl";
     private static final String AUDIT_LINK_TYPE = "test";
+    private static final Integer AUDIT_NEXT_MESSAGE = 1;
 
     @InjectMocks
     private SyncAuditServiceImpl auditService;
@@ -196,6 +197,7 @@ public class SyncAuditServiceImplTest {
         newMessage.setLocalUrl(AUDIT_LOCAL_URL);
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
         newMessage.setLinkType(AUDIT_LINK_TYPE);
+        newMessage.setNextMessage(AUDIT_NEXT_MESSAGE);
         newMessage.setSuccess(success);
 
         String createDate = "2017-12-07 00:00:00";
