@@ -16,6 +16,8 @@ import java.util.List;
 
 @Component("sync2.parentFeedReader")
 public class ParentFeedReaderImpl implements ParentFeedReader {
+
+    private static final String RECENT_FEED = "recent";
     private static final String WS_ATOMFEED = "/ws/atomfeed/";
     private AtomFeedClient atomFeedClient;
     @Autowired
@@ -53,8 +55,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
     }
 
     private String getResourceUrlWithCategory(String category) {
-        //TODO: Start reading from the last page read. Marks table.
-        return getParentUri() + WS_ATOMFEED + category + "/" + 1;
+        return getParentUri() + WS_ATOMFEED + category + "/" + RECENT_FEED;
     }
 
 }

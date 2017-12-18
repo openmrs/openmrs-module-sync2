@@ -16,6 +16,8 @@ import java.util.List;
 
 @Component("sync2.localFeedReader")
 public class LocalFeedReaderImpl implements LocalFeedReader {
+
+    private static final String RECENT_FEED = "recent";
     private static final String WS_ATOMFEED = "/ws/atomfeed/";
     private AtomFeedClient atomFeedClient;
     @Autowired
@@ -51,6 +53,6 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
     private String getResourceUrlWithCategory(String category) {
         String localFeedUri = configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
         // TODO: Start reading from the last page read. Marks table.
-        return localFeedUri + WS_ATOMFEED + category + "/" + 1;
+        return localFeedUri + WS_ATOMFEED + category + "/" + RECENT_FEED;
     }
 }
