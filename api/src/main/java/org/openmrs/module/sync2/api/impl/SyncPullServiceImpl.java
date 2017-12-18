@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -29,12 +30,12 @@ public class SyncPullServiceImpl implements SyncPullService {
     private SyncConfigurationService configurationService;
     
     @Autowired
-    private SyncAuditService auditService;
+    private SyncAuditService syncAuditService;
 
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
 
-    public void pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, address, action));
     
         AuditMessage auditMessage = prepareBaseAuditMessage();
@@ -56,8 +57,9 @@ public class SyncPullServiceImpl implements SyncPullService {
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            auditService.saveAuditMessage(auditMessage);
+            auditMessage = syncAuditService.saveAuditMessage(auditMessage);
         }
+        return auditMessage;
     }
     
     private String getParentUri() {

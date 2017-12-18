@@ -97,54 +97,6 @@ public class SyncAuditServiceImplTest {
 
         Assert.assertEquals(expected, fetched);
     }
-
-    @Test
-    public void saveFailedAudit_shouldSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
-
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNotNull(fetched);
-    }
-
-    @Test
-    public void saveFailedAudit_shouldNotSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
-
-        AuditMessage fetched = auditService.saveFailedAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNull(fetched);
-    }
-
-    @Test
-    public void saveSuccessfulAudit_shouldSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
-
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNotNull(fetched);
-    }
-
-    @Test
-    public void saveSuccessfulAudit_shouldNotSave() {
-        AuditMessage auditMessage = new AuditMessage();
-
-        when(dao.saveItem(any())).thenReturn(auditMessage);
-        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
-
-        AuditMessage fetched = auditService.saveSuccessfulAudit(AUDIT_NAME, AUDIT_USED_URL, AUDIT_ACTION, AUDIT_DETAILS);
-
-        Assert.assertNull(fetched);
-    }
     
     @Test
     public void saveAuditMessage_shouldSaveSuccessfulAudit() {

@@ -37,7 +37,7 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncPersistence syncPersistence = new SyncPersistence();
 
     @Override
-    public void readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
+    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
         LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, address, action));
         
         AuditMessage auditMessage = prepareBaseAuditMessage();
@@ -60,8 +60,9 @@ public class SyncPushServiceImpl implements SyncPushService {
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            auditService.saveAuditMessage(auditMessage);
+            auditMessage = auditService.saveAuditMessage(auditMessage);
         }
+        return auditMessage;
     }
 
     private String getPreferredClient() {
