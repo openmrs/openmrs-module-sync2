@@ -27,7 +27,7 @@
         <td>${ auditLog.localUrl }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(messagesPrefix + ".Url") }</th>
+        <th class="label">${ ui.message(messagesPrefix + ".usedUrl") }</th>
         <td>${ auditLog.usedResourceUrl }</td>
     </tr>
     <tr>
@@ -57,7 +57,7 @@
     <tr>
         <th class="label">${ ui.message(messagesPrefix + ".message") }</th>
         <td>
-            <textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
+            <textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
         </td>
     </tr>
     <% } else { %>

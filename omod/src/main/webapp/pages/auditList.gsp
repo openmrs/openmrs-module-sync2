@@ -19,7 +19,7 @@
     var titles = [
         "${ ui.message('sync2.log.header.resource') }",
         "${ ui.message('sync2.log.header.timestamp') }",
-        "${ ui.message('sync2.log.header.Url') }",
+        "${ ui.message('sync2.log.header.url') }",
         "${ ui.message('sync2.log.header.status') }",
         "${ ui.message('sync2.log.header.operation') }"
     ];

@@ -14,26 +14,27 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class ManualSyncPageController  {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
-
+public class ManualSyncPageController {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
+    
     private static final String SYNC_SUCCESS = "sync2.sync.pull.success";
-
+    
+    private static final String SYNC_FAILURE = "sync2.sync.pull.failure";
+    
     public String controller(PageModel model,
-                           @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,
-                           @SpringBean("sync2.parentFeedReader") ParentFeedReader parentFeedReader,
-                           HttpSession session, UiUtils ui) {
+                             @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,
+                             @SpringBean("sync2.parentFeedReader") ParentFeedReader parentFeedReader,
+                             HttpSession session, UiUtils ui) {
         try {
             LOGGER.info("Start Parent Feed Reader...");
             parentFeedReader.readAllFeedsForPull();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
-
-            return "redirect:/sync2/sync2.page";
-
         } catch (Exception e) {
-            throw new SyncException("Error during reading feeds: ", e);
+            LOGGER.error("Error during reading feeds: ", e);
+            InfoErrorMessageUtil.flashErrorMessage(session, ui.message(SYNC_FAILURE));
         }
+        return "redirect:/sync2/sync2.page";
     }
-
 }
 
