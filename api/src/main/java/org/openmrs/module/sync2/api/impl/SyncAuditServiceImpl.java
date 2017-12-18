@@ -63,7 +63,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         }
         return null;
     }
-    
+
     private String serializeResults(AuditMessageList results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());

@@ -41,7 +41,8 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_OPERATION = "testOperation";
     private static final String AUDIT_PARENT_URL = "parentUrl";
     private static final String AUDIT_LOCAL_URL = "localUrl";
-    
+    private static final String AUDIT_LINK_TYPE = "test";
+
     @InjectMocks
     private SyncAuditServiceImpl auditService;
 
@@ -181,8 +182,7 @@ public class SyncAuditServiceImplTest {
             return null;
         }
     }
-    
-    
+
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
         ObjectMapper objectMapper = new ObjectMapper();
         AuditMessage newMessage = new AuditMessage();
@@ -195,6 +195,7 @@ public class SyncAuditServiceImplTest {
         newMessage.setParentUrl(AUDIT_PARENT_URL);
         newMessage.setLocalUrl(AUDIT_LOCAL_URL);
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
+        newMessage.setLinkType(AUDIT_LINK_TYPE);
         newMessage.setSuccess(success);
 
         String createDate = "2017-12-07 00:00:00";

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredClient;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPullService")
@@ -42,8 +43,6 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
-        auditMessage.setParentUrl(getParentUri());
-        auditMessage.setLocalUrl(getLocalUri());
         auditMessage.setAction(action);
         
         try {
@@ -74,6 +73,9 @@ public class SyncPullServiceImpl implements SyncPullService {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
         auditMessage.setOperation(PULL_OPERATION);
+        auditMessage.setParentUrl(getParentUri());
+        auditMessage.setLocalUrl(getLocalUri());
+        auditMessage.setLinkType(getPreferredClient());
         return auditMessage;
     }
 }

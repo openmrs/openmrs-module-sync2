@@ -12,8 +12,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PULL_ACTION;
-import static org.openmrs.module.sync2.SyncConstants.PUSH_ACTION;
+import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
+import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
+
 
 @Component("sync2.SyncRetryService")
 public class SyncRetryServiceImpl implements SyncRetryService {
@@ -29,10 +30,10 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     @Override
     public AuditMessage retryMessage(AuditMessage message) throws APIException {
-        switch(message.getAction()) {
-            case PULL_ACTION:
+        switch(message.getOperation()) {
+            case PULL_OPERATION:
                 return retryPull(message);
-            case PUSH_ACTION:
+            case PUSH_OPERATION:
                 return retryPush(message);
         }
         return null;
@@ -41,7 +42,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     private AuditMessage retryPush(AuditMessage message) {
         String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
         Map<String, String> map = new HashMap<>();
-        map.put(message.getLinkType(), message.getResourceUrl());
+        map.put(message.getLinkType(), message.getUsedResourceUrl());
         message = syncPushService.readDataAndPushToParent(message.getResourceName(), map, parentAddress, message.getAction());
         return message;
     }
@@ -49,7 +50,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     private AuditMessage retryPull(AuditMessage message) {
         String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
         Map<String, String> map = new HashMap<>();
-        map.put(message.getLinkType(), message.getResourceUrl());
+        map.put(message.getLinkType(), message.getUsedResourceUrl());
         message = syncPullService.pullDataFromParentAndSave(message.getResourceName(), map, parentAddress, message.getAction());
         return message;
     }

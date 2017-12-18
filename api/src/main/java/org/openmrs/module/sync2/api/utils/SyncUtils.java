@@ -141,8 +141,23 @@ public class SyncUtils {
     }
 
     public static String getPreferredUrl(Map<String, String> resourceLinks) {
-        String preferredClient = Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
-        return resourceLinks.get(preferredClient);
+        String preferredClient = getPreferredClient();
+        String result = resourceLinks.get(preferredClient);
+        if (result == null && resourceLinks.size() > 0) {
+            result = getFirstResourceLink(resourceLinks);
+        }
+        return result;
+    }
+
+    private static String getFirstResourceLink(Map<String, String> resourceLinks) {
+        if (resourceLinks.size() > 0) {
+            return resourceLinks.values().iterator().next();
+        }
+        return "";
+    }
+
+    public static String getPreferredClient() {
+        return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
     }
 
     public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
