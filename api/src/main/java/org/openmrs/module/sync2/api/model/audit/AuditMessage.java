@@ -16,75 +16,35 @@ import org.hibernate.annotations.Persister;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.openmrs.BaseOpenmrsData;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-
 @Persister(impl = SingleTableEntityPersister.class)
-@Entity
-@Table(name = "sync_audit_message")
 public class AuditMessage extends BaseOpenmrsData {
     private static final long serialVersionUID = 6106269076155338045L;
 
-    @Id
-    @GeneratedValue
-    @Column(name = "sync_audit_message_id")
     private Integer id;
 
-    @Basic
-    @Column(name = "success")
     private Boolean success;
 
-    @Basic
-    @Column(name = "timestamp")
     private Date timestamp;
 
-    @Basic
-    @Column(name = "resource_name")
     private String resourceName;
 
-    @Basic
-    @Column(name = "used_resource_url")
     private String usedResourceUrl;
-    
-    @Basic
-    @Column(name = "available_resource_urls")
+
     private String availableResourceUrls;
-    
-    @Basic
-    @Column(name = "parent_url")
+
     private String parentUrl;
-    
-    @Basic
-    @Column(name = "local_url")
+
     private String localUrl;
-    
-    @Basic
-    @Column(name = "action")
-    private String action;
-    
-    @Basic
-    @Column(name = "operation")
-    private String operation;
-    
-    @Basic
-    @Column(name = "details")
+
     private String details;
 
+    private String action;
+
+    private String operation;
+
+    private String linkType;
 
     public AuditMessage() {
-    }
-
-    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String usedResourceUrl) {
-        this.id = id;
-        this.success = success;
-        this.timestamp = new Date(timestamp.getTime());
-        this.resourceName = resourceName;
-        this.usedResourceUrl = usedResourceUrl;
     }
 
     @Override
@@ -187,6 +147,14 @@ public class AuditMessage extends BaseOpenmrsData {
         this.operation = operation;
     }
 
+    public String getLinkType() {
+        return linkType;
+    }
+
+    public void setLinkType(String linkType) {
+        this.linkType = linkType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -207,13 +175,18 @@ public class AuditMessage extends BaseOpenmrsData {
                 && Objects.equals(this.localUrl, auditMessage.localUrl)
                 && Objects.equals(this.action, auditMessage.action)
                 && Objects.equals(this.operation, auditMessage.operation)
-                && Objects.equals(this.details, auditMessage.details);
+                && Objects.equals(this.details, auditMessage.details)
+                && Objects.equals(this.action, auditMessage.action)
+                && Objects.equals(this.operation, auditMessage.operation)
+                && Objects.equals(this.linkType, auditMessage.linkType);
     }
+
+
 
     @Override
     public int hashCode() {
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
-                localUrl, action, details, action);
+                localUrl, action, details, action, linkType);
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
@@ -236,6 +209,7 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("action", src.action);
             object.addProperty("operation", src.operation);
             object.addProperty("details", src.details);
+            object.addProperty("linkType", src.linkType);
 
             return object;
         }
