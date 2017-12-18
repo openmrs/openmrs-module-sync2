@@ -36,7 +36,7 @@ jQuery(document).ready(function() {
             }, {
                 title: titles[1], name: "timestamp", sorting: true, filtering: false, width: '20%'
             }, {
-                title: titles[2], name: "resourceUrl", sorting: true, filtering: false, width: '50%'
+                title: titles[2], name: "usedResourceUrl", sorting: true, filtering: false, width: '50%'
             }, {
                 title: titles[3], name: "success", type: "select", items: syncStatus, valueField: "id", textField: "name" , sorting: true, filtering: true, align: "center", width: '10%',
                 itemTemplate: function(value) {
@@ -49,7 +49,7 @@ jQuery(document).ready(function() {
                     return result;
                 }
             }, {
-                title: titles[4], name: "action" , type: "select", items: syncAction, valueField: "id", textField: "name", filtering: true, width: '10%'
+                title: titles[4], name: "operation" , type: "select", items: syncOperation, valueField: "id", textField: "name", filtering: true, width: '10%'
             }
         ],
         rowClick: function(args) {

@@ -14,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class ManualSyncPushPageController  {
-    protected static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
-
+public class ManualSyncPushPageController {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
+    
     private static final String SYNC_SUCCESS = "sync2.sync.push.success";
-
+    
+    private static final String SYNC_FAILURE = "sync2.sync.push.failure";
+    
     public String controller(PageModel model,
                              @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,
                              @SpringBean("sync2.localFeedReader") LocalFeedReader localFeedReader,
@@ -27,13 +30,12 @@ public class ManualSyncPushPageController  {
             LOGGER.info("Start Local Feed Reader...");
             localFeedReader.readAllFeedsForPush();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
-
-            return "redirect:/sync2/sync2.page";
-
         } catch (Exception e) {
-            throw new SyncException("Error during reading feeds: ", e);
+            LOGGER.error("Error during pushing objects: ", e);
+            InfoErrorMessageUtil.flashErrorMessage(session, ui.message(SYNC_FAILURE));
         }
+        return "redirect:/sync2/sync2.page";
     }
-
+    
 }
 

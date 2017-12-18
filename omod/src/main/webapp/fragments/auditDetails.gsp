@@ -1,5 +1,5 @@
 <%
-    def artifactId = "sync2.log.header"
+    def messagesPrefix = "sync2.log.header"
 %>
 
 <style>
@@ -11,32 +11,58 @@
 <table>
     <% if (auditLog != null) { %>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".resource") }</th>
-        <td><textarea style="width:100%" disabled>${ auditLog.resourceName }</textarea></td>
+        <th class="label">${ ui.message(messagesPrefix + ".resource") }</th>
+        <td>${ auditLog.resourceName }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".timestamp") }</th>
+        <th class="label">${ ui.message(messagesPrefix + ".timestamp") }</th>
         <td>${ auditLog.timestamp }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".Url") }</th>
-        <td>${ auditLog.resourceUrl }</td>
+        <th class="label">${ ui.message(messagesPrefix + ".parentUrl") }</th>
+        <td>${ auditLog.parentUrl }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".status") }</th>
-        <td>${ auditLog.success }</td>
+        <th class="label">${ ui.message(messagesPrefix + ".localUrl") }</th>
+        <td>${ auditLog.localUrl }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".action") }</th>
+        <th class="label">${ ui.message(messagesPrefix + ".usedUrl") }</th>
+        <td>${ auditLog.usedResourceUrl }</td>
+    </tr>
+    <tr>
+        <th class="label">${ ui.message(messagesPrefix + ".availableResourceUrls") }</th>
+        <td>
+            <textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.availableResourceUrls }</textarea>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">${ ui.message(messagesPrefix + ".status") }</th>
+        <td>
+            <%=
+            auditLog.success
+                ? ui.message(messagesPrefix + ".details.status.success")
+                : ui.message(messagesPrefix + ".details.status.failure")
+            %>
+        </td>
+    </tr>
+    <tr>
+        <th class="label">${ ui.message(messagesPrefix + ".operation") }</th>
+        <td>${ auditLog.operation }</td>
+    </tr>
+    <tr>
+        <th class="label">${ ui.message(messagesPrefix + ".action") }</th>
         <td>${ auditLog.action }</td>
     </tr>
     <tr>
-        <th class="label">${ ui.message(artifactId + ".message") }</th>
-        <td>${ auditLog.error }</td>
+        <th class="label">${ ui.message(messagesPrefix + ".message") }</th>
+        <td>
+            <textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
+        </td>
     </tr>
     <% } else { %>
     <tr>
-        <th>${ ui.message(artifactId + '.details.messageNotFound') }</th>
+        <th>${ ui.message(messagesPrefix + '.details.messageNotFound') }</th>
     </tr>
     <% } %>
 </table>

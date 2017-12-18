@@ -10,12 +10,16 @@ import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SyncUtilsTest {
 
     private static final String sampleSyncConfigurationPath = "sampleSyncConfiguration.json";
     private static final String incorrectSyncConfigurationPath = "incorrectSyncConfiguration.json";
+    private static final String sampleSerializedMap = "sampleSerializedMap.json";
+    
     private static final String notExistingFilePath = "pathToNotExistingFile";
     private static final SyncConfiguration expectedConfiguration = new SyncConfiguration();
 
@@ -114,5 +118,14 @@ public class SyncUtilsTest {
     @Test
     public void resourceFileExists_notExist() throws SyncException {
         Assert.assertFalse(SyncUtils.resourceFileExists(notExistingFilePath));
+    }
+    
+    @Test
+    public void serializeMap_shouldSerializeMapWithStrings() throws SyncException {
+        Map<String, String> map = new HashMap<>();
+        map.put("k1", "v1");
+        map.put("k2", "v2");
+        
+        Assert.assertEquals(SyncUtils.readResourceFile(sampleSerializedMap), SyncUtils.serializeMap(map));
     }
 }

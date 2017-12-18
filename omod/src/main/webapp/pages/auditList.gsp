@@ -19,14 +19,14 @@
     var titles = [
         "${ ui.message('sync2.log.header.resource') }",
         "${ ui.message('sync2.log.header.timestamp') }",
-        "${ ui.message('sync2.log.header.Url') }",
+        "${ ui.message('sync2.log.header.url') }",
         "${ ui.message('sync2.log.header.status') }",
-        "${ ui.message('sync2.log.header.action') }"
+        "${ ui.message('sync2.log.header.operation') }"
     ];
 
     var syncResourceName = [
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
-        { id: "Patient", name: "${ ui.message('sync2.log.resource.patient') }" }
+        { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" }
     ];
 
     var syncStatus = [
@@ -35,10 +35,10 @@
         { id: "FAILURE", name: "${ ui.message('sync2.log.status.failure') }" }
     ];
 
-    var syncAction = [
-        { id: "ALL", name: "${ ui.message('sync2.log.action.all') }" },
-        { id: "PUSH", name: "${ ui.message('sync2.log.action.push') }" },
-        { id: "PULL", name: "${ ui.message('sync2.log.action.pull') }" }
+    var syncOperation = [
+        { id: "ALL", name: "${ ui.message('sync2.log.operation.all') }" },
+        { id: "PUSH", name: "${ ui.message('sync2.log.operation.push') }" },
+        { id: "PULL", name: "${ ui.message('sync2.log.operation.pull') }" }
     ];
 </script>
 

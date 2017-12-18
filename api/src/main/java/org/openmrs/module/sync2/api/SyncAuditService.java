@@ -28,4 +28,8 @@ public interface SyncAuditService extends OpenmrsService {
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     AuditMessage saveFailedAudit(String resourceName, String resourceUrl, String action, String error) throws APIException;
+    
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    @Transactional
+    AuditMessage saveAuditMessage(AuditMessage auditMessage);
 }

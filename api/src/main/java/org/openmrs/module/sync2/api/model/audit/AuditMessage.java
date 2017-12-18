@@ -48,27 +48,43 @@ public class AuditMessage extends BaseOpenmrsData {
     private String resourceName;
 
     @Basic
-    @Column(name = "resource_url")
-    private String resourceUrl;
-
+    @Column(name = "used_resource_url")
+    private String usedResourceUrl;
+    
+    @Basic
+    @Column(name = "available_resource_urls")
+    private String availableResourceUrls;
+    
+    @Basic
+    @Column(name = "parent_url")
+    private String parentUrl;
+    
+    @Basic
+    @Column(name = "local_url")
+    private String localUrl;
+    
     @Basic
     @Column(name = "action")
     private String action;
-
+    
     @Basic
-    @Column(name = "error")
-    private String error;
+    @Column(name = "operation")
+    private String operation;
+    
+    @Basic
+    @Column(name = "details")
+    private String details;
 
 
     public AuditMessage() {
     }
 
-    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String resourceUrl) {
+    public AuditMessage(Integer id, Boolean success, Date timestamp, String resourceName, String usedResourceUrl) {
         this.id = id;
         this.success = success;
         this.timestamp = new Date(timestamp.getTime());
         this.resourceName = resourceName;
-        this.resourceUrl = resourceUrl;
+        this.usedResourceUrl = usedResourceUrl;
     }
 
     @Override
@@ -115,20 +131,20 @@ public class AuditMessage extends BaseOpenmrsData {
         this.resourceName = resourceName;
     }
 
-    public String getResourceUrl() {
-        return resourceUrl;
+    public String getUsedResourceUrl() {
+        return usedResourceUrl;
     }
 
-    public void setResourceUrl(String resourceUrl) {
-        this.resourceUrl = resourceUrl;
+    public void setUsedResourceUrl(String usedResourceUrl) {
+        this.usedResourceUrl = usedResourceUrl;
     }
 
-    public String getError() {
-        return error;
+    public String getDetails() {
+        return details;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public String getAction() {
@@ -137,6 +153,38 @@ public class AuditMessage extends BaseOpenmrsData {
 
     public void setAction(String action) {
         this.action = action;
+    }
+    
+    public String getAvailableResourceUrls() {
+        return availableResourceUrls;
+    }
+    
+    public void setAvailableResourceUrls(String availableResourceUrls) {
+        this.availableResourceUrls = availableResourceUrls;
+    }
+    
+    public String getParentUrl() {
+        return parentUrl;
+    }
+    
+    public void setParentUrl(String parentUrl) {
+        this.parentUrl = parentUrl;
+    }
+    
+    public String getLocalUrl() {
+        return localUrl;
+    }
+    
+    public void setLocalUrl(String localUrl) {
+        this.localUrl = localUrl;
+    }
+    
+    public String getOperation() {
+        return operation;
+    }
+    
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
     @Override
@@ -149,19 +197,25 @@ public class AuditMessage extends BaseOpenmrsData {
         }
 
         AuditMessage auditMessage = (AuditMessage) o;
-        return Objects.equals(this.success, auditMessage.success)
+        return Objects.equals(this.getUuid(), auditMessage.getUuid())
+                && Objects.equals(this.success, auditMessage.success)
                 && Objects.equals(this.timestamp, auditMessage.timestamp)
                 && Objects.equals(this.resourceName, auditMessage.resourceName)
-                && Objects.equals(this.resourceUrl, auditMessage.resourceUrl)
-                && Objects.equals(this.error, auditMessage.error)
-                && Objects.equals(this.action, auditMessage.action);
+                && Objects.equals(this.usedResourceUrl, auditMessage.usedResourceUrl)
+                && Objects.equals(this.availableResourceUrls, auditMessage.availableResourceUrls)
+                && Objects.equals(this.parentUrl, auditMessage.parentUrl)
+                && Objects.equals(this.localUrl, auditMessage.localUrl)
+                && Objects.equals(this.action, auditMessage.action)
+                && Objects.equals(this.operation, auditMessage.operation)
+                && Objects.equals(this.details, auditMessage.details);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(success, timestamp, resourceName, resourceUrl, error, action);
+        return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
+                localUrl, action, details, action);
     }
-
+    
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
 
         @Override
@@ -175,9 +229,13 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("success", src.success);
             object.addProperty("timestamp", formatter.format(src.timestamp));
             object.addProperty("resourceName", src.resourceName);
-            object.addProperty("resourceUrl", src.resourceUrl);
-            object.addProperty("error", src.error);
+            object.addProperty("usedResourceUrl", src.usedResourceUrl);
+            object.addProperty("availableResourceUrls", src.availableResourceUrls);
+            object.addProperty("parentUrl", src.parentUrl);
+            object.addProperty("localUrl", src.localUrl);
             object.addProperty("action", src.action);
+            object.addProperty("operation", src.operation);
+            object.addProperty("details", src.details);
 
             return object;
         }
