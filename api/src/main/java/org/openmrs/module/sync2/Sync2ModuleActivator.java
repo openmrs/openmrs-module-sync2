@@ -9,7 +9,9 @@
  */
 package org.openmrs.module.sync2;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +21,13 @@ import org.slf4j.LoggerFactory;
 public class Sync2ModuleActivator extends BaseModuleActivator {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleActivator.class);
-	
+
 	/**
 	 * @see #started()
 	 */
 	public void started() {
 		LOGGER.info("Started Sync2 Module");
+		Context.getRegisteredComponents(SyncSchedulerServiceImpl.class).get(0).runSyncScheduler();
 	}
 	
 	/**
