@@ -24,7 +24,7 @@ public class Location implements RestResource {
     private String address5;
     private String address6;
     private List<LocationTag> tags;
-    private Location parentLocation;
+    private Object parentLocation;
     private List<Location> childLocations;
     private Boolean retired;
     private List<Link> links;
@@ -103,7 +103,7 @@ public class Location implements RestResource {
         return tags;
     }
 
-    public Location getParentLocation() {
+    public Object getParentLocation() {
         return parentLocation;
     }
 
@@ -202,6 +202,10 @@ public class Location implements RestResource {
         this.parentLocation = parentLocation;
     }
 
+    public void setParentLocationRef(String parentLocationRef) {
+        this.parentLocation = parentLocationRef;
+    }
+
     public void setChildLocations(List<Location> childLocations) {
         this.childLocations = childLocations;
     }
@@ -256,8 +260,8 @@ public class Location implements RestResource {
                 omrsLocation.addTag((org.openmrs.LocationTag) locationTag.getOpenMrsObject());
             }
         }
-        if (parentLocation != null) {
-            omrsLocation.setParentLocation((org.openmrs.Location) parentLocation.getOpenMrsObject());
+        if (parentLocation instanceof Location) {
+            omrsLocation.setParentLocation((org.openmrs.Location) ((Location) parentLocation).getOpenMrsObject());
         }
         omrsLocation.setRetired(retired);
 
