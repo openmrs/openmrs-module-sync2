@@ -27,11 +27,7 @@ public class Location implements RestResource {
     private Location parentLocation;
     private List<Location> childLocations;
     private Boolean retired;
-
-    // List<LocationAttribute> attributes
-
     private List<Link> links;
-
     private String resourceVersion;
 
     // region getters
