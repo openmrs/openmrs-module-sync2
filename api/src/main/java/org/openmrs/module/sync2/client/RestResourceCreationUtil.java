@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.client;
 
-import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAddress;
@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Person;
 import org.openmrs.module.sync2.client.rest.resource.PersonName;
+import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 
 import java.util.ArrayList;
@@ -19,9 +20,11 @@ import java.util.Set;
 
 public class RestResourceCreationUtil {
 
-    public static RestResource createRestResourceFromOpenMRSData(OpenmrsData object) {
+    public static RestResource createRestResourceFromOpenMRSData(OpenmrsObject object) {
         if (object instanceof org.openmrs.Patient) {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
+        } else if (object instanceof org.openmrs.Privilege) {
+            return createPrivilegeFromOpenMrsPrivilege((org.openmrs.Privilege) object);
         }
         return null;
     }
@@ -38,6 +41,13 @@ public class RestResourceCreationUtil {
         patient.setPerson(createPersonFromOpenMRSPerson(openMRSPatient.getPerson()));
 
         return patient;
+    }
+
+    private static RestResource createPrivilegeFromOpenMrsPrivilege(org.openmrs.Privilege openMrsPrivilege) {
+        Privilege privilege = new Privilege();
+        privilege.setName(openMrsPrivilege.getPrivilege());
+        privilege.setDescription(openMrsPrivilege.getDescription());
+        return privilege;
     }
 
     private static Identifier createIdentifierFromOpenMRSPatientIdentifier(PatientIdentifier patientIdentifier) {
