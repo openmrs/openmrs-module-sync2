@@ -6,5 +6,9 @@ import java.util.Map;
 
 public interface SyncPullService {
 
-    AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action);
+    AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address,
+                                           String action);
+    
+    AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address,
+                                           String action, String clientName);
 }

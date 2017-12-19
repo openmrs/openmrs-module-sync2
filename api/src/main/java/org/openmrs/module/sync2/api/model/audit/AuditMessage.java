@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 import com.google.gson.JsonElement;
@@ -15,6 +16,7 @@ import com.google.gson.JsonSerializer;
 import org.hibernate.annotations.Persister;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.openmrs.BaseOpenmrsData;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 @Persister(impl = SingleTableEntityPersister.class)
 public class AuditMessage extends BaseOpenmrsData {
@@ -119,6 +121,10 @@ public class AuditMessage extends BaseOpenmrsData {
     
     public String getAvailableResourceUrls() {
         return availableResourceUrls;
+    }
+    
+    public Map<String, String> getAvailableResourceUrlsAsMap() {
+        return SyncUtils.deserializeJsonToStringsMap(availableResourceUrls);
     }
     
     public void setAvailableResourceUrls(String availableResourceUrls) {

@@ -187,35 +187,25 @@ public class SyncUtils {
         return tokens[4];
     }
 
-    public static String getResourceUrl(String client, String url) {
-        switch (client) {
-            case FHIR:
-                return getFhirResourceUrl(url);
-            case REST:
-                return getRestResourceUrl(url);
-            default:
-                LOGGER.error("Couldn't find any supported client to extract resource url from.");
-                return null;
-        }
-    }
-
-    private static String getRestResourceUrl(String url) {
+    public static String getPushEndpointFromResourceUrl(String url) {
         return url.substring(0, url.lastIndexOf("/"));
-        // todo throw custom sync2 exception if tokens.length != 6
-    }
-
-    private static String getFhirResourceUrl(String url) {
-        return url.substring(0, url.lastIndexOf("/"));
-        // todo throw custom sync2 exception if tokens.length != 5
     }
     
-    public static <T> String serializeMap(Map<T, T> map) {
+    public static <T> String serializeMapToPrettyJson(Map<T, T> map) {
         try {
             return new ObjectMapper()
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(map);
         } catch (IOException ex) {
             throw new SyncException("Cannot serialize map", ex);
+        }
+    }
+
+    public static Map<String, String> deserializeJsonToStringsMap(String json) {
+        try {
+            return new ObjectMapper().readValue(json, new TypeReference<Map<String, String>>() {});
+        } catch (IOException ex) {
+            throw new SyncException("Cannot deserialize map", ex);
         }
     }
 }

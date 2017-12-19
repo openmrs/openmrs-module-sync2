@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.api.impl;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.sync.SyncPersistence;
@@ -11,10 +12,11 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
@@ -35,20 +37,25 @@ public class SyncPullServiceImpl implements SyncPullService {
 
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
-
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String address, String action) {
-        LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, address, action));
     
+    @Override
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String baseAddress,
+                                                  String action, String clientName) {
+        LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, baseAddress, action));
+    
+        String pullUrl = getPullUrl(baseAddress, resourceLinks.get(clientName));
+        
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
-        auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
-        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
+        auditMessage.setUsedResourceUrl(pullUrl);
+        auditMessage.setLinkType(clientName);
+        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
-        
-        try {
-            Object pulledObject = syncClient.pullDataFromParent(category, resourceLinks, address);
-            syncPersistence.persistRetrievedData(pulledObject, action);
     
+        try {
+            Object pulledObject = syncClient.pullDataFromParent(category, clientName, pullUrl);
+            syncPersistence.persistRetrievedData(pulledObject, action);
+        
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PULL_SUCCESS_MESSAGE);
         } catch (Exception e) {
@@ -59,6 +66,16 @@ public class SyncPullServiceImpl implements SyncPullService {
             auditMessage = syncAuditService.saveAuditMessage(auditMessage);
         }
         return auditMessage;
+    }
+    
+    @Override
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String baseAddress,
+                                                  String action) {
+        return pullDataFromParentAndSave(category, resourceLinks, baseAddress, action, getPreferredClient());
+    }
+    
+    private String getPullUrl(String baseAddress, String resourceLink) {
+        return baseAddress + resourceLink;
     }
     
     private String getParentUri() {
@@ -75,7 +92,6 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setOperation(PULL_OPERATION);
         auditMessage.setParentUrl(getParentUri());
         auditMessage.setLocalUrl(getLocalUri());
-        auditMessage.setLinkType(getPreferredClient());
         return auditMessage;
     }
 }

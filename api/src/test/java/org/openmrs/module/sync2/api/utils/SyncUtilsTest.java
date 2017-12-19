@@ -121,11 +121,21 @@ public class SyncUtilsTest {
     }
     
     @Test
-    public void serializeMap_shouldSerializeMapWithStrings() throws SyncException {
+    public void serializeMapToPrettyJson_shouldSerializeMapWithStrings() throws SyncException {
+        Assert.assertEquals(SyncUtils.readResourceFile(sampleSerializedMap),
+                SyncUtils.serializeMapToPrettyJson(createSampleMap()));
+    }
+    
+    @Test
+    public void serializeMapToPrettyJson_shouldDeserializeMapWithStrings() throws SyncException {
+        Assert.assertEquals(createSampleMap(),
+                SyncUtils.deserializeJsonToStringsMap(SyncUtils.readResourceFile(sampleSerializedMap)));
+    }
+    
+    private Map<String, String> createSampleMap() {
         Map<String, String> map = new HashMap<>();
         map.put("k1", "v1");
         map.put("k2", "v2");
-        
-        Assert.assertEquals(SyncUtils.readResourceFile(sampleSerializedMap), SyncUtils.serializeMap(map));
+        return map;
     }
 }
