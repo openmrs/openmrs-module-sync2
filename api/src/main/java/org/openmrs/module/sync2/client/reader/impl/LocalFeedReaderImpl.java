@@ -19,7 +19,9 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
 
     private static final String RECENT_FEED = "recent";
     private static final String WS_ATOMFEED = "/ws/atomfeed/";
+
     private AtomFeedClient atomFeedClient;
+
     @Autowired
     private SyncConfigurationService configurationService;
 
