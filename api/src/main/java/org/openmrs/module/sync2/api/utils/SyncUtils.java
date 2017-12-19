@@ -26,15 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
 
 
 public class SyncUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
 
-    private static final String FHIR = "fhir";
-    private static final String REST = "rest";
-    
     private static final String ATOMFEED_TAG_VALUE_FIELD_NAME="Category.term";
 
     public static String readResourceFile(String file) throws SyncException {
@@ -178,9 +177,9 @@ public class SyncUtils {
     public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
         for (String client : resourceLinks.keySet()) {
             switch (client) {
-                case REST:
+                case REST_CLIENT_KEY:
                     return extractUUIDFromRestResource(resourceLinks.get(client));
-                case FHIR:
+                case FHIR_CLIENT_KEY:
                     return extractUUIDFromFHIRResource(resourceLinks.get(client));
                 default:
             }
