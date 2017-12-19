@@ -70,7 +70,7 @@ public class SyncPersistence {
         if (object instanceof Patient) {
             persistOpenMrsPatient((Patient) object, action);
         } else if (object instanceof Privilege) {
-            persistOpenMrsPrivelege((Privilege) object, action);
+            persistOpenMrsPrivilege((Privilege) object, action);
         }
     }
 
@@ -88,7 +88,7 @@ public class SyncPersistence {
         }
     }
 
-    private void persistOpenMrsPrivelege(Privilege privilege, String action) {
+    private void persistOpenMrsPrivilege(Privilege privilege, String action) {
         switch (action) {
             case ACTION_DELETED:
                 UserService service = Context.getUserService();
