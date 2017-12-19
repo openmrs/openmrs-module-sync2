@@ -6,6 +6,7 @@ import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.RestResourceCreationUtil;
 import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
+import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
@@ -15,12 +16,14 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 
 public class RestClient implements Client {
 
     private static final String PATIENT_CATEGORY = "patient";
     private static final String LOCATION_CATEGORY = "location";
+    private static final String PRIVILEGE_CATEGORY = "privilege";
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -33,7 +36,7 @@ public class RestClient implements Client {
     @Override
     public Object retrieveObject(String category, String url, String username, String password)
             throws RestClientException {
-        restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
+        restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
         RestResource restResource = (RestResource) restTemplate.getForObject(url, resolveCategory(category));
         return restResource.getOpenMrsObject();
@@ -42,7 +45,7 @@ public class RestClient implements Client {
     @Override
     public ResponseEntity<String> createObject(String url, String username, String password, Object object)
             throws RestClientException {
-        restTemplate.setInterceptors(Arrays.asList(new BasicAuthInterceptor(username, password)));
+        restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
         RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
         return restTemplate.postForEntity(url, restResource, String.class);
@@ -54,6 +57,8 @@ public class RestClient implements Client {
                 return Patient.class;
             case LOCATION_CATEGORY:
                 return Location.class;
+            case PRIVILEGE_CATEGORY:
+                return Privilege.class;
             default:
                 return null;
         }
