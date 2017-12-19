@@ -18,7 +18,6 @@ public class SyncPersistence {
     private static final String ACTION_DELETED = "DELETED";
     private static final String ACTION_UPDATED = "UPDATED";
     private static final String VOIDING_REASON = "Voided by Sync 2";
-
     public void persistRetrievedData(Object retrievedObject, String action) {
         if (retrievedObject instanceof OpenmrsData) {
             persistRetrievedRestData(retrievedObject, action);

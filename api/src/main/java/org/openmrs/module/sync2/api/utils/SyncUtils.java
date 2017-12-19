@@ -8,8 +8,10 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
@@ -29,6 +32,8 @@ public class SyncUtils {
 
     private static final String FHIR = "fhir";
     private static final String REST = "rest";
+    
+    private static final String ATOMFEED_TAG_VALUE_FIELD_NAME="Category.term";
 
     public static String readResourceFile(String file) throws SyncException {
         try (InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(file)) {
@@ -124,20 +129,28 @@ public class SyncUtils {
 
     }
 
-    public static String getCategoryAndActionByTag(String tag) {
-        Map<String, String> map = parseTag(tag);
-        return map.get("Category.term");
+    public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
+        for (Object tag : tags) {
+            String tagValue = getTagValue(tag);
+            boolean isTagEventAction = checkIfParamIsEventAction(tagValue);
+            if (atomfeedTagContent == AtomfeedTagContent.EVENT_ACTION && isTagEventAction) {
+                return tagValue;
+            }
+            if (atomfeedTagContent == AtomfeedTagContent.CATEGORY && !isTagEventAction) {
+                return tagValue;
+            }
+        }
+        throw new SyncException(String.format("'%s' enum not found in tag list", atomfeedTagContent.name()));
     }
 
-    private static HashMap<String, String> parseTag(String tag) {
+    private static String getTagValue(Object tag) {
         final HashMap<String, String> map = new HashMap<>();
 
-        for (String pair : tag.split("\n")) {
+        for (String pair : tag.toString().split("\n")) {
             String[] keyValue = pair.split("=");
             map.put(keyValue[0], keyValue[1]);
         }
-
-        return map;
+        return map.get(ATOMFEED_TAG_VALUE_FIELD_NAME);
     }
 
     public static String getPreferredUrl(Map<String, String> resourceLinks) {
@@ -207,5 +220,14 @@ public class SyncUtils {
         } catch (IOException ex) {
             throw new SyncException("Cannot deserialize map", ex);
         }
+    }
+    
+    public static boolean checkIfParamIsEventAction(String actionName) {
+        try {
+            EventAction.valueOf(actionName);
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
+        return true;
     }
 }
