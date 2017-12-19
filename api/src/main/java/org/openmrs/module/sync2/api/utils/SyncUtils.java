@@ -21,14 +21,13 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
 
 
 public class SyncUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
-
-    private static final String FHIR = "fhir";
-    private static final String REST = "rest";
 
     public static String readResourceFile(String file) throws SyncException {
         try (InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(file)) {
@@ -163,9 +162,9 @@ public class SyncUtils {
     public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
         for (String client : resourceLinks.keySet()) {
             switch (client) {
-                case REST:
+                case REST_CLIENT_KEY:
                     return extractUUIDFromRestResource(resourceLinks.get(client));
-                case FHIR:
+                case FHIR_CLIENT_KEY:
                     return extractUUIDFromFHIRResource(resourceLinks.get(client));
                 default:
             }
@@ -189,9 +188,9 @@ public class SyncUtils {
 
     public static String getResourceUrl(String client, String url) {
         switch (client) {
-            case FHIR:
+            case FHIR_CLIENT_KEY:
                 return getFhirResourceUrl(url);
-            case REST:
+            case REST_CLIENT_KEY:
                 return getRestResourceUrl(url);
             default:
                 LOGGER.error("Couldn't find any supported client to extract resource url from.");

@@ -110,6 +110,12 @@
         "category" : "program",
         "openMrsClass": "org.openmrs.Program",
         "enabled" : false
+      },
+      {
+        "classTitle" : "Privilege",
+        "category" : "privilege",
+        "openMrsClass": "org.openmrs.Privilege",
+        "enabled" : false
       }
     ]
   },
@@ -217,6 +223,12 @@
         "classTitle" : "Program",
         "category" : "program",
         "openMrsClass": "org.openmrs.Program",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Privilege",
+        "category" : "privilege",
+        "openMrsClass": "org.openmrs.Privilege",
         "enabled" : false
       }
     ]
