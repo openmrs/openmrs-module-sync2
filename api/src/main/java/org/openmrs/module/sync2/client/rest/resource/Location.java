@@ -226,11 +226,19 @@ public class Location implements RestResource {
 
     @Override
     public BaseOpenmrsObject getOpenMrsObject() {
-        if (name == null) {
-            // This instance of location represents GET ref location, so we have to fetch it from the persistence.
-            return Context.getLocationService().getLocationByUuid(uuid);
+        if (uuid != null) {
+            org.openmrs.Location omrsLocation = Context.getLocationService().getLocationByUuid(uuid);
+            if (omrsLocation != null) {
+                return omrsLocation;
+            }
         }
-        org.openmrs.Location omrsLocation = new org.openmrs.Location();
+
+        org.openmrs.Location omrsLocation = Context.getLocationService().getLocation(name);
+        // If location with given name already exists then we can just return it.
+        if (omrsLocation != null) {
+            return omrsLocation;
+        }
+        omrsLocation = new org.openmrs.Location();
         omrsLocation.setUuid(uuid);
         omrsLocation.setName(name);
         omrsLocation.setDescription(description);
@@ -254,11 +262,6 @@ public class Location implements RestResource {
         }
         if (parentLocation != null) {
             omrsLocation.setParentLocation((org.openmrs.Location) parentLocation.getOpenMrsObject());
-        }
-        if (childLocations != null) {
-            for (Location childLocation : childLocations) {
-                omrsLocation.addChildLocation((org.openmrs.Location) childLocation.getOpenMrsObject());
-            }
         }
         omrsLocation.setRetired(retired);
 

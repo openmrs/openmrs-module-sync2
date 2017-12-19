@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
 import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.api.context.Context;
 
 import java.util.List;
 
@@ -66,11 +67,13 @@ public class LocationTag implements RestResource {
 
     @Override
     public BaseOpenmrsObject getOpenMrsObject() {
-        org.openmrs.LocationTag locationTag = new org.openmrs.LocationTag();
-        locationTag.setUuid(uuid);
-        locationTag.setName(name);
-        locationTag.setDescription(description);
-        locationTag.setRetired(retired);
-        return locationTag;
+        if (uuid != null) {
+            org.openmrs.LocationTag locationTag = Context.getLocationService().getLocationTagByUuid(uuid);
+            if (locationTag != null) {
+                return locationTag;
+            }
+        }
+
+        return Context.getLocationService().getLocationTagByName(name);
     }
 }
