@@ -6,14 +6,14 @@
     "persistFailureAudit" : true
   },
   "push" : {
-    "enabled" : true,
+    "enabled" : false,
     "schedule" : 12,
     "classes" : [
       {
         "classTitle" : "Location",
         "category" : "location",
         "openMrsClass" : "org.openmrs.Location",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Observation",
@@ -114,14 +114,14 @@
     ]
   },
   "pull" : {
-    "enabled" : true,
+    "enabled" : false,
     "schedule" : 12,
     "classes" : [
       {
         "classTitle" : "Location",
         "category" : "location",
         "openMrsClass" : "org.openmrs.Location",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Observation",
