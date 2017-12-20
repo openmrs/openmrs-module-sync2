@@ -115,7 +115,7 @@
         "classTitle" : "Privilege",
         "category" : "privilege",
         "openMrsClass": "org.openmrs.Privilege",
-        "enabled" : false
+        "enabled" : true
       }
     ]
   },
@@ -229,7 +229,7 @@
         "classTitle" : "Privilege",
         "category" : "privilege",
         "openMrsClass": "org.openmrs.Privilege",
-        "enabled" : false
+        "enabled" : true
       }
     ]
   }
