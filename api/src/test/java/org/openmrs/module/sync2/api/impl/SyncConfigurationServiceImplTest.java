@@ -3,23 +3,40 @@ package org.openmrs.module.sync2.api.impl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
+import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SyncConfigurationServiceImplTest {
 
     private static final String sampleFeedConfigurationPath = "sampleSyncConfiguration.json";
     private static final String sampleFeedConfigurationPath2 = "sampleSyncConfiguration2.json";
 
+    @Mock
+    private SyncSchedulerService syncSchedulerService;
+
+    @InjectMocks
+    private SyncConfigurationService sync2ConfigurationService;
+
     @Before
     public void setUp() throws SyncException {
+        sync2ConfigurationService = new SyncConfigurationServiceImpl();
+        syncSchedulerService = new SyncSchedulerServiceImpl();
+
+        initMocks(this);
     }
 
     @Test
@@ -41,8 +58,8 @@ public class SyncConfigurationServiceImplTest {
         SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
         expectedSyncConfiguration.setPull(pull);
 
+
         SyncConfiguration syncConfiguration = SyncUtils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
-        SyncConfigurationServiceImpl sync2ConfigurationService = new SyncConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());
@@ -68,7 +85,6 @@ public class SyncConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
         String json = SyncUtils.readResourceFile(sampleFeedConfigurationPath2);
-        SyncConfigurationServiceImpl sync2ConfigurationService = new SyncConfigurationServiceImpl();
         sync2ConfigurationService.saveConfiguration(json);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());

@@ -9,6 +9,8 @@ import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
+import org.openmrs.module.atomfeed.client.AtomFeedClient;
+import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -188,6 +190,19 @@ public class SyncUtils {
         return null;
     }
 
+    public static void readFeedByCategory(String category, AtomFeedClient atomFeedClient,
+                                          SyncConfigurationService configurationService, String ws) {
+        try {
+            URI uri = new URI(getResourceUrlWithCategory(category, configurationService, ws));
+            atomFeedClient.setUri(uri);
+            atomFeedClient.process();
+        } catch (URISyntaxException e) {
+            throw new SyncException("Atomfeed URI is not correct. ", e);
+        } catch (Exception e) {
+            throw new SyncException(String.format("Error during processing atomfeeds for category %s: ", category), e);
+        }
+    }
+
     private static String extractUUIDFromRestResource(String link) {
         String[] tokens = link.split("/");
         // todo throw custom sync2 exception if tokens.length != 6
@@ -203,7 +218,7 @@ public class SyncUtils {
     public static String getPushEndpointFromResourceUrl(String url) {
         return url.substring(0, url.lastIndexOf("/"));
     }
-    
+
     public static <T> String serializeMapToPrettyJson(Map<T, T> map) {
         try {
             return new ObjectMapper()
@@ -229,5 +244,14 @@ public class SyncUtils {
             return false;
         }
         return true;
+    }
+
+    private static String getParentUri(SyncConfigurationService configurationService) {
+        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
+    }
+
+    private static String getResourceUrlWithCategory(String category, SyncConfigurationService cs, String ws) {
+        //TODO: Start reading from the last page read. Marks table.
+        return getParentUri(cs) + ws + category + "/" + 1;
     }
 }
