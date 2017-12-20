@@ -64,7 +64,7 @@ public class SyncAuditRestController {
         try {
             return Status.valueOf(enumValue).isSuccess();
         } catch(IllegalArgumentException e) {
-            throw new SyncException(String.format("There is no suitable status: %s.", enumValue));
+            throw new SyncException(String.format("There is no suitable status: %s.", enumValue), e);
         }
     }
 
@@ -74,7 +74,7 @@ public class SyncAuditRestController {
                     "" : Operation.valueOf(enumValue).name();
 
         } catch(IllegalArgumentException e) {
-            throw new SyncException(String.format("There is no suitable action: %s.", enumValue));
+            throw new SyncException(String.format("There is no suitable action: %s.", enumValue), e);
         }
     }
 
@@ -83,7 +83,7 @@ public class SyncAuditRestController {
             return Resources.valueOf(enumValue).name().equals(Resources.ALL.name()) ?
                     "" : Resources.valueOf(enumValue).getName();
         } catch(IllegalArgumentException e) {
-            throw new SyncException(String.format("There is no suitable resource: %s.", enumValue));
+            throw new SyncException(String.format("There is no suitable resource: %s.", enumValue), e);
         }
     }
 
