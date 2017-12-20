@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredClient;
+import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPushService")
@@ -38,19 +38,23 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncPersistence syncPersistence = new SyncPersistence();
 
     @Override
-    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String address, String action) {
-        LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, address, action));
-
+    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String addressBase,
+                                                String action, String clientName) {
+        LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, addressBase, action));
+        
+        String pushUrl = getPushUrl(resourceLinks.get(clientName));
+        String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
+    
         AuditMessage auditMessage = prepareBaseAuditMessage();
         auditMessage.setResourceName(category);
-        auditMessage.setUsedResourceUrl(getPreferredUrl(resourceLinks));
-        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMap(resourceLinks));
+        auditMessage.setUsedResourceUrl(pushUrl);
+        auditMessage.setLinkType(clientName);
+        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            String uuid = SyncUtils.extractUUIDFromResourceLinks(resourceLinks);
             Object data = syncPersistence.retrieveData(getPreferredClient(), category, uuid);
-            syncClient.pushDataToParent(data, resourceLinks, getParentUri());
-
+            syncClient.pushDataToParent(data, clientName, pushUrl);
+        
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);
         } catch (Exception e) {
@@ -62,7 +66,18 @@ public class SyncPushServiceImpl implements SyncPushService {
         }
         return auditMessage;
     }
-
+    
+    @Override
+    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String addressBase,
+                                                String action) {
+        String clientName = getPreferredClient();
+        return readDataAndPushToParent(category, resourceLinks, addressBase, action, clientName);
+    }
+    
+    private String getPushUrl(String resourceLink) {
+        return SyncUtils.getBaseUrl(getParentUri()) + SyncUtils.getPushEndpointFromResourceUrl(resourceLink);
+    }
+    
     private String getPreferredClient() {
         return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
     }
@@ -81,7 +96,6 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setOperation(PUSH_OPERATION);
         auditMessage.setParentUrl(getParentUri());
         auditMessage.setLocalUrl(getLocalUri());
-        auditMessage.setLinkType(getPreferredClient());
         return auditMessage;
     }
 }

@@ -11,12 +11,8 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
-
 
 @Component("sync2.SyncRetryService")
 public class SyncRetryServiceImpl implements SyncRetryService {
@@ -48,23 +44,19 @@ public class SyncRetryServiceImpl implements SyncRetryService {
         String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
         parentAddress = SyncUtils.getBaseUrl(parentAddress);
 
-        Map<String, String> map = new HashMap<>();
-        map.put(message.getLinkType(), message.getUsedResourceUrl());
-
-        AuditMessage newMesssage = syncPushService.readDataAndPushToParent(message.getResourceName(), map, parentAddress, message.getAction());
-        syncAuditService.setNextAudit(message, newMesssage);
-        return newMesssage;
+        AuditMessage newMessage = syncPushService.readDataAndPushToParent(message.getResourceName(),
+                message.getAvailableResourceUrlsAsMap(), parentAddress, message.getAction(), message.getLinkType());
+        syncAuditService.setNextAudit(message, newMessage);
+        return newMessage;
     }
 
     private AuditMessage retryPull(AuditMessage message) {
         String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
         parentAddress = SyncUtils.getBaseUrl(parentAddress);
 
-        Map<String, String> map = new HashMap<>();
-        map.put(message.getLinkType(), message.getUsedResourceUrl());
-
-        AuditMessage newMesssage = syncPullService.pullDataFromParentAndSave(message.getResourceName(), map, parentAddress, message.getAction());
-        syncAuditService.setNextAudit(message, newMesssage);
-        return newMesssage;
+        AuditMessage newMessage = syncPullService.pullDataFromParentAndSave(message.getResourceName(),
+                message.getAvailableResourceUrlsAsMap(), parentAddress, message.getAction(), message.getLinkType());
+        syncAuditService.setNextAudit(message, newMessage);
+        return newMessage;
     }
 }

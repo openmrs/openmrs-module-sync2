@@ -8,7 +8,9 @@ import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -121,11 +123,71 @@ public class SyncUtilsTest {
     }
     
     @Test
-    public void serializeMap_shouldSerializeMapWithStrings() throws SyncException {
+    public void serializeMapToPrettyJson_shouldSerializeMapWithStrings() throws SyncException {
+        Assert.assertEquals(SyncUtils.readResourceFile(sampleSerializedMap),
+                SyncUtils.serializeMapToPrettyJson(createSampleMap()));
+    }
+    
+    @Test
+    public void checkIfParamIsEventAction_shouldReturnTrueIfParamIsEventAction() {
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("UPDATED"));
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("CREATED"));
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("RETIRED"));
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("UNRETIRED"));
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("UNVOIDED"));
+        Assert.assertTrue(SyncUtils.checkIfParamIsEventAction("DELETED"));
+    }
+    
+    @Test
+    public void checkIfParamIsEventAction_shouldReturnFalseIfParamIsNotEventAction() {
+        Assert.assertFalse(SyncUtils.checkIfParamIsEventAction("updated"));
+        Assert.assertFalse(SyncUtils.checkIfParamIsEventAction("somethingElse"));
+    }
+    
+    @Test
+    public void getValueOfAtomfeedEventTag_shouldReturnCategoryDespiteItsOrderInList() {
+        final String expected = "patient";
+        String result1 = SyncUtils.getValueOfAtomfeedEventTag(prepareDummyAtomfeedTags1(), AtomfeedTagContent.CATEGORY);
+        String result2 = SyncUtils.getValueOfAtomfeedEventTag(prepareDummyAtomfeedTags2(), AtomfeedTagContent.CATEGORY);
+        Assert.assertEquals(expected, result1);
+        Assert.assertEquals(expected, result2);
+    }
+    
+    @Test
+    public void getValueOfAtomfeedEventTag_shouldReturnEventActionDespiteItsOrderInList() {
+        final String expected = "CREATED";
+        String result1 = SyncUtils.getValueOfAtomfeedEventTag(prepareDummyAtomfeedTags1(),
+                AtomfeedTagContent.EVENT_ACTION);
+        String result2 = SyncUtils.getValueOfAtomfeedEventTag(prepareDummyAtomfeedTags2(),
+                AtomfeedTagContent.EVENT_ACTION);
+        Assert.assertEquals(expected, result1);
+        Assert.assertEquals(expected, result2);
+    }
+    
+    @Test
+    public void serializeMapToPrettyJson_shouldDeserializeMapWithStrings() throws SyncException {
+        Assert.assertEquals(createSampleMap(),
+                SyncUtils.deserializeJsonToStringsMap(SyncUtils.readResourceFile(sampleSerializedMap)));
+    }
+    
+    private Map<String, String> createSampleMap() {
         Map<String, String> map = new HashMap<>();
         map.put("k1", "v1");
         map.put("k2", "v2");
-        
-        Assert.assertEquals(SyncUtils.readResourceFile(sampleSerializedMap), SyncUtils.serializeMap(map));
+        return map;
+    }
+    
+    private List<Object> prepareDummyAtomfeedTags1() {
+        List list = new ArrayList();
+        list.add("Category.schemeResolved=null\nCategory.scheme=null\nCategory.term=CREATED\nCategory.label=null\n");
+        list.add("Category.schemeResolved=null\nCategory.scheme=null\nCategory.term=patient\nCategory.label=null\n");
+        return list;
+    }
+    
+    private List<Object> prepareDummyAtomfeedTags2() {
+        List list = new ArrayList();
+        list.add("Category.schemeResolved=null\nCategory.scheme=null\nCategory.term=patient\nCategory.label=null\n");
+        list.add("Category.schemeResolved=null\nCategory.scheme=null\nCategory.term=CREATED\nCategory.label=null\n");
+        return list;
     }
 }
