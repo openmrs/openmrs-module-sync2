@@ -20,9 +20,7 @@ public class SyncPushTask extends AbstractTask {
         localFeedReader = Context.getRegisteredComponent("sync2.localFeedReader", LocalFeedReaderImpl.class);
 
         if (!isExecuting) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Starting Sync 2.0 Push Task...");
-            }
+            LOGGER.info("Starting Sync 2.0 Push Task...");
 
             startExecuting();
             try {

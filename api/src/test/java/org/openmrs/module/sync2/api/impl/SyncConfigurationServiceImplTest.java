@@ -18,8 +18,6 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SyncConfigurationServiceImplTest {

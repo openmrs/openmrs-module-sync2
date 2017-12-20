@@ -26,8 +26,8 @@ public class Sync2ModuleActivator extends BaseModuleActivator {
 	 * @see #started()
 	 */
 	public void started() {
-		LOGGER.info("Started Sync2 Module");
 		Context.getRegisteredComponents(SyncSchedulerServiceImpl.class).get(0).runSyncScheduler();
+		LOGGER.info("Started Sync2 Module");
 	}
 	
 	/**

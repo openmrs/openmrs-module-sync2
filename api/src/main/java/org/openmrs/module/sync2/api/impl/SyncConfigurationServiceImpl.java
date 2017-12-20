@@ -1,12 +1,10 @@
 package org.openmrs.module.sync2.api.impl;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
-import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

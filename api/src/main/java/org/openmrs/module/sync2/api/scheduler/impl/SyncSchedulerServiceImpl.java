@@ -28,24 +28,24 @@ public class SyncSchedulerServiceImpl extends BaseOpenmrsService implements Sync
     private static final String PUSH_TASK_DESCRIPTION = "Task for Sync 2.0 pushing data to the parent instance.";
 
     @Autowired
-    SyncConfigurationService syncConfigurationService;
+    private SyncConfigurationService syncConfigurationService;
 
 
     public void runSyncScheduler() {
         if (isPullEnabled()) {
-            setPullTask();
+            schedulePullTask();
         } else {
             stopSyncTask(PULL_TASK_NAME);
         }
 
         if (isPushEnabled()) {
-            setPushTask();
+            schedulePushTask();
         } else {
-            stopSyncTask(PULL_TASK_NAME);
+            stopSyncTask(PUSH_TASK_NAME);
         }
     }
 
-    private void setPullTask() {
+    private void schedulePullTask() {
         TaskDefinition pullTask = createTask(PULL_TASK_NAME, PULL_TASK_DESCRIPTION, PULL_TASK_CLASS,
                 Long.valueOf(getPullIntervalInSeconds()));
 
@@ -58,7 +58,7 @@ public class SyncSchedulerServiceImpl extends BaseOpenmrsService implements Sync
         }
     }
 
-    private TaskDefinition setPushTask() {
+    private TaskDefinition schedulePushTask() {
         TaskDefinition pushTask = createTask(PUSH_TASK_NAME, PUSH_TASK_DESCRIPTION, PUSH_TASK_CLASS,
                 Long.valueOf(getPushIntervalInSeconds()));
 

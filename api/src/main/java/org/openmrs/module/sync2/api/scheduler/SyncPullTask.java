@@ -20,9 +20,7 @@ public class SyncPullTask extends AbstractTask {
         parentFeedReader = Context.getRegisteredComponent("sync2.parentFeedReader", ParentFeedReaderImpl.class);
 
         if (!isExecuting) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Starting Sync 2.0 Pull Task...");
-            }
+            LOGGER.info("Starting Sync 2.0 Pull Task...");
 
             startExecuting();
             try {
