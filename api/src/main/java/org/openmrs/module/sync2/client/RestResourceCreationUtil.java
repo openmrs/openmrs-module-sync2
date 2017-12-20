@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.client;
 
-import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAddress;
@@ -8,21 +8,29 @@ import org.openmrs.module.sync2.client.rest.resource.Address;
 import org.openmrs.module.sync2.client.rest.resource.Identifier;
 import org.openmrs.module.sync2.client.rest.resource.IdentifierType;
 import org.openmrs.module.sync2.client.rest.resource.Location;
+import org.openmrs.module.sync2.client.rest.resource.LocationTag;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Person;
 import org.openmrs.module.sync2.client.rest.resource.PersonName;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class RestResourceCreationUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestResourceCreationUtil.class);
 
-    public static RestResource createRestResourceFromOpenMRSData(OpenmrsData object) {
+    public static RestResource createRestResourceFromOpenMRSData(OpenmrsObject object) {
         if (object instanceof org.openmrs.Patient) {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
+        } else if (object instanceof org.openmrs.Location) {
+            return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);
         }
+
+        LOGGER.warn(String.format("Unrecognized openmrs object type %s", object.getClass().getSimpleName()));
         return null;
     }
 
@@ -49,7 +57,7 @@ public class RestResourceCreationUtil {
             identifier.setIdentifierType(createIdentifierTypeFromOpenMRSPatientIdentifierType(patientIdentifier.getIdentifierType()));
         }
         if (patientIdentifier.getLocation() != null) {
-            identifier.setLocation(createLocationFromOpenMRSLocation(patientIdentifier.getLocation()));
+            identifier.setLocation(createLocationFromOpenMRSLocation(patientIdentifier.getLocation(), true));
         }
         identifier.setPreferred(patientIdentifier.getPreferred());
         identifier.setVoided(patientIdentifier.getVoided());
@@ -64,9 +72,34 @@ public class RestResourceCreationUtil {
         return identifierType;
     }
 
-    private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation) {
+    private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation, boolean reference) {
         Location location = new Location();
-        location.setUuid(openMRSLocation.getUuid());
+        location.setName(openMRSLocation.getName());
+        if (!reference) {
+            location.setDescription(openMRSLocation.getDescription());
+            location.setCityVillage(openMRSLocation.getCityVillage());
+            location.setStateProvince(openMRSLocation.getStateProvince());
+            location.setCountry(openMRSLocation.getCountry());
+            location.setPostalCode(openMRSLocation.getPostalCode());
+            location.setLatitude(openMRSLocation.getLatitude());
+            location.setLongitude(openMRSLocation.getLongitude());
+            location.setCountryDistrict(openMRSLocation.getCountyDistrict());
+            List<LocationTag> locationTagList = new ArrayList<>();
+            for (org.openmrs.LocationTag omrsLocationTag : openMRSLocation.getTags()) {
+                locationTagList.add(createLocationTagFromOpenMrsLocationTag(omrsLocationTag, true));
+            }
+            location.setTags(locationTagList);
+            location.setAddress1(openMRSLocation.getAddress1());
+            location.setAddress2(openMRSLocation.getAddress2());
+            location.setAddress3(openMRSLocation.getAddress3());
+            location.setAddress4(openMRSLocation.getAddress4());
+            location.setAddress5(openMRSLocation.getAddress5());
+            location.setAddress6(openMRSLocation.getAddress6());
+            if (openMRSLocation.getParentLocation() != null) {
+                location.setParentLocationRef(openMRSLocation.getParentLocation().getName());
+            }
+            location.setRetired(openMRSLocation.getRetired());
+        }
         return location;
     }
 
@@ -97,6 +130,18 @@ public class RestResourceCreationUtil {
         person.setBirthtime(openMRSPerson.getBirthtime());
 
         return person;
+    }
+
+    private static LocationTag createLocationTagFromOpenMrsLocationTag(org.openmrs.LocationTag omrsLocationTag,
+                                                                       Boolean reference) {
+        LocationTag locationTag = new LocationTag();
+        locationTag.setUuid(omrsLocationTag.getUuid());
+        if (!reference) {
+            locationTag.setName(omrsLocationTag.getName());
+            locationTag.setDescription(omrsLocationTag.getDescription());
+            locationTag.setRetired(omrsLocationTag.getRetired());
+        }
+        return locationTag;
     }
 
     private static List<Address> createAddressFromOpenMRSAddress(Set<PersonAddress> personAddresses) {
