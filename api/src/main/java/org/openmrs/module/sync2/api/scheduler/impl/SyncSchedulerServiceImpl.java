@@ -52,6 +52,8 @@ public class SyncSchedulerServiceImpl extends BaseOpenmrsService implements Sync
         try {
             if (!Context.getSchedulerService().getScheduledTasks().contains(pullTask)) {
                 Context.getSchedulerService().scheduleTask(pullTask);
+            } else {
+                Context.getSchedulerService().rescheduleTask(pullTask);
             }
         } catch(SchedulerException e) {
             LOGGER.error("Error during starting Sync 2.0 Pull task:", e);
@@ -65,6 +67,8 @@ public class SyncSchedulerServiceImpl extends BaseOpenmrsService implements Sync
         try {
             if (!Context.getSchedulerService().getScheduledTasks().contains(pushTask)) {
                 Context.getSchedulerService().scheduleTask(pushTask);
+            } else {
+                Context.getSchedulerService().rescheduleTask(pushTask);
             }
             return pushTask;
         } catch(SchedulerException e) {
