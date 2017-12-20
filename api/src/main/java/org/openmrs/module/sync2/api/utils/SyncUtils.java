@@ -153,21 +153,22 @@ public class SyncUtils {
         }
         return map.get(ATOMFEED_TAG_VALUE_FIELD_NAME);
     }
-
-    public static String getPreferredUrl(Map<String, String> resourceLinks) {
+    
+    public static String selectAppropriateClientName(Map<String, String> availableResourceLinks) {
         String preferredClient = getPreferredClient();
-        String result = resourceLinks.get(preferredClient);
-        if (result == null && resourceLinks.size() > 0) {
-            result = getFirstResourceLink(resourceLinks);
+        if (availableResourceLinks.containsKey(preferredClient)) {
+            return preferredClient;
+        } else {
+            return getFirstKey(availableResourceLinks);
         }
-        return result;
     }
-
-    private static String getFirstResourceLink(Map<String, String> resourceLinks) {
-        if (resourceLinks.size() > 0) {
-            return resourceLinks.values().iterator().next();
+    
+    private static String getFirstKey(Map<String, String> map) {
+        if (map.size() > 0) {
+            return map.keySet().iterator().next();
+        } else {
+            throw new SyncException("A map doesn't contain any entries, so it is impossible to get the first key");
         }
-        return "";
     }
 
     public static String getPreferredClient() {

@@ -18,7 +18,6 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredClient;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
@@ -67,7 +66,8 @@ public class SyncPullServiceImpl implements SyncPullService {
     @Override
     public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String baseAddress,
                                                   String action) {
-        return pullDataFromParentAndSave(category, resourceLinks, baseAddress, action, getPreferredClient());
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
+        return pullDataFromParentAndSave(category, resourceLinks, baseAddress, action, clientName);
     }
     
     private String getPullUrl(String baseAddress, String resourceLink) {
