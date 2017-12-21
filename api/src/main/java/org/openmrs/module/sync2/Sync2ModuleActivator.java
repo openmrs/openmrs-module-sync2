@@ -34,6 +34,7 @@ public class Sync2ModuleActivator extends BaseModuleActivator {
 	 * @see #shutdown()
 	 */
 	public void shutdown() {
+		Context.getRegisteredComponents(SyncSchedulerServiceImpl.class).get(0).shutdownSyncScheduler();
 		LOGGER.info("Shutdown Sync2 Module");
 	}
 	

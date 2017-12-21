@@ -251,7 +251,6 @@ public class SyncUtils {
     }
 
     private static String getResourceUrlWithCategory(String category, SyncConfigurationService cs, String ws) {
-        //TODO: Start reading from the last page read. Marks table.
-        return getParentUri(cs) + ws + category + "/" + 1;
+        return getParentUri(cs) + ws + category + "/recent";
     }
 }
