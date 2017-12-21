@@ -45,6 +45,11 @@ public class SyncSchedulerServiceImpl extends BaseOpenmrsService implements Sync
         }
     }
 
+    public void shutdownSyncScheduler() {
+        stopSyncTask(PULL_TASK_NAME);
+        stopSyncTask(PUSH_TASK_NAME);
+    }
+
     private void schedulePullTask() {
         TaskDefinition pullTask = createTask(PULL_TASK_NAME, PULL_TASK_DESCRIPTION, PULL_TASK_CLASS,
                 Long.valueOf(getPullIntervalInSeconds()));
