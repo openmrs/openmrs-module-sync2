@@ -25,7 +25,7 @@ public class SyncClient {
 
         ClientFactory clientFactory = new ClientFactory();
         Client client = clientFactory.createClient(clientName);
-        return client.getObject(category, pushUrl, username, password);
+        return client.retrieveObject(category, pushUrl, username, password);
     }
 
     public ResponseEntity<String> pushDataToParent(Object object, String clientName, String pushUrl) {
@@ -34,7 +34,7 @@ public class SyncClient {
 
         Client client = new ClientFactory().createClient(clientName);
         try {
-            return client.postObject(pushUrl, username, password, object);
+            return client.createObject(pushUrl, username, password, object);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
                     e.getStatusCode().value(), e.getResponseBodyAsString()), e);

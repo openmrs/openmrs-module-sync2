@@ -73,10 +73,10 @@ public class SyncClientTest {
 
 
         RestClient restClientMock = mock(RestClient.class);
-        doReturn(createPatient()).when(restClientMock).getObject(PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
+        doReturn(createPatient()).when(restClientMock).retrieveObject(PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
 
         FHIRClient fhirClientMock = mock(FHIRClient.class);
-        doReturn(createPatient()).when(fhirClientMock).getObject(PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
+        doReturn(createPatient()).when(fhirClientMock).retrieveObject(PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
 
         ClientFactory clientFactory = mock(ClientFactory.class);
         doReturn(restClientMock).when(clientFactory).createClient(REST_CLIENT_KEY);
