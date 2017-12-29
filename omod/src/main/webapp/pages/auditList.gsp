@@ -27,7 +27,8 @@
     var syncResourceName = [
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
-        { id: "location", name: "${ ui.message('sync2.log.resource.location') }" }
+        { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
+        { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" }
     ];
 
     var syncStatus = [

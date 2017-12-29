@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.api.model.enums;
 
 public enum Resources {
-    ALL(""), PATIENT("patient"), LOCATION("location");
+    ALL(""), PATIENT("patient"), LOCATION("location"), PRIVILEGE("privilege");
 
     private final String name;
 
