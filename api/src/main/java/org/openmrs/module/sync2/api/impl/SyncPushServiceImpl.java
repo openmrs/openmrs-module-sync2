@@ -50,7 +50,7 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            Object data = syncPersistence.retrieveData(getPreferredClient(), category, uuid);
+            Object data = syncPersistence.retrieveData(clientName, category, uuid);
             syncClient.pushDataToParent(data, clientName, pushUrl);
         
             auditMessage.setSuccess(true);
