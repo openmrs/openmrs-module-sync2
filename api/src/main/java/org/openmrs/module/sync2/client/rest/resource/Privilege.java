@@ -1,16 +1,12 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
-import com.google.gson.annotations.Expose;
 import org.openmrs.BaseOpenmrsObject;
 
 public class Privilege implements RestResource {
 
     private String uuid;
     private Boolean retired;
-
-    @Expose
     private String name;
-    @Expose
     private String description;
 
     public String getUuid() {

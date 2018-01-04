@@ -53,6 +53,8 @@ public class RestResourceCreationUtil {
 
     private static RestResource createPrivilegeFromOpenMrsPrivilege(org.openmrs.Privilege openMrsPrivilege) {
         Privilege privilege = new Privilege();
+        // privilege.setUuid(openMrsPrivilege.getUuid()); // TODO: to enable when sending Privilege's UUID via REST will works
+        privilege.setRetired(openMrsPrivilege.getRetired());
         privilege.setName(openMrsPrivilege.getPrivilege());
         privilege.setDescription(openMrsPrivilege.getDescription());
         return privilege;
