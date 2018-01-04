@@ -75,7 +75,9 @@ public class RestResourceCreationUtil {
     private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation, boolean reference) {
         Location location = new Location();
         location.setName(openMRSLocation.getName());
-        if (!reference) {
+        if (reference) {
+            location.setUuid(openMRSLocation.getUuid());
+        } else {
             location.setDescription(openMRSLocation.getDescription());
             location.setCityVillage(openMRSLocation.getCityVillage());
             location.setStateProvince(openMRSLocation.getStateProvince());

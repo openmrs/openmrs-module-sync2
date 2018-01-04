@@ -1,7 +1,6 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.openmrs.module.sync2.api.SyncConfigurationService;
-import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
