@@ -5,24 +5,31 @@ import org.openmrs.Location;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
+import org.openmrs.Privilege;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.strategies.location.LocationStrategyUtil;
 import org.openmrs.module.fhir.api.strategies.patient.PatientStrategyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
+
 public class SyncPersistence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPersistence.class);
 
-    private static final String FHIR = "fhir";
-    private static final String REST = "rest";
     private static final String CATEGORY_PATIENT = "patient";
     private static final String CATEGORY_LOCATION = "location";
+    private static final String CATEGORY_PRIVILEGE = "privilege";
+    
     private static final String ACTION_DELETED = "DELETED";
     private static final String ACTION_UPDATED = "UPDATED";
     private static final String ACTION_CREATED = "CREATED";
+    
     private static final String VOIDING_REASON = "Voided by Sync 2";
+    
     public void persistRetrievedData(Object retrievedObject, String action) {
         if (retrievedObject instanceof OpenmrsObject) {
             persistRetrievedRestData(retrievedObject, action);
@@ -35,9 +42,9 @@ public class SyncPersistence {
 
     public Object retrieveData(String client, String category, String uuid) {
         switch (client) {
-            case FHIR:
+            case FHIR_CLIENT_KEY:
                 return retrieveFhirObject(category, uuid);
-            case REST:
+            case REST_CLIENT_KEY:
                 return retrieveRestObject(category, uuid);
             default:
                 LOGGER.warn(String.format("Unrecognized client %s, falling back to core OpenMrs object", client));
@@ -63,6 +70,8 @@ public class SyncPersistence {
                 return Context.getPatientService().getPatientByUuid(uuid);
             case CATEGORY_LOCATION:
                 return Context.getLocationService().getLocationByUuid(uuid);
+            case CATEGORY_PRIVILEGE:
+                return Context.getUserService().getPrivilegeByUuid(uuid);
             default:
                 LOGGER.warn(String.format("Unrecognized category %s", category));
                 return null;
@@ -74,6 +83,8 @@ public class SyncPersistence {
             persistOpenMrsPatient((Patient) object, action);
         } else if (object instanceof Location) {
             persistOpenMrsLocation((Location) object, action);
+        } else if (object instanceof Privilege) {
+            persistOpenMrsPrivilege((Privilege) object, action);
         } else {
             LOGGER.warn(String.format("Unrecognized object type %s", object.getClass().getSimpleName()));
         }
@@ -99,6 +110,20 @@ public class SyncPersistence {
             case ACTION_UPDATED:
             default:
                 Context.getPatientService().savePatient(patient);
+                break;
+        }
+    }
+
+    private void persistOpenMrsPrivilege(Privilege privilege, String action) {
+        switch (action) {
+            case ACTION_DELETED:
+                UserService service = Context.getUserService();
+                Privilege purgePrivilege = service.getPrivilegeByUuid(privilege.getUuid());
+                service.purgePrivilege(purgePrivilege);
+                break;
+            case ACTION_UPDATED:
+            default:
+                Context.getUserService().savePrivilege(privilege);
                 break;
         }
     }

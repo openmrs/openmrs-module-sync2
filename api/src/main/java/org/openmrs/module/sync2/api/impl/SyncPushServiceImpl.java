@@ -19,8 +19,6 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
-import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.getPreferredUrl;
 
 @Component("sync2.syncPushService")
 public class SyncPushServiceImpl implements SyncPushService {
@@ -52,7 +50,7 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            Object data = syncPersistence.retrieveData(getPreferredClient(), category, uuid);
+            Object data = syncPersistence.retrieveData(clientName, category, uuid);
             syncClient.pushDataToParent(data, clientName, pushUrl);
         
             auditMessage.setSuccess(true);
@@ -70,7 +68,7 @@ public class SyncPushServiceImpl implements SyncPushService {
     @Override
     public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String addressBase,
                                                 String action) {
-        String clientName = getPreferredClient();
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
         return readDataAndPushToParent(category, resourceLinks, addressBase, action, clientName);
     }
     

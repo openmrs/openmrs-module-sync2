@@ -12,6 +12,7 @@ import org.openmrs.module.sync2.client.rest.resource.LocationTag;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Person;
 import org.openmrs.module.sync2.client.rest.resource.PersonName;
+import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public class RestResourceCreationUtil {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
         } else if (object instanceof org.openmrs.Location) {
             return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);
+        } else if (object instanceof org.openmrs.Privilege) {
+            return createPrivilegeFromOpenMrsPrivilege((org.openmrs.Privilege) object);
         }
 
         LOGGER.warn(String.format("Unrecognized openmrs object type %s", object.getClass().getSimpleName()));
@@ -46,6 +49,15 @@ public class RestResourceCreationUtil {
         patient.setPerson(createPersonFromOpenMRSPerson(openMRSPatient.getPerson()));
 
         return patient;
+    }
+
+    private static RestResource createPrivilegeFromOpenMrsPrivilege(org.openmrs.Privilege openMrsPrivilege) {
+        Privilege privilege = new Privilege();
+        // privilege.setUuid(openMrsPrivilege.getUuid()); // TODO: to enable when sending Privilege's UUID via REST will works
+        privilege.setRetired(openMrsPrivilege.getRetired());
+        privilege.setName(openMrsPrivilege.getPrivilege());
+        privilege.setDescription(openMrsPrivilege.getDescription());
+        return privilege;
     }
 
     private static Identifier createIdentifierFromOpenMRSPatientIdentifier(PatientIdentifier patientIdentifier) {
