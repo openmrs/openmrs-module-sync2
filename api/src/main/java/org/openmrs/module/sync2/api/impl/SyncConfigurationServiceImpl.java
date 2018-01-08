@@ -9,7 +9,12 @@ import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_CUSTOM_CONFIGURATION;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_DEFAULT_CONFIGURATION;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.*;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
+
 
 @Component("sync2.syncConfigurationService")
 public class SyncConfigurationServiceImpl implements SyncConfigurationService {

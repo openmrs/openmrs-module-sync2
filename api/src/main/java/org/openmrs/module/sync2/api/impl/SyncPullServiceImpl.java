@@ -13,13 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.*;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getFullUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
@@ -64,7 +65,7 @@ public class SyncPullServiceImpl implements SyncPullService {
         }
         return auditMessage;
     }
-    
+
     @Override
     public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                                   String action) {

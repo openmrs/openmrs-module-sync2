@@ -14,8 +14,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.*;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
+
+
 
 public class SyncConfigurationUtilsTest {
 
