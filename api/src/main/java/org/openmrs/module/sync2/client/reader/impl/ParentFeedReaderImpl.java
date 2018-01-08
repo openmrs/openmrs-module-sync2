@@ -1,7 +1,9 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
+import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
@@ -15,8 +17,7 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.readFeedByCategory;
 
 @Service("sync2.parentFeedReader")
 public class ParentFeedReaderImpl implements ParentFeedReader {
-
-    private static final String RECENT_FEED = "recent";
+    
     private static final String WS_ATOMFEED = "/ws/atomfeed/";
     private AtomFeedClient atomFeedClient;
 
@@ -25,6 +26,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
 
     public ParentFeedReaderImpl() {
         this.atomFeedClient = AtomFeedClientFactory.createClient(new ParentFeedWorker());
+        AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
     }
 
     public void readAllFeedsForPull() {
@@ -42,7 +44,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
     }
 
     private String getResourceUrlWithCategory(String category) {
-        return getParentUri() + WS_ATOMFEED + category + "/" + RECENT_FEED;
+        return getParentUri() + WS_ATOMFEED + category + "/" + SyncConstants.RECENT_FEED;
     }
 
 }

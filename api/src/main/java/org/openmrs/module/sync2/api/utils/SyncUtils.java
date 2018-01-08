@@ -4,7 +4,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
+import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -22,11 +24,10 @@ import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
 
-
 public class SyncUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
 
-    private static final String ATOMFEED_TAG_VALUE_FIELD_NAME="Category.term";
+    private static final String ATOMFEED_TAG_VALUE_FIELD_NAME = "Category.term";
 
     public static Map<String, String> getLinks(String json) {
         ObjectMapper mapper = new ObjectMapper();
@@ -174,6 +175,6 @@ public class SyncUtils {
     }
 
     private static String getResourceUrlWithCategory(String category, SyncConfigurationService cs, String ws) {
-        return getParentUri(cs) + ws + category + "/recent";
+        return getParentUri(cs) + ws + category + "/" + SyncConstants.RECENT_FEED;
     }
 }
