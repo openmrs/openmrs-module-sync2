@@ -30,6 +30,8 @@ public class SyncConstants {
     public static final String FHIR_CLIENT_KEY = "fhir";
 
     public static final String REST_CLIENT_KEY = "rest";
+    
+    public static final String RECENT_FEED = "recent";
 
     public static final String ACTION_VOIDED = "VOIDED";
 
