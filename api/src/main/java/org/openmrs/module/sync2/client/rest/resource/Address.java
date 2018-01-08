@@ -1,10 +1,12 @@
 package org.openmrs.module.sync2.client.rest.resource;
 
 import com.google.gson.annotations.Expose;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.PersonAddress;
 
 import java.util.Date;
 
-public class Address {
+public class Address implements RestResource {
 
     private String uuid;
 
@@ -133,6 +135,28 @@ public class Address {
                 .append(endDate).append(",").append(latitude).append(",")
                 .append(longitude)
                 .toString();
+    }
+
+    @Override
+    public BaseOpenmrsObject getOpenMrsObject() {
+        PersonAddress address = new PersonAddress();
+        address.setAddress1(address1);
+        address.setAddress2(address2);
+        address.setAddress3(address3);
+        address.setAddress4(address4);
+        address.setAddress5(address5);
+        address.setAddress6(address6);
+        address.setStartDate(startDate);
+        address.setEndDate(endDate);
+        address.setLatitude(latitude);
+        address.setLongitude(longitude);
+        address.setCountyDistrict(countyDistrict);
+        address.setPostalCode(postalCode);
+        address.setCountry(country);
+        address.setStateProvince(stateProvince);
+        address.setCityVillage(cityVillage);
+        address.setUuid(uuid);
+        return address;
     }
 
     public static class Builder {
