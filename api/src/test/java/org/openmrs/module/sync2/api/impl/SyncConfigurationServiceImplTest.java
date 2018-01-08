@@ -13,12 +13,13 @@ import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
 import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
 
 public class SyncConfigurationServiceImplTest {
 
@@ -59,7 +60,7 @@ public class SyncConfigurationServiceImplTest {
         expectedSyncConfiguration.setPull(pull);
 
 
-        SyncConfiguration syncConfiguration = SyncUtils.parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
+        SyncConfiguration syncConfiguration = parseJsonFileToSyncConfiguration(sampleFeedConfigurationPath);
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());
@@ -84,7 +85,7 @@ public class SyncConfigurationServiceImplTest {
         SyncMethodConfiguration pull = new SyncMethodConfiguration(false, 24, classes);
         expectedSyncConfiguration.setPull(pull);
 
-        String json = SyncUtils.readResourceFile(sampleFeedConfigurationPath2);
+        String json = readResourceFile(sampleFeedConfigurationPath2);
         sync2ConfigurationService.saveConfiguration(json);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());

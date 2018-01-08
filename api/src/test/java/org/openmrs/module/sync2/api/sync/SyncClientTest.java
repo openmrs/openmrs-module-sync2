@@ -26,6 +26,8 @@ import java.util.TreeSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -63,8 +65,8 @@ public class SyncClientTest {
         BDDMockito.given(Context.getAdministrationService()).willReturn(administrationServiceMock);
         BDDMockito.given(Context.getAdministrationService()).willReturn(administrationServiceMock);
 
-        doReturn(USERNAME).when(administrationServiceMock).getGlobalProperty("sync2.user.login");
-        doReturn(PASSWORD).when(administrationServiceMock).getGlobalProperty("sync2.user.password");
+        doReturn(USERNAME).when(administrationServiceMock).getGlobalProperty(PARENT_USERNAME_PROPERTY);
+        doReturn(PASSWORD).when(administrationServiceMock).getGlobalProperty(PARENT_PASSWORD_PROPERTY);
         doReturn(PARENT_FEED_LOCATION).when(administrationServiceMock).getGlobalProperty("sync2.general.parentFeedLocation");
 
         links = new HashMap<>();

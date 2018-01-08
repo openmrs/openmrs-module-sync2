@@ -8,27 +8,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
+
 public class SyncClient {
 
-    private static final String PARENT_USERNAME_PROPERTY = "sync2.user.login";
-    private static final String PARENT_PASSWORD_PROPERTY = "sync2.user.password";
-
-    public Object pullDataFromParent(String category, String clientName, String pushUrl) {
+    public Object pullDataFromParent(String category, String clientName, String resourceUrl) {
         String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
         String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
 
         ClientFactory clientFactory = new ClientFactory();
         Client client = clientFactory.createClient(clientName);
-        return client.retrieveObject(category, pushUrl, username, password);
+
+        return client.retrieveObject(category, resourceUrl, username, password);
     }
 
-    public ResponseEntity<String> pushDataToParent(Object object, String clientName, String pushUrl) {
+    public ResponseEntity<String> pushDataToParent(Object object, String clientName, String resourceUrl) {
         String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
         String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
-
         Client client = new ClientFactory().createClient(clientName);
+
         try {
-            return client.createObject(pushUrl, username, password, object);
+            return client.createObject(resourceUrl, username, password, object);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
                     e.getStatusCode().value(), e.getResponseBodyAsString()), e);

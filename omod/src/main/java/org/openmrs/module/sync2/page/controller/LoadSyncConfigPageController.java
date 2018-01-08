@@ -28,6 +28,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
+
 @Controller
 public class LoadSyncConfigPageController {
 
@@ -48,7 +52,7 @@ public class LoadSyncConfigPageController {
                       @RequestParam(value = "importStatus", required = false) String importStatus,
                       @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService) {
         String configuration =
-                SyncUtils.writeSyncConfigurationToJsonString(syncConfigurationService.getSyncConfiguration());
+                writeSyncConfigurationToJsonString(syncConfigurationService.getSyncConfiguration());
         model.addAttribute("configuration", configuration);
         model.addAttribute("importStatus", importStatus);
         return VIEW_PROVIDER;
@@ -75,7 +79,7 @@ public class LoadSyncConfigPageController {
     @RequestMapping("/sync2/verifyJson")
     public SimpleObject verifyJson(@RequestParam("json") String json) throws SyncException {
         SimpleObject result = new SimpleObject();
-        if (SyncUtils.isValidateJson(json)) {
+        if (isValidateJson(json)) {
             result.put("isValid", true);
         } else  {
             LOGGER.warn("Invalid json.");
@@ -93,7 +97,7 @@ public class LoadSyncConfigPageController {
             writer = new StringWriter();
             IOUtils.copy(file.getInputStream(), writer, "UTF-8");
 
-            SyncConfiguration syncConfiguration = SyncUtils.parseJsonStringToSyncConfiguration(writer.toString());
+            SyncConfiguration syncConfiguration = parseJsonStringToSyncConfiguration(writer.toString());
             syncConfigurationService.saveConfiguration(syncConfiguration);
             model.addAttribute("importStatus", "");
             return "redirect:/sync2/sync2.page";
