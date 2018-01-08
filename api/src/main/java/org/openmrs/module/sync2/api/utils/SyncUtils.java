@@ -195,7 +195,7 @@ public class SyncUtils {
                                           SyncConfigurationService configurationService, String ws) {
         try {
             URI uri = new URI(getResourceUrlWithCategory(category, configurationService, ws));
-            AtomfeedUtils.resetMaxFailedEventsToDefaultValueDuringNextProcessing(atomFeedClient, uri);
+            AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
             atomFeedClient.setUri(uri);
             atomFeedClient.process();
         } catch (URISyntaxException e) {

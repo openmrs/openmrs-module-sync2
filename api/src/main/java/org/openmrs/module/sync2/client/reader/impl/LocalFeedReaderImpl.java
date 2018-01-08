@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.client.reader.impl;
 
 import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
-import org.openmrs.module.atomfeed.client.impl.AtomFeedClientImpl;
+import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -27,7 +27,8 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
     private SyncConfigurationService configurationService;
 
     public LocalFeedReaderImpl() {
-        this.atomFeedClient = new AtomFeedClientImpl(new LocalFeedWorker());
+        this.atomFeedClient = AtomFeedClientFactory.createClient(new LocalFeedWorker());
+        AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
     }
 
     @Override
@@ -44,7 +45,6 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
     private void readFeedByCategory(String category) {
         try {
             URI uri = new URI(getResourceUrlWithCategory(category));
-            AtomfeedUtils.resetMaxFailedEventsToDefaultValueDuringNextProcessing(atomFeedClient, uri);
             atomFeedClient.setUri(uri);
             atomFeedClient.process();
         } catch (URISyntaxException e) {
@@ -56,7 +56,6 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
 
     private String getResourceUrlWithCategory(String category) {
         String localFeedUri = configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
-        // TODO: Start reading from the last page read. Marks table.
         return localFeedUri + WS_ATOMFEED + category + "/" + SyncConstants.RECENT_FEED;
     }
 }
