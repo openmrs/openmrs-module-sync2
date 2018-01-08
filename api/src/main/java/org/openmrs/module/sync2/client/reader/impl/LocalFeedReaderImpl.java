@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
+import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.atomfeed.client.impl.AtomFeedClientImpl;
 import org.openmrs.module.sync2.SyncConstants;
@@ -43,6 +44,7 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
     private void readFeedByCategory(String category) {
         try {
             URI uri = new URI(getResourceUrlWithCategory(category));
+            AtomfeedUtils.resetMaxFailedEventsToDefaultValueDuringNextProcessing(atomFeedClient, uri);
             atomFeedClient.setUri(uri);
             atomFeedClient.process();
         } catch (URISyntaxException e) {
