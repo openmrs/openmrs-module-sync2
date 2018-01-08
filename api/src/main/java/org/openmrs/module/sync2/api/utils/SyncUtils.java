@@ -1,25 +1,17 @@
 package org.openmrs.module.sync2.api.utils;
 
-import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.type.TypeReference;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -36,75 +28,6 @@ public class SyncUtils {
 
     private static final String ATOMFEED_TAG_VALUE_FIELD_NAME="Category.term";
 
-    public static String readResourceFile(String file) throws SyncException {
-        try (InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(file)) {
-            if (in == null) {
-                throw new SyncException("Resource '" + file + "' doesn't exist");
-            }
-            return IOUtils.toString(in);
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-    }
-
-    public static SyncConfiguration parseJsonFileToSyncConfiguration(String resourcePath) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(readResourceFile(resourcePath), SyncConfiguration.class);
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-    }
-
-    public static SyncConfiguration parseJsonStringToSyncConfiguration(String value) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(value, SyncConfiguration.class);
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-    }
-
-    public static boolean isValidateJson(String json) throws SyncException {
-        try {
-            final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json);
-            while (parser.nextToken() != null) {}
-        } catch (JsonParseException jpe) {
-            return false;
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-        return true;
-    }
-
-    public static String writeSyncConfigurationToJsonString(SyncConfiguration syncConfiguration) throws SyncException {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        try {
-            return writer.writeValueAsString(syncConfiguration);
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-    }
-
-    public static void writeSyncConfigurationToJsonFile(SyncConfiguration syncConfigurations, String file)
-            throws SyncException {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        try {
-            File resultFile = new File(SyncUtils.class.getClassLoader().getResource("").getPath() + file);
-            writer.writeValue(resultFile, syncConfigurations);
-        } catch (IOException e) {
-            throw new SyncException(e);
-        }
-    }
-
-    public static boolean resourceFileExists(String path) {
-        InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(path);
-        return in != null;
-    }
-
-
     public static Map<String, String> getLinks(String json) {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
@@ -118,16 +41,20 @@ public class SyncUtils {
         }
     }
 
-    public static String getBaseUrl(String stringUri) {
+    public static String getParentBaseUrl(SyncConfigurationService configurationService) {
+        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
+    }
 
-        try {
-            URI uri = new URI(stringUri);
+    public static String getLocalBaseUrl(SyncConfigurationService configurationService) {
+        return configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
+    }
 
-            return uri.getScheme() + "://" + uri.getAuthority() + "/";
-        } catch(URISyntaxException e) {
-            throw new SyncException(String.format("Bad Atomfeed URI: %s. ", stringUri), e);
-        }
+    public static String getPushPath(String pathWithId) {
+        return pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+    }
 
+    public static String getFullUrl(String baseAddress, String path) {
+        return baseAddress + path;
     }
 
     public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
@@ -213,10 +140,6 @@ public class SyncUtils {
         String[] tokens = link.split("/");
         // todo throw custom sync2 exception if tokens.length != 5
         return tokens[4];
-    }
-
-    public static String getPushEndpointFromResourceUrl(String url) {
-        return url.substring(0, url.lastIndexOf("/"));
     }
 
     public static <T> String serializeMapToPrettyJson(Map<T, T> map) {

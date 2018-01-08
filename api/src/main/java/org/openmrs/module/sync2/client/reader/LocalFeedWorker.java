@@ -24,8 +24,9 @@ public class LocalFeedWorker implements FeedEventWorker {
 
         pushService.readDataAndPushToParent(
                 SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
-                SyncUtils.getLinks(event.getContent()), SyncUtils.getBaseUrl(event.getFeedUri()),
-                SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION));
+                SyncUtils.getLinks(event.getContent()),
+                SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)
+        );
     }
 
     @Override

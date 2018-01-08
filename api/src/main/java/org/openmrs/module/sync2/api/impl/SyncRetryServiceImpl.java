@@ -41,21 +41,27 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     }
 
     private AuditMessage retryPush(AuditMessage message) {
-        String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
-        parentAddress = SyncUtils.getBaseUrl(parentAddress);
+        AuditMessage newMessage =
+                syncPushService.readDataAndPushToParent(
+                        message.getResourceName(),
+                        message.getAvailableResourceUrlsAsMap(),
+                        message.getAction(),
+                        message.getLinkType()
+                );
 
-        AuditMessage newMessage = syncPushService.readDataAndPushToParent(message.getResourceName(),
-                message.getAvailableResourceUrlsAsMap(), parentAddress, message.getAction(), message.getLinkType());
         syncAuditService.setNextAudit(message, newMessage);
         return newMessage;
     }
 
     private AuditMessage retryPull(AuditMessage message) {
-        String parentAddress = configuration.getSyncConfiguration().getGeneral().getParentFeedLocation();
-        parentAddress = SyncUtils.getBaseUrl(parentAddress);
+        AuditMessage newMessage =
+                syncPullService.pullDataFromParentAndSave(
+                        message.getResourceName(),
+                        message.getAvailableResourceUrlsAsMap(),
+                        message.getAction(),
+                        message.getLinkType()
+                );
 
-        AuditMessage newMessage = syncPullService.pullDataFromParentAndSave(message.getResourceName(),
-                message.getAvailableResourceUrlsAsMap(), parentAddress, message.getAction(), message.getLinkType());
         syncAuditService.setNextAudit(message, newMessage);
         return newMessage;
     }

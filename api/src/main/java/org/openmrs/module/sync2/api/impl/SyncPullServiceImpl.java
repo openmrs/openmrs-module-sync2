@@ -13,42 +13,45 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getFullUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);
-   
-    @Autowired
-    private SyncConfigurationService configurationService;
-    
+
     @Autowired
     private SyncAuditService syncAuditService;
+
+    @Autowired
+    private SyncConfigurationService configurationService;
 
     private SyncClient syncClient = new SyncClient();
     private SyncPersistence syncPersistence = new SyncPersistence();
     
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String baseAddress,
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
-        LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, baseAddress, action));
-    
-        String pullUrl = getPullUrl(baseAddress, resourceLinks.get(clientName));
-        
-        AuditMessage auditMessage = prepareBaseAuditMessage();
+        String resourceURL = getFullUrl(getParentBaseUrl(configurationService), resourceLinks.get(clientName));
+
+        LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, resourceURL, action));
+
+        AuditMessage auditMessage = prepareBaseAuditMessage(PULL_OPERATION, configurationService);
         auditMessage.setResourceName(category);
-        auditMessage.setUsedResourceUrl(pullUrl);
+        auditMessage.setUsedResourceUrl(resourceURL);
         auditMessage.setLinkType(clientName);
-        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
+        auditMessage.setAvailableResourceUrls(serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
     
         try {
-            Object pulledObject = syncClient.pullDataFromParent(category, clientName, pullUrl);
+            Object pulledObject = syncClient.pullDataFromParent(category, clientName, resourceURL);
             syncPersistence.persistRetrievedData(pulledObject, action);
         
             auditMessage.setSuccess(true);
@@ -62,32 +65,11 @@ public class SyncPullServiceImpl implements SyncPullService {
         }
         return auditMessage;
     }
-    
+
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks, String baseAddress,
+    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return pullDataFromParentAndSave(category, resourceLinks, baseAddress, action, clientName);
-    }
-    
-    private String getPullUrl(String baseAddress, String resourceLink) {
-        return baseAddress + resourceLink;
-    }
-    
-    private String getParentUri() {
-        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
-    }
-    
-    private String getLocalUri() {
-        return configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
-    }
-    
-    private AuditMessage prepareBaseAuditMessage() {
-        AuditMessage auditMessage = new AuditMessage();
-        auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auditMessage.setOperation(PULL_OPERATION);
-        auditMessage.setParentUrl(getParentUri());
-        auditMessage.setLocalUrl(getLocalUri());
-        return auditMessage;
+        return pullDataFromParentAndSave(category, resourceLinks, action, clientName);
     }
 }
