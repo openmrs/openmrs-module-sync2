@@ -8,6 +8,7 @@ import org.openmrs.module.sync2.SyncModuleConfig;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface SyncAuditService extends OpenmrsService {
@@ -25,7 +26,7 @@ public interface SyncAuditService extends OpenmrsService {
     String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName) throws APIException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     AuditMessage saveAuditMessage(AuditMessage auditMessage) throws APIException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)

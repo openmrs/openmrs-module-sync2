@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.api.impl;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import org.apache.commons.lang3.BooleanUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.sync2.api.SyncAuditService;
@@ -51,9 +52,9 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     
     @Override
     public AuditMessage saveAuditMessage(AuditMessage auditMessage) {
-        boolean persistSuccessAudit = auditMessage.getSuccess()
+        boolean persistSuccessAudit = BooleanUtils.isTrue(auditMessage.getSuccess())
                 && configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit();
-        boolean persistFailureAudit = !auditMessage.getSuccess()
+        boolean persistFailureAudit = BooleanUtils.isFalse(auditMessage.getSuccess())
                 && configuration.getSyncConfiguration().getGeneral().isPersistFailureAudit();
         if (persistFailureAudit || persistSuccessAudit) {
             if (auditMessage.getTimestamp() == null) {
