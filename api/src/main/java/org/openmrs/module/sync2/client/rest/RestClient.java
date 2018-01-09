@@ -8,6 +8,8 @@ import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -48,6 +50,22 @@ public class RestClient implements Client {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
         RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
+        return restTemplate.postForEntity(url, restResource, String.class);
+    }
+
+    @Override
+    public ResponseEntity<String> deleteObject(String url, String username, String password, String uuid) {
+        restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
+        url += "/" + uuid;
+        return restTemplate.exchange(url, HttpMethod.DELETE, new HttpEntity<Object>(uuid), String.class);
+    }
+
+    @Override
+    public ResponseEntity<String> updateObject(String url, String username, String password, Object object) {
+        restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
+
+        RestResource restResource = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
+        url += "/" + ((OpenmrsObject) object).getUuid();
         return restTemplate.postForEntity(url, restResource, String.class);
     }
 

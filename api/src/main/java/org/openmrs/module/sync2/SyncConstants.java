@@ -31,4 +31,10 @@ public class SyncConstants {
 
     public static final String REST_CLIENT_KEY = "rest";
 
+    public static final String ACTION_VOIDED = "VOIDED";
+
+    public static final String ACTION_UPDATED = "UPDATED";
+
+    public static final String ACTION_CREATED = "CREATED";
+
 }

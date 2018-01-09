@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
@@ -53,8 +54,8 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            Object data = syncPersistence.retrieveData(clientName, category, uuid);
-            syncClient.pushDataToParent(data, clientName, resourceURL);
+            Object data = action.equals(ACTION_VOIDED) ? uuid : syncPersistence.retrieveData(clientName, category, uuid);
+            syncClient.pushDataToParent(data, clientName, resourceURL, action);
         
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);

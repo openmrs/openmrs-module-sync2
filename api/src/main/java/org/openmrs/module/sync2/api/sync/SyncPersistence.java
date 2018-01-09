@@ -4,6 +4,8 @@ import org.hl7.fhir.dstu3.model.DomainResource;
 import org.openmrs.Location;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.Patient;
+import org.openmrs.PersonAddress;
+import org.openmrs.PersonName;
 import org.openmrs.api.LocationService;
 import org.openmrs.Privilege;
 import org.openmrs.api.PatientService;
@@ -14,6 +16,11 @@ import org.openmrs.module.fhir.api.strategies.patient.PatientStrategyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
+import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
 
@@ -23,10 +30,6 @@ public class SyncPersistence {
     private static final String CATEGORY_PATIENT = "patient";
     private static final String CATEGORY_LOCATION = "location";
     private static final String CATEGORY_PRIVILEGE = "privilege";
-    
-    private static final String ACTION_DELETED = "DELETED";
-    private static final String ACTION_UPDATED = "UPDATED";
-    private static final String ACTION_CREATED = "CREATED";
     
     private static final String VOIDING_REASON = "Voided by Sync 2";
     
@@ -101,22 +104,72 @@ public class SyncPersistence {
     }
 
     private void persistOpenMrsPatient(Patient patient, String action) {
+        PatientService service = Context.getPatientService();
         switch (action) {
-            case ACTION_DELETED:
-                PatientService service = Context.getPatientService();
+            case ACTION_VOIDED:
                 Patient retrievedPatient = service.getPatientByUuid(patient.getUuid());
                 service.voidPatient(retrievedPatient, VOIDING_REASON);
                 break;
             case ACTION_UPDATED:
+                Patient updatedPatient = service.getPatientByUuid(patient.getUuid());
+                updatePatientAttributes(patient, updatedPatient);
+                service.savePatient(updatedPatient);
+                break;
             default:
-                Context.getPatientService().savePatient(patient);
+                service.savePatient(patient);
                 break;
         }
     }
 
+    public static org.openmrs.Patient updatePatientAttributes(Patient newPatient, Patient oldPatient) {
+        Set<PersonName> allNames = oldPatient.getNames();
+
+        boolean needToSetPreferredName = false;
+        for (PersonName name : newPatient.getNames()) {
+            if (name.getPreferred()) {
+                needToSetPreferredName = true;
+            }
+        }
+        if (needToSetPreferredName) {
+            for (PersonName name : allNames) {
+                name.setPreferred(false);
+            }
+        }
+        allNames.addAll(newPatient.getNames());
+        oldPatient.setNames(allNames);
+
+        Set<PersonAddress> allAddress = oldPatient.getAddresses();
+        for (PersonAddress newAddress : newPatient.getAddresses()) {
+            boolean needToAddNew = true;
+            for (PersonAddress oldAddress : oldPatient.getAddresses()) {
+                if (newAddress.equalsContent(oldAddress)) {
+                    needToAddNew = false;
+                    break;
+                }
+            }
+            if (needToAddNew) {
+                if (newAddress.isPreferred()) {
+                    for (PersonAddress address : allAddress) {
+                        address.setPreferred(false);
+                    }
+                }
+                allAddress.add(newAddress);
+            }
+        }
+        oldPatient.setAddresses(allAddress);
+
+        oldPatient.setPersonVoided(newPatient.getVoided());
+        if (newPatient.getVoided()) {
+            oldPatient.setPersonVoidReason(VOIDING_REASON);
+        }
+        oldPatient.setBirthdate(newPatient.getBirthdate());
+        oldPatient.setGender(newPatient.getGender());
+        return oldPatient;
+    }
+
     private void persistOpenMrsPrivilege(Privilege privilege, String action) {
         switch (action) {
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 UserService service = Context.getUserService();
                 Privilege purgePrivilege = service.getPrivilegeByUuid(privilege.getUuid());
                 service.purgePrivilege(purgePrivilege);
@@ -130,7 +183,7 @@ public class SyncPersistence {
 
     private void persistOpenMrsLocation(Location location, String action) {
         switch (action) {
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 LocationService service = Context.getLocationService();
                 Location retrievedLocation = service.getLocationByUuid(location.getUuid());
                 service.retireLocation(retrievedLocation, VOIDING_REASON);
@@ -147,7 +200,7 @@ public class SyncPersistence {
             case ACTION_UPDATED:
                 PatientStrategyUtil.getPatientStrategy().updatePatient(patient, patient.getId());
                 break;
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 PatientStrategyUtil.getPatientStrategy().deletePatient(patient.getId());
                 break;
             case ACTION_CREATED:
@@ -163,7 +216,7 @@ public class SyncPersistence {
             case ACTION_UPDATED:
                 LocationStrategyUtil.getLocationStrategy().updateLocation(location.getId(), location);
                 break;
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 LocationStrategyUtil.getLocationStrategy().deleteLocation(location.getId());
                 break;
             case ACTION_CREATED:
