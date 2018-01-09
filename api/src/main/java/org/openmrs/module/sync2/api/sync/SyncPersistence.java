@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
+import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
 
@@ -27,10 +30,6 @@ public class SyncPersistence {
     private static final String CATEGORY_PATIENT = "patient";
     private static final String CATEGORY_LOCATION = "location";
     private static final String CATEGORY_PRIVILEGE = "privilege";
-    
-    private static final String ACTION_DELETED = "DELETED";
-    private static final String ACTION_UPDATED = "UPDATED";
-    private static final String ACTION_CREATED = "CREATED";
     
     private static final String VOIDING_REASON = "Voided by Sync 2";
     
@@ -107,7 +106,7 @@ public class SyncPersistence {
     private void persistOpenMrsPatient(Patient patient, String action) {
         PatientService service = Context.getPatientService();
         switch (action) {
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 Patient retrievedPatient = service.getPatientByUuid(patient.getUuid());
                 service.voidPatient(retrievedPatient, VOIDING_REASON);
                 break;
@@ -170,7 +169,7 @@ public class SyncPersistence {
 
     private void persistOpenMrsPrivilege(Privilege privilege, String action) {
         switch (action) {
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 UserService service = Context.getUserService();
                 Privilege purgePrivilege = service.getPrivilegeByUuid(privilege.getUuid());
                 service.purgePrivilege(purgePrivilege);
@@ -184,7 +183,7 @@ public class SyncPersistence {
 
     private void persistOpenMrsLocation(Location location, String action) {
         switch (action) {
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 LocationService service = Context.getLocationService();
                 Location retrievedLocation = service.getLocationByUuid(location.getUuid());
                 service.retireLocation(retrievedLocation, VOIDING_REASON);
@@ -201,7 +200,7 @@ public class SyncPersistence {
             case ACTION_UPDATED:
                 PatientStrategyUtil.getPatientStrategy().updatePatient(patient, patient.getId());
                 break;
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 PatientStrategyUtil.getPatientStrategy().deletePatient(patient.getId());
                 break;
             case ACTION_CREATED:
@@ -217,7 +216,7 @@ public class SyncPersistence {
             case ACTION_UPDATED:
                 LocationStrategyUtil.getLocationStrategy().updateLocation(location.getId(), location);
                 break;
-            case ACTION_DELETED:
+            case ACTION_VOIDED:
                 LocationStrategyUtil.getLocationStrategy().deleteLocation(location.getId());
                 break;
             case ACTION_CREATED:
