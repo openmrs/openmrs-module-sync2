@@ -144,6 +144,17 @@ public class SyncAuditServiceImplTest {
     }
     
     @Test
+    public void saveAuditMessage_shouldNotFailedIfBooleanObjectIsNotSet() {
+        AuditMessage auditMessage = new AuditMessage();
+        
+        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
+        when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
+        
+        auditService.saveAuditMessage(auditMessage);
+    }
+    
+    @Test
     public void saveAuditMessage_shouldNotSaveFailureAudit() {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setSuccess(false);
