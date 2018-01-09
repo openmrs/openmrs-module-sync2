@@ -6,7 +6,6 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
-import org.openmrs.module.sync2.api.sync.SyncPersistence;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +18,11 @@ import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getLocalBaseUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getFullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushPath;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
-
 
 @Component("sync2.syncPushService")
 public class SyncPushServiceImpl implements SyncPushService {
@@ -36,27 +35,27 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncConfigurationService configurationService;
 
     private SyncClient syncClient = new SyncClient();
-    private SyncPersistence syncPersistence = new SyncPersistence();
 
     @Override
     public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks,
                                                 String action, String clientName) {
-        String resourceURL = getFullUrl(getParentBaseUrl(configurationService), getPushPath(resourceLinks.get(clientName)));
+        String parentResourceURL = getFullUrl(getParentBaseUrl(configurationService), getPushPath(resourceLinks.get(clientName)));
+        String localResourceURL = getFullUrl(getLocalBaseUrl(configurationService), resourceLinks.get(clientName));
 
-        LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, resourceURL, action));
+        LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, parentResourceURL, action));
         
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
     
         AuditMessage auditMessage = prepareBaseAuditMessage(PUSH_OPERATION, configurationService);
         auditMessage.setResourceName(category);
-        auditMessage.setUsedResourceUrl(resourceURL);
+        auditMessage.setUsedResourceUrl(parentResourceURL);
         auditMessage.setLinkType(clientName);
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            Object data = action.equals(ACTION_VOIDED) ? uuid : syncPersistence.retrieveData(clientName, category, uuid);
-            syncClient.pushDataToParent(data, clientName, resourceURL, action);
-        
+            Object data = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, localResourceURL);
+            syncClient.pushData(data, clientName, parentResourceURL, action);
+
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);
         } catch (Exception e) {

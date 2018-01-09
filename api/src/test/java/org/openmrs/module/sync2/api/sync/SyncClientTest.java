@@ -90,7 +90,7 @@ public class SyncClientTest {
     public void pullDataFromParent_shouldCallRestClient() {
         SyncClient resourceManager = new SyncClient();
 
-        Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, REST_CLIENT_KEY,
+        Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, REST_CLIENT_KEY,
                 REST_FULL_RESOURCE_URL);
 
         assertThat(pulledObject, is(expectedPatient));
@@ -100,7 +100,7 @@ public class SyncClientTest {
     public void pullDataFromParent_shouldCallFHIRClient() {
         SyncClient resourceManager = new SyncClient();
 
-        Object pulledObject = resourceManager.pullDataFromParent(PATIENT_CATEGORY, FHIR_CLIENT_KEY,
+        Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, FHIR_CLIENT_KEY,
                 FHIR_FULL_RESOURCE_URL);
 
         assertThat(pulledObject, is(expectedPatient));

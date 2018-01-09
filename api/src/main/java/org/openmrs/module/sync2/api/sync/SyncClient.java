@@ -20,7 +20,7 @@ public class SyncClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncClient.class);
 
-    public Object pullDataFromParent(String category, String clientName, String resourceUrl) {
+    public Object pullData(String category, String clientName, String resourceUrl) {
         String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
         String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
 
@@ -30,7 +30,7 @@ public class SyncClient {
         return client.retrieveObject(category, resourceUrl, username, password);
     }
 
-    public ResponseEntity<String> pushDataToParent(Object object, String clientName, String resourceUrl, String action) {
+    public ResponseEntity<String> pushData(Object object, String clientName, String resourceUrl, String action) {
         String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
         String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
         Client client = new ClientFactory().createClient(clientName);
