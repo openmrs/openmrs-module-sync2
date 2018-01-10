@@ -57,7 +57,7 @@ public class SyncPullServiceImpl implements SyncPullService {
 
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PULL_SUCCESS_MESSAGE);
-        } catch (Exception e) {
+        } catch (Error | Exception e) {
             LOGGER.error("Problem with pulling from parent", e);
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));

@@ -58,7 +58,7 @@ public class SyncPushServiceImpl implements SyncPushService {
 
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);
-        } catch (Exception e) {
+        } catch (Error | Exception e) {
             LOGGER.error("Problem with pushing to parent", e);
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
