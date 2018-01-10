@@ -41,7 +41,7 @@ public class SyncPullServiceImpl implements SyncPullService {
                                                   String action, String clientName) {
         String parentResourceURL = getFullUrl(getParentBaseUrl(configurationService), resourceLinks.get(clientName));
         String localResourceURL = getFullUrl(getLocalBaseUrl(configurationService), getPushPath(resourceLinks.get(clientName)));
-
+        boolean pulledObjectExist = false;
         LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, parentResourceURL, action));
 
         AuditMessage auditMessage = prepareBaseAuditMessage(PULL_OPERATION, configurationService);
@@ -50,19 +50,26 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setLinkType(clientName);
         auditMessage.setAvailableResourceUrls(serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
-    
+
         try {
             Object pulledObject = syncClient.pullData(category, clientName, parentResourceURL);
-            syncClient.pushData(pulledObject, clientName, localResourceURL, action);
+            Object localPulledObject = syncClient.pullData(category, clientName, parentResourceURL);
+
+            pulledObjectExist = pulledObject.equals(localPulledObject);
+            if (!pulledObjectExist) {
+                syncClient.pushData(pulledObject, clientName, localResourceURL, action);
+            }
 
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PULL_SUCCESS_MESSAGE);
+
         } catch (Error | Exception e) {
             LOGGER.error("Problem with pulling from parent", e);
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            auditMessage = syncAuditService.saveAuditMessage(auditMessage);
+            if (!pulledObjectExist)
+                auditMessage = syncAuditService.saveAuditMessage(auditMessage);
         }
         return auditMessage;
     }
@@ -73,4 +80,5 @@ public class SyncPullServiceImpl implements SyncPullService {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
         return pullDataFromParentAndSave(category, resourceLinks, action, clientName);
     }
+
 }
