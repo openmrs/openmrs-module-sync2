@@ -1,7 +1,8 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
+import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
-import org.openmrs.module.atomfeed.client.impl.AtomFeedClientImpl;
+import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -26,7 +27,8 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
     private SyncConfigurationService configurationService;
 
     public LocalFeedReaderImpl() {
-        this.atomFeedClient = new AtomFeedClientImpl(new LocalFeedWorker());
+        this.atomFeedClient = AtomFeedClientFactory.createClient(new LocalFeedWorker());
+        AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.reader.impl;
 
+import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
@@ -25,6 +26,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
 
     public ParentFeedReaderImpl() {
         this.atomFeedClient = AtomFeedClientFactory.createClient(new ParentFeedWorker());
+        AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
     }
 
     public void readAllFeedsForPull() {
