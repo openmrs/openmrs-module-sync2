@@ -4,6 +4,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.api.context.Context;
 
 import java.util.List;
+import java.util.Objects;
 
 public class IdentifierType implements RestResource {
     private String uuid;
@@ -62,4 +63,36 @@ public class IdentifierType implements RestResource {
         return Context.getPatientService().getPatientIdentifierTypeByUuid(uuid);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        IdentifierType that = (IdentifierType) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(links, that.links);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(uuid, name, description, links);
+    }
+
+    @Override
+    public String toString() {
+        return "IdentifierType{" +
+                "uuid='" + uuid + '\'' +
+                ", display='" + display + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", links=" + links +
+                '}';
+    }
 }

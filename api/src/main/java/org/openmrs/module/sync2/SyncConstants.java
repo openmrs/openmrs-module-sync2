@@ -43,4 +43,10 @@ public class SyncConstants {
 
     public static final String ACTION_CREATED = "CREATED";
 
+    public static final String CATEGORY_PATIENT = "patient";
+
+    public static final String CATEGORY_LOCATION = "location";
+
+    public static final String CATEGORY_PRIVILEGE = "privilege";
+
 }

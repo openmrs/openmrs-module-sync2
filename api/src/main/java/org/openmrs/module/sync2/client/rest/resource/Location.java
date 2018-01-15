@@ -4,6 +4,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.api.context.Context;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Location implements RestResource {
     private String uuid;
@@ -268,4 +269,44 @@ public class Location implements RestResource {
         return omrsLocation;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Location location = (Location) o;
+        return Objects.equals(uuid, location.uuid) &&
+                Objects.equals(display, location.display) &&
+                Objects.equals(name, location.name) &&
+                Objects.equals(description, location.description) &&
+                Objects.equals(cityVillage, location.cityVillage) &&
+                Objects.equals(stateProvince, location.stateProvince) &&
+                Objects.equals(country, location.country) &&
+                Objects.equals(postalCode, location.postalCode) &&
+                Objects.equals(latitude, location.latitude) &&
+                Objects.equals(longitude, location.longitude) &&
+                Objects.equals(countryDistrict, location.countryDistrict) &&
+                Objects.equals(address1, location.address1) &&
+                Objects.equals(address2, location.address2) &&
+                Objects.equals(address3, location.address3) &&
+                Objects.equals(address4, location.address4) &&
+                Objects.equals(address5, location.address5) &&
+                Objects.equals(address6, location.address6) &&
+                Objects.equals(tags, location.tags) &&
+                Objects.equals(parentLocation, location.parentLocation) &&
+                Objects.equals(childLocations, location.childLocations) &&
+                Objects.equals(retired, location.retired) &&
+                Objects.equals(links, location.links) &&
+                Objects.equals(resourceVersion, location.resourceVersion);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, display, name, description, cityVillage, stateProvince, country, postalCode, latitude, longitude, countryDistrict, address1, address2, address3, address4, address5, address6, tags, parentLocation, childLocations, retired, links, resourceVersion);
+    }
 }

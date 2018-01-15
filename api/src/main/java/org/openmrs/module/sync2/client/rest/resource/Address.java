@@ -5,6 +5,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.PersonAddress;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Address implements RestResource {
 
@@ -263,5 +264,38 @@ public class Address implements RestResource {
         public Address create() {
             return new Address(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Address address = (Address) o;
+        return Objects.equals(uuid, address.uuid) &&
+                Objects.equals(address1, address.address1) &&
+                Objects.equals(address2, address.address2) &&
+                Objects.equals(cityVillage, address.cityVillage) &&
+                Objects.equals(stateProvince, address.stateProvince) &&
+                Objects.equals(country, address.country) &&
+                Objects.equals(postalCode, address.postalCode) &&
+                Objects.equals(countyDistrict, address.countyDistrict) &&
+                Objects.equals(address3, address.address3) &&
+                Objects.equals(address4, address.address4) &&
+                Objects.equals(address5, address.address5) &&
+                Objects.equals(address6, address.address6) &&
+                Objects.equals(startDate, address.startDate) &&
+                Objects.equals(endDate, address.endDate) &&
+                Objects.equals(latitude, address.latitude) &&
+                Objects.equals(longitude, address.longitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, address1, address2, cityVillage, stateProvince, country, postalCode, countyDistrict, address3, address4, address5, address6, startDate, endDate, latitude, longitude);
     }
 }

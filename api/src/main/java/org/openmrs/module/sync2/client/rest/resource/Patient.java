@@ -5,10 +5,12 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 
+import java.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
 
 public class Patient implements RestResource {
 
@@ -108,5 +110,37 @@ public class Patient implements RestResource {
         patient.setBirthtime(person.getBirthtime());
 
         return patient;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Patient patient = (Patient) o;
+        return Objects.equals(uuid, patient.uuid) &&
+                Objects.equals(display, patient.display) &&
+                Objects.equals(identifiers, patient.identifiers) &&
+                Objects.equals(person, patient.person);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, display, identifiers, person);
+    }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "uuid='" + uuid + '\'' +
+                ", display='" + display + '\'' +
+                ", identifiers=" + identifiers +
+                ", person=" + person +
+                '}';
     }
 }

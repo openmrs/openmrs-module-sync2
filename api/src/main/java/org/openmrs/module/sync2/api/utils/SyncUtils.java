@@ -4,12 +4,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
-import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
+import org.openmrs.module.sync2.client.rest.resource.Location;
+import org.openmrs.module.sync2.client.rest.resource.Patient;
+import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_LOCATION;
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PRIVILEGE;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
@@ -130,6 +135,22 @@ public class SyncUtils {
             throw new SyncException(String.format("Error during processing atomfeeds for category %s: ", category), e);
         }
     }
+
+    public static Class getClass(String client, String category) {
+        switch (category) {
+            case CATEGORY_PATIENT:
+                return client.equals(REST_CLIENT_KEY) ? Patient.class : org.hl7.fhir.dstu3.model.Patient.class;
+            case CATEGORY_LOCATION:
+                return client.equals(REST_CLIENT_KEY) ? Location.class : org.hl7.fhir.dstu3.model.Location.class;
+            case CATEGORY_PRIVILEGE:
+                return Privilege.class;
+            default:
+                LOGGER.warn(String.format("Unrecognized category %s", category));
+                return null;
+        }
+    }
+
+
 
     private static String extractUUIDFromRestResource(String link) {
         String[] tokens = link.split("/");

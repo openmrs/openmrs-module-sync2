@@ -4,6 +4,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.api.context.Context;
 
 import java.util.List;
+import java.util.Objects;
 
 public class LocationTag implements RestResource {
     private String uuid;
@@ -75,5 +76,29 @@ public class LocationTag implements RestResource {
         }
 
         return Context.getLocationService().getLocationTagByName(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        LocationTag that = (LocationTag) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(retired, that.retired) &&
+                Objects.equals(links, that.links) &&
+                Objects.equals(resourceVersion, that.resourceVersion);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(uuid, name, description, retired, links, resourceVersion);
     }
 }

@@ -5,6 +5,7 @@ import org.openmrs.Concept;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Order of fields is taken from webservices
@@ -169,5 +170,58 @@ public class Person {
 
     public void setBirthtime(Date birthtime) {
         this.birthtime = birthtime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Person person = (Person) o;
+        return Objects.equals(uuid, person.uuid) &&
+                Objects.equals(display, person.display) &&
+                Objects.equals(preferredName, person.preferredName) &&
+                Objects.equals(preferredAddress, person.preferredAddress) &&
+                Objects.equals(names, person.names) &&
+                Objects.equals(addresses, person.addresses) &&
+                Objects.equals(birthdateEstimated, person.birthdateEstimated) &&
+                Objects.equals(age, person.age) &&
+                Objects.equals(gender, person.gender) &&
+                Objects.equals(dead, person.dead) &&
+                Objects.equals(causeOfDeath, person.causeOfDeath) &&
+                Objects.equals(deathDate, person.deathDate) &&
+                Objects.equals(voided, person.voided) &&
+                Objects.equals(deathdateEstimated, person.deathdateEstimated);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, display, preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead, causeOfDeath, deathDate, voided, deathdateEstimated);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "uuid='" + uuid + '\'' +
+                ", display='" + display + '\'' +
+                ", preferredName=" + preferredName +
+                ", preferredAddress=" + preferredAddress +
+                ", names=" + names +
+                ", addresses=" + addresses +
+                ", birthdate=" + birthdate +
+                ", birthdateEstimated=" + birthdateEstimated +
+                ", age=" + age +
+                ", gender='" + gender + '\'' +
+                ", dead=" + dead +
+                ", causeOfDeath=" + causeOfDeath +
+                ", deathDate=" + deathDate +
+                ", voided=" + voided +
+                ", deathdateEstimated=" + deathdateEstimated +
+                ", birthtime=" + birthtime +
+                '}';
     }
 }
