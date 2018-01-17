@@ -126,13 +126,26 @@ public class PersonName implements RestResource {
                 Objects.equals(middleName, that.middleName) &&
                 Objects.equals(familyName, that.familyName) &&
                 Objects.equals(familyName2, that.familyName2) &&
-                Objects.equals(voided, that.voided) &&
-                Objects.equals(links, that.links) &&
-                Objects.equals(resourceVersion, that.resourceVersion);
+                Objects.equals(voided, that.voided);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, display, givenName, middleName, familyName, familyName2, voided, links, resourceVersion);
+        return Objects.hash(uuid, display, givenName, middleName, familyName, familyName2, voided);
+    }
+
+    @Override
+    public String toString() {
+        return "PersonName{" +
+                "uuid='" + uuid + '\'' +
+                ", display='" + display + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", familyName='" + familyName + '\'' +
+                ", familyName2='" + familyName2 + '\'' +
+                ", voided=" + voided +
+                ", links=" + links +
+                ", resourceVersion='" + resourceVersion + '\'' +
+                '}';
     }
 }

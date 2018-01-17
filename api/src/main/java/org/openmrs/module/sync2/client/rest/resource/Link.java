@@ -38,7 +38,6 @@ public class Link {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(rel, url);
     }
 

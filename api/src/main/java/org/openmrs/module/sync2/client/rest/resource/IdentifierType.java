@@ -75,14 +75,12 @@ public class IdentifierType implements RestResource {
         IdentifierType that = (IdentifierType) o;
         return Objects.equals(uuid, that.uuid) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(links, that.links);
+                Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(uuid, name, description, links);
+        return Objects.hash(uuid, name, description);
     }
 
     @Override

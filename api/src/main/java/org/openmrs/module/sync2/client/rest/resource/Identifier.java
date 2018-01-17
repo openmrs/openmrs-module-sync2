@@ -127,14 +127,12 @@ public class Identifier implements RestResource {
                 Objects.equals(identifierType, that.identifierType) &&
                 Objects.equals(location, that.location) &&
                 Objects.equals(preferred, that.preferred) &&
-                Objects.equals(voided, that.voided) &&
-                Objects.equals(links, that.links);
+                Objects.equals(voided, that.voided);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(uuid, identifier, identifierType, location, preferred, voided, links);
+        return Objects.hash(uuid, identifier, identifierType, location, preferred, voided);
     }
 
     @Override

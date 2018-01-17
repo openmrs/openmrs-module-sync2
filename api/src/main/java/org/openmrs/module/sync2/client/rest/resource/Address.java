@@ -296,6 +296,7 @@ public class Address implements RestResource {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, address1, address2, cityVillage, stateProvince, country, postalCode, countyDistrict, address3, address4, address5, address6, startDate, endDate, latitude, longitude);
+        return Objects.hash(uuid, address1, address2, cityVillage, stateProvince, country, postalCode, countyDistrict,
+                address3, address4, address5, address6, startDate, endDate, latitude, longitude);
     }
 }

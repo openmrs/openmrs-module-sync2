@@ -301,12 +301,13 @@ public class Location implements RestResource {
                 Objects.equals(parentLocation, location.parentLocation) &&
                 Objects.equals(childLocations, location.childLocations) &&
                 Objects.equals(retired, location.retired) &&
-                Objects.equals(links, location.links) &&
-                Objects.equals(resourceVersion, location.resourceVersion);
+                Objects.equals(links, location.links);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, display, name, description, cityVillage, stateProvince, country, postalCode, latitude, longitude, countryDistrict, address1, address2, address3, address4, address5, address6, tags, parentLocation, childLocations, retired, links, resourceVersion);
+        return Objects.hash(uuid, display, name, description, cityVillage, stateProvince, country, postalCode,
+                latitude, longitude, countryDistrict, address1, address2, address3, address4, address5, address6,
+                tags, parentLocation, childLocations, retired);
     }
 }

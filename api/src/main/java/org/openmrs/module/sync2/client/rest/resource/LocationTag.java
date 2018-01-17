@@ -92,13 +92,11 @@ public class LocationTag implements RestResource {
                 Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(retired, that.retired) &&
-                Objects.equals(links, that.links) &&
-                Objects.equals(resourceVersion, that.resourceVersion);
+                Objects.equals(links, that.links);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(uuid, name, description, retired, links, resourceVersion);
+        return Objects.hash(uuid, name, description, retired);
     }
 }
