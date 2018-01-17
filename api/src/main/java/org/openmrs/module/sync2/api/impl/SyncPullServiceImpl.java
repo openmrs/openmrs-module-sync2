@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
@@ -20,12 +21,13 @@ import java.util.Map;
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PATIENT;
 import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getFullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getLocalBaseUrl;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushPath;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
@@ -88,14 +90,21 @@ public class SyncPullServiceImpl implements SyncPullService {
     private boolean compareLocalAndPulled(String clientName, String category, Object pulled, Object local) {
         boolean result;
 
-        if (clientName.equals(REST_CLIENT_KEY)) {
-            RestResource restLocal = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) local);
-            RestResource restPulled = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) pulled);
+        switch (clientName) {
+            case REST_CLIENT_KEY:
+                RestResource restLocal = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) local);
+                RestResource restPulled = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) pulled);
 
-            result = restLocal.equals(restPulled);
-        } else {
-            result = local.equals(pulled);
+                result = restLocal.equals(restPulled);
+                break;
+            case FHIR_CLIENT_KEY:
+                result = category.equals(CATEGORY_PATIENT) ?
+                        FHIRPatientUtil.compareCurrentPatients(local, pulled) : local.equals(pulled);
+                break;
+            default:
+                result = local.equals(pulled);
         }
+
         return result;
     }
 
