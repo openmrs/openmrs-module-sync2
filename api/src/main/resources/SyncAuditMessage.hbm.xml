@@ -22,7 +22,7 @@
         <property column="details" name="details" type="java.lang.String" />
         <property column="operation" name="operation" type="java.lang.String" />
         <property column="link_type" name="linkType" type="java.lang.String" />
-        <property column="next_message" name="nextMessage" type="int" />
+        <property column="next_message_uuid" name="nextMessageUuid" type="java.lang.String" />
 
         <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
 

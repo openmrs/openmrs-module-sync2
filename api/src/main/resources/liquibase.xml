@@ -33,7 +33,7 @@
             <column name="details" type="LONGTEXT"/>
             <column name="operation" type="varchar(255)"/>
             <column name="link_type" type="varchar(255)"/>
-            <column name="next_message" type="int" />
+            <column name="next_message_uuid" type="char(38)" />
 
             <column name="changed_by" type="varchar(255)" />
             <column name="creator" type="int"/>

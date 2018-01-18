@@ -22,8 +22,8 @@ public class AuditDetailsFragmentController {
 
     public void controller(FragmentModel model, FragmentRequest request,
                            @SpringBean("syncAuditService") SyncAuditService syncAuditService,
-                           @FragmentParam(value = "messageId", required = true) Integer messageId){
-        AuditMessage message = syncAuditService.getMessageById(messageId);
+                           @FragmentParam(value = "messageUuid", required = true) String messageUuid){
+        AuditMessage message = syncAuditService.getMessageByUuid(messageUuid);
 
         model.addAttribute("auditLog", message);
 
@@ -31,11 +31,11 @@ public class AuditDetailsFragmentController {
     }
 
     @RequestMapping(value = "/sync2/retry")
-    public SimpleObject retry(@RequestParam(value = "retryLogId") Integer messageId,
+    public SimpleObject retry(@RequestParam(value = "retryLogUuid") String messageUuid,
                               @SpringBean("syncAuditService") SyncAuditService syncAuditService,
                               @SpringBean("sync2.SyncRetryService") SyncRetryService syncRetryService,
                               HttpSession session, UiUtils ui)  {
-        AuditMessage message = syncAuditService.getMessageById(messageId);
+        AuditMessage message = syncAuditService.getMessageByUuid(messageUuid);
         message = syncRetryService.retryMessage(message);
         SimpleObject result = new SimpleObject();
 

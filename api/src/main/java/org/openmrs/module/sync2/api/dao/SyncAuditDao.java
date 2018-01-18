@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface SyncAuditDao {
 
+    AuditMessage getMessageByUuid(String uuid);
+
     AuditMessage getMessageById(Integer id);
 
     List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName);

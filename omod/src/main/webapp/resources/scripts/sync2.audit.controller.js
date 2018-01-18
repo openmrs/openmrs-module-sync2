@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
             }
         },
         fields: [ {
-                name: 'id', type: "number", visible: false
+                name: 'uuid', type: "number", visible: false
             }, {
                 title: titles[0], name: "resourceName", type: "select", items: syncResourceName, valueField: "id", textField: "name", sorting: true, filtering: true, width: '10%'
             }, {
@@ -53,12 +53,12 @@ jQuery(document).ready(function() {
             }
         ],
         rowClick: function(args) {
-            $("#jsGrid").jsGrid("fieldOption", "id", "visible", true);
+            $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", true);
             var $row = this.rowByItem(args.item);
-            var messageId = $row.children().first().text();
+            var messageUuid = $row.children().first().text();
             var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
-            window.location.href="details.page?messageId=" + messageId + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
-            $("#jsGrid").jsGrid("fieldOption", "id", "visible", false);
+            window.location.href="details.page?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", false);
         }
     });
 });

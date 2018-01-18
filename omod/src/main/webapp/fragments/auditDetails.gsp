@@ -12,7 +12,7 @@
 
 <table>
     <% if (auditLog != null) { %>
-    <span id="retryLogId" hidden>${auditLog.id}</span>
+    <span id="retryLogUuid" hidden>${auditLog.uuid}</span>
     <tr>
         <th class="label">${ ui.message(messagesPrefix + ".resource") }</th>
         <td>${ auditLog.resourceName }</td>
@@ -73,9 +73,9 @@
 
 <% if (auditLog != null && !auditLog.success) { %>
     <br />
-    <% if (auditLog.nextMessage != null) { %>
+    <% if (auditLog.nextMessageUuid != null) { %>
         <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
-            [messageId: auditLog.nextMessage, backPage: param.backPage[0], backPageIndex: param.backPageIndex]) }">
+            [messageUuid: auditLog.nextMessageUuid, backPage: param.backPage[0], backPageIndex: param.backPageIndex]) }">
             <i class="icon-chevron-right"></i>
             ${ ui.message(messagesPrefix + '.nextMessage') }
         </a>

@@ -18,7 +18,7 @@
 </script>
 
 <div id="apps">
-    ${ ui.includeFragment("sync2", "auditDetails", [messageId: param.messageId, pageIndex: param.backPageIndex]) }
+    ${ ui.includeFragment("sync2", "auditDetails", [messageUuid: param.messageUuid, pageIndex: param.backPageIndex]) }
     <a class="button cancel" href="${ ui.pageLink(artifactId, param.backPage[0], [pageIndex: param.backPageIndex]) }">
         ${ ui.message("general.cancel") }
     </a>

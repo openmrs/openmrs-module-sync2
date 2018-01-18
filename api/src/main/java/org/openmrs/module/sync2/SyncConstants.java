@@ -15,7 +15,9 @@ public class SyncConstants {
 
     public static final String CONFIGURATION_DIR = "configuration";
 
-    public static final String ID_COLUMN_NAME = "id";
+    public static final String AUDIT_LOG_UUID_COLUMN_NAME = "uuid";
+
+    public static final String AUDIT_LOG_ID_COLUMN_NAME = "id";
 
     public static final String PULL_SUCCESS_MESSAGE = "Success";
 

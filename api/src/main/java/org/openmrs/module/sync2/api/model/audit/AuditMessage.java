@@ -46,7 +46,7 @@ public class AuditMessage extends BaseOpenmrsData {
 
     private String linkType;
 
-    private Integer nextMessage;
+    private String nextMessageUuid;
 
     public AuditMessage() {
     }
@@ -163,12 +163,12 @@ public class AuditMessage extends BaseOpenmrsData {
         this.linkType = linkType;
     }
 
-    public Integer getNextMessage() {
-        return nextMessage;
+    public String getNextMessageUuid() {
+        return nextMessageUuid;
     }
 
-    public void setNextMessage(Integer nextMessage) {
-        this.nextMessage = nextMessage;
+    public void setNextMessageUuid(String nextMessageUuid) {
+        this.nextMessageUuid = this.nextMessageUuid;
     }
 
     @Override
@@ -195,7 +195,7 @@ public class AuditMessage extends BaseOpenmrsData {
                 && Objects.equals(this.action, auditMessage.action)
                 && Objects.equals(this.operation, auditMessage.operation)
                 && Objects.equals(this.linkType, auditMessage.linkType)
-                && Objects.equals(this.nextMessage, auditMessage.nextMessage);
+                && Objects.equals(this.nextMessageUuid, auditMessage.nextMessageUuid);
     }
 
 
@@ -204,7 +204,7 @@ public class AuditMessage extends BaseOpenmrsData {
     public int hashCode() {
 
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
-                localUrl, action, details, action, linkType, nextMessage);
+                localUrl, action, details, action, linkType, nextMessageUuid);
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
@@ -228,7 +228,7 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("operation", src.operation);
             object.addProperty("details", src.details);
             object.addProperty("linkType", src.linkType);
-            object.addProperty("nextMessage", src.nextMessage);
+            object.addProperty("nextMessageUuid", src.nextMessageUuid);
 
             return object;
         }

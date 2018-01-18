@@ -2,8 +2,6 @@ package org.openmrs.module.sync2.api.dao.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -27,10 +25,17 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         return sessionFactory.getCurrentSession();
     }
 
+    public AuditMessage getMessageByUuid(String uuid) {
+        return (AuditMessage) getSession()
+                .createCriteria(AuditMessage.class)
+                .add(Restrictions.eq(SyncConstants.AUDIT_LOG_UUID_COLUMN_NAME, uuid))
+                .uniqueResult();
+    }
+
     public AuditMessage getMessageById(Integer id) {
         return (AuditMessage) getSession()
                 .createCriteria(AuditMessage.class)
-                .add(Restrictions.eq(SyncConstants.ID_COLUMN_NAME, id))
+                .add(Restrictions.eq(SyncConstants.AUDIT_LOG_ID_COLUMN_NAME, id))
                 .uniqueResult();
     }
 

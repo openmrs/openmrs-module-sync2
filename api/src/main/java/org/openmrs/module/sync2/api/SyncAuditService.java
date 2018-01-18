@@ -15,7 +15,15 @@ public interface SyncAuditService extends OpenmrsService {
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     @Transactional(readOnly = true)
+    AuditMessage getMessageByUuid(String uuid) throws APIException;
+
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    @Transactional(readOnly = true)
     AuditMessage getMessageById(Integer id) throws APIException;
+
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    @Transactional(readOnly = true)
+    String getJsonMessageByUuid(String uuid) throws APIException, JsonParseException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     @Transactional(readOnly = true)

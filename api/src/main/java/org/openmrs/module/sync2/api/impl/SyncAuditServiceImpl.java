@@ -28,26 +28,32 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
 
     @Override
+    public AuditMessage getMessageByUuid(String uuid) throws APIException {
+        return dao.getMessageByUuid(uuid);
+    }
+
+    @Override
     public AuditMessage getMessageById(Integer id) throws APIException {
         return dao.getMessageById(id);
     }
 
     @Override
+    public String getJsonMessageByUuid(String uuid) throws APIException, JsonParseException {
+        AuditMessage auditMessage = dao.getMessageByUuid(uuid);
+        return serializeResultsWithAuditMessage(auditMessage);
+    }
+
+    @Override
     public String getJsonMessageById(Integer id) throws APIException, JsonParseException {
         AuditMessage auditMessage = dao.getMessageById(id);
-
-        GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
-        gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
-        Gson gson = gsonBuilder.create();
-
-        return gson.toJson(auditMessage);
+        return serializeResultsWithAuditMessage(auditMessage);
     }
 
     @Override
     public String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String operation, String resourceName) throws APIException {
         List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize, success, operation, resourceName);
         AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
-        return serializeResults(result);
+        return serializeResultsWithAuditMessage(result);
     }
     
     @Override
@@ -70,11 +76,11 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         if (current == null || next == null) {
             return null;
         }
-        current.setNextMessage(next.getId());
+        current.setNextMessageUuid(next.getUuid());
         return dao.saveItem(current);
     }
 
-    private String serializeResults(AuditMessageList results) {
+    private <T> String serializeResultsWithAuditMessage(T results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
