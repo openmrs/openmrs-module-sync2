@@ -91,7 +91,7 @@ public class SyncClientTest {
         SyncClient resourceManager = new SyncClient();
 
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, REST_CLIENT_KEY,
-                REST_FULL_RESOURCE_URL);
+                REST_FULL_RESOURCE_URL, true);
 
         assertThat(pulledObject, is(expectedPatient));
     }
@@ -101,7 +101,7 @@ public class SyncClientTest {
         SyncClient resourceManager = new SyncClient();
 
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, FHIR_CLIENT_KEY,
-                FHIR_FULL_RESOURCE_URL);
+                FHIR_FULL_RESOURCE_URL, true);
 
         assertThat(pulledObject, is(expectedPatient));
     }

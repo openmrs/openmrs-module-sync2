@@ -1,9 +1,13 @@
 package org.openmrs.module.sync2;
 
 public class SyncConstants {
-    public static final String PARENT_USERNAME_PROPERTY = "sync2.user.login";
+    public static final String PARENT_USERNAME_PROPERTY = "sync2.parent.user.login";
 
-    public static final String PARENT_PASSWORD_PROPERTY = "sync2.user.password";
+    public static final String PARENT_PASSWORD_PROPERTY = "sync2.parent.user.password";
+
+    public static final String LOCAL_USERNAME_PROPERTY = "sync2.local.user.login";
+
+    public static final String LOCAL_PASSWORD_PROPERTY = "sync2.local.user.password";
 
     public static final String SYNC2_PATH_TO_DEFAULT_CONFIGURATION = "defaultSyncConfiguration.json";
 
