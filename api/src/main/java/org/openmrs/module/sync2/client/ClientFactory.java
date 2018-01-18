@@ -1,8 +1,8 @@
 package org.openmrs.module.sync2.client;
 
 import org.openmrs.module.fhir.api.client.Client;
-import org.openmrs.module.fhir.api.client.FHIRClientFactory;
-import org.openmrs.module.sync2.client.rest.RestClientFactory;
+import org.openmrs.module.fhir.api.client.FHIRClient;
+import org.openmrs.module.sync2.client.rest.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +15,9 @@ public class ClientFactory {
     public Client createClient(final String clientType) {
         switch (clientType) {
             case REST_CLIENT_KEY:
-                return RestClientFactory.createClient();
+                return new RestClient();
             case FHIR_CLIENT_KEY:
-                return FHIRClientFactory.createClient();
+                return new FHIRClient();
             default:
                 LOGGER.warn(String.format("Unrecognized clientType: %s", clientType));
                 return null;

@@ -193,7 +193,7 @@
 		<javaCompilerVersion>1.8</javaCompilerVersion>
 		<fhirVersion>1.9.0-SNAPSHOT</fhirVersion>
 		<atomfeedVersion>1.0.0-SNAPSHOT</atomfeedVersion>
-		<commonsCodecVersion>1.9</commonsCodecVersion>
+		<gsonVersion>2.8.1</gsonVersion>
 	</properties>
 
     <distributionManagement>
