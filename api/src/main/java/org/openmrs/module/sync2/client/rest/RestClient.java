@@ -29,8 +29,7 @@ public class RestClient implements Client {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    public RestClient(ClientHttpRequestFactory clientHttpRequestFactory) {
-        restTemplate.setRequestFactory(clientHttpRequestFactory);
+    public RestClient() {
         restTemplate.setMessageConverters(Arrays.asList(new HttpMessageConverter<?>[]
                 { new RestHttpMessageConverter(), new StringHttpMessageConverter() }));
     }
