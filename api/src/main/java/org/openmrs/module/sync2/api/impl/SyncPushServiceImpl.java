@@ -53,8 +53,9 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
         auditMessage.setAction(action);
         try {
-            Object data = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, localResourceURL);
-            syncClient.pushData(data, clientName, parentResourceURL, action);
+            Object data = action.equals(ACTION_VOIDED) ? uuid :
+                    syncClient.pullData(category, clientName, localResourceURL, false);
+            syncClient.pushData(data, clientName, parentResourceURL, action, true);
 
             auditMessage.setSuccess(true);
             auditMessage.setDetails(PUSH_SUCCESS_MESSAGE);

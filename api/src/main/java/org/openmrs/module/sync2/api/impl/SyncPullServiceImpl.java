@@ -52,12 +52,12 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setAction(action);
 
         try {
-            Object pulledObject = syncClient.pullData(category, clientName, parentResourceURL);
-            Object localPulledObject = syncClient.pullData(category, clientName, parentResourceURL);
+            Object pulledObject = syncClient.pullData(category, clientName, parentResourceURL, true);
+            Object localPulledObject = syncClient.pullData(category, clientName, localResourceURL, false);
 
             pulledObjectExist = pulledObject.equals(localPulledObject);
             if (!pulledObjectExist) {
-                syncClient.pushData(pulledObject, clientName, localResourceURL, action);
+                syncClient.pushData(pulledObject, clientName, localResourceURL, action, false);
             }
 
             auditMessage.setSuccess(true);

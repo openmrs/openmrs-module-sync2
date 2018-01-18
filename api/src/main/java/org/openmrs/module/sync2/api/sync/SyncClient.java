@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -13,6 +14,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
+import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
 
@@ -20,9 +23,11 @@ public class SyncClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncClient.class);
 
-    public Object pullData(String category, String clientName, String resourceUrl) {
-        String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
-        String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
+    private String username;
+    private String password;
+
+    public Object pullData(String category, String clientName, String resourceUrl, boolean parent) {
+        setUpCredentials(parent);
 
         ClientFactory clientFactory = new ClientFactory();
         Client client = clientFactory.createClient(clientName);
@@ -30,9 +35,10 @@ public class SyncClient {
         return client.retrieveObject(category, resourceUrl, username, password);
     }
 
-    public ResponseEntity<String> pushData(Object object, String clientName, String resourceUrl, String action) {
-        String username = Context.getAdministrationService().getGlobalProperty(PARENT_USERNAME_PROPERTY);
-        String password = Context.getAdministrationService().getGlobalProperty(PARENT_PASSWORD_PROPERTY);
+    public ResponseEntity<String> pushData(Object object, String clientName,
+                                           String resourceUrl, String action, boolean parent) {
+        setUpCredentials(parent);
+
         Client client = new ClientFactory().createClient(clientName);
 
         try {
@@ -52,5 +58,15 @@ public class SyncClient {
                     e.getStatusCode().value(), e.getResponseBodyAsString()), e);
         }
         return null;
+    }
+
+    private void setUpCredentials(boolean parent) {
+        AdministrationService adminService = Context.getAdministrationService();
+
+        this.username = parent == true ? adminService.getGlobalProperty(PARENT_USERNAME_PROPERTY) :
+                adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
+
+        this.password = parent == true ? adminService.getGlobalProperty(PARENT_PASSWORD_PROPERTY) :
+                adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
     }
 }

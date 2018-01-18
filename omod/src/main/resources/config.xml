@@ -64,15 +64,27 @@
 
 	<!--Global Properties-->
 	<globalProperty>
-		<property>${project.parent.artifactId}.user.login</property>
+		<property>${project.parent.artifactId}.parent.user.login</property>
 		<defaultValue>admin</defaultValue>
 		<description>This is username for the parent instance.</description>
 	</globalProperty>
 
 	<globalProperty>
-		<property>${project.parent.artifactId}.user.password</property>
+		<property>${project.parent.artifactId}.parent.user.password</property>
 		<defaultValue>Admin123</defaultValue>
 		<description>This is password to the parent instance.</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>${project.parent.artifactId}.local.user.login</property>
+		<defaultValue>admin</defaultValue>
+		<description>This is username for the local instance.</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>${project.parent.artifactId}.local.user.password</property>
+		<defaultValue>Admin123</defaultValue>
+		<description>This is password to the local instance.</description>
 	</globalProperty>
 
 	<globalProperty>
