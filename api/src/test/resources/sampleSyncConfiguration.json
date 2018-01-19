@@ -2,6 +2,7 @@
   "general" : {
     "parentFeedLocation" : "",
     "localFeedLocation" : "defaultAddress",
+    "localInstanceId" : "localInstanceId",
     "persistSuccessAudit" : false,
     "persistFailureAudit" : false
   },
