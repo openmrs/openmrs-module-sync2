@@ -44,7 +44,7 @@ public class AuditDetailsFragmentController {
             result.put("url", "/sync2/auditList.page");
         } else if (message != null && !message.getSuccess()) {
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(RETRY_FAILED));
-            String newMessageUrl = "/sync2/details.page?messageId=" + message.getId() + "&backPage=auditList" + "&backPageIndex=" + 1;
+            String newMessageUrl = "/sync2/details.page?messageUuid=" + message.getUuid() + "&backPage=auditList" + "&backPageIndex=" + 1;
             result.put("url", newMessageUrl);
         }
 

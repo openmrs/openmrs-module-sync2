@@ -2,7 +2,6 @@
   "general" : {
     "parentFeedLocation" : "http://localhost:8081/openmrs",
     "localFeedLocation" : "http://localhost:8080/openmrs",
-    "localInstanceId" : "sampleInstanceId",
     "persistSuccessAudit" : true,
     "persistFailureAudit" : true
   },

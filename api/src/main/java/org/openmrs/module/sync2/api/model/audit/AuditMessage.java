@@ -168,7 +168,7 @@ public class AuditMessage extends BaseOpenmrsData {
     }
 
     public void setNextMessageUuid(String nextMessageUuid) {
-        this.nextMessageUuid = this.nextMessageUuid;
+        this.nextMessageUuid = nextMessageUuid;
     }
 
     @Override
