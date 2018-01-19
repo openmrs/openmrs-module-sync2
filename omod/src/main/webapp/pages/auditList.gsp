@@ -17,11 +17,17 @@
         { label: "${ ui.message('sync2.audit.label') }" }
     ];
     var titles = [
+        "${ ui.message('sync2.log.header.creatorInstanceId') }",
         "${ ui.message('sync2.log.header.resource') }",
         "${ ui.message('sync2.log.header.timestamp') }",
         "${ ui.message('sync2.log.header.url') }",
         "${ ui.message('sync2.log.header.status') }",
         "${ ui.message('sync2.log.header.operation') }"
+    ];
+
+    var originName = [
+        { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
+        { id: "<%= localInstanceId %>", name: "${ ui.message('sync2.log.origin.thisInstance') }" },
     ];
 
     var syncResourceName = [

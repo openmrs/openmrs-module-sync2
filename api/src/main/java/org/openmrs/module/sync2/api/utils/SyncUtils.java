@@ -65,6 +65,11 @@ public class SyncUtils {
         SyncConfigurationService cs = getSyncConfigurationService();
         return cs.getSyncConfiguration().getGeneral().getLocalFeedLocation();
     }
+    
+    public static String getLocalInstanceId() {
+        SyncConfigurationService cs = getSyncConfigurationService();
+        return cs.getSyncConfiguration().getGeneral().getLocalInstanceId();
+    }
 
     public static String getPullUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
         String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();

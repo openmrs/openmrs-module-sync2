@@ -40,7 +40,7 @@ public class LoadSyncConfigPageController {
     private static final String VIEW_PROVIDER = "loadSyncConfig";
 
     @Autowired
-    SyncConfigurationService syncConfigurationService;
+    private SyncConfigurationService syncConfigurationService;
 
     @Autowired
     @Qualifier("messageSourceService")
