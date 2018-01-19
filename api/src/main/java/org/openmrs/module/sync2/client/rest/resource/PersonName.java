@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import org.openmrs.BaseOpenmrsObject;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PersonName implements RestResource {
     private String uuid;
@@ -107,4 +108,30 @@ public class PersonName implements RestResource {
         personName.setVoided(voided);
         return personName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PersonName that = (PersonName) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(display, that.display) &&
+                Objects.equals(givenName, that.givenName) &&
+                Objects.equals(middleName, that.middleName) &&
+                Objects.equals(familyName, that.familyName) &&
+                Objects.equals(familyName2, that.familyName2) &&
+                Objects.equals(voided, that.voided);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, display, givenName, middleName, familyName, familyName2, voided);
+    }
+
 }

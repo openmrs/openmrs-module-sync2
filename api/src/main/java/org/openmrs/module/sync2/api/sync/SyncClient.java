@@ -4,6 +4,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.Client;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.client.ClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 
 public class SyncClient {
 
@@ -26,8 +28,8 @@ public class SyncClient {
     private String username;
     private String password;
 
-    public Object pullData(String category, String clientName, String resourceUrl, boolean parent) {
-        setUpCredentials(parent);
+    public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
+        setUpCredentials(instance);
 
         ClientFactory clientFactory = new ClientFactory();
         Client client = clientFactory.createClient(clientName);
@@ -36,8 +38,8 @@ public class SyncClient {
     }
 
     public ResponseEntity<String> pushData(Object object, String clientName,
-                                           String resourceUrl, String action, boolean parent) {
-        setUpCredentials(parent);
+                                           String resourceUrl, String action, OpenMRSSyncInstance instance) {
+        setUpCredentials(instance);
 
         Client client = new ClientFactory().createClient(clientName);
 
@@ -60,13 +62,13 @@ public class SyncClient {
         return null;
     }
 
-    private void setUpCredentials(boolean parent) {
+    private void setUpCredentials(OpenMRSSyncInstance instance) {
         AdministrationService adminService = Context.getAdministrationService();
 
-        this.username = parent == true ? adminService.getGlobalProperty(PARENT_USERNAME_PROPERTY) :
+        this.username = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_USERNAME_PROPERTY) :
                 adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
 
-        this.password = parent == true ? adminService.getGlobalProperty(PARENT_PASSWORD_PROPERTY) :
+        this.password = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_PASSWORD_PROPERTY) :
                 adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
     }
 }

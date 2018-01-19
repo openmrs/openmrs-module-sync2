@@ -4,6 +4,7 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.PatientIdentifierType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Identifier implements RestResource {
     private String display;
@@ -109,5 +110,28 @@ public class Identifier implements RestResource {
         patientIdentifier.setVoided(voided);
 
         return patientIdentifier;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Identifier that = (Identifier) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(identifier, that.identifier) &&
+                Objects.equals(identifierType, that.identifierType) &&
+                Objects.equals(location, that.location) &&
+                Objects.equals(preferred, that.preferred) &&
+                Objects.equals(voided, that.voided);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, identifier, identifierType, location, preferred, voided);
     }
 }

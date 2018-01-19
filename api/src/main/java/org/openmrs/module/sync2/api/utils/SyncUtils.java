@@ -4,12 +4,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
-import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
+import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.client.rest.resource.Location;
+import org.openmrs.module.sync2.client.rest.resource.Patient;
+import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_LOCATION;
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PRIVILEGE;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 
 public class SyncUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
@@ -42,20 +49,25 @@ public class SyncUtils {
         }
     }
 
-    public static String getParentBaseUrl(SyncConfigurationService configurationService) {
-        return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
+    public static String getParentBaseUrl() {
+        SyncConfigurationService cs = getSyncConfigurationService();
+        return cs.getSyncConfiguration().getGeneral().getParentFeedLocation();
     }
 
-    public static String getLocalBaseUrl(SyncConfigurationService configurationService) {
-        return configurationService.getSyncConfiguration().getGeneral().getLocalFeedLocation();
+    public static String getLocalBaseUrl() {
+        SyncConfigurationService cs = getSyncConfigurationService();
+        return cs.getSyncConfiguration().getGeneral().getLocalFeedLocation();
     }
 
-    public static String getPushPath(String pathWithId) {
-        return pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+    public static String getPullUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
+        String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+        return getFullUrl(base, resourceLinks.get(clientName));
     }
 
-    public static String getFullUrl(String baseAddress, String path) {
-        return baseAddress + path;
+    public static String getPushUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
+        String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+        return getFullUrl(base, getPushPath(resourceLinks.get(clientName)));
+
     }
 
     public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
@@ -70,6 +82,14 @@ public class SyncUtils {
             }
         }
         throw new SyncException(String.format("'%s' enum not found in tag list", atomfeedTagContent.name()));
+    }
+
+    private static String getFullUrl(String baseAddress, String path) {
+        return baseAddress + path;
+    }
+
+    private static String getPushPath(String pathWithId) {
+        return pathWithId.substring(0, pathWithId.lastIndexOf("/"));
     }
 
     private static String getTagValue(Object tag) {
@@ -131,6 +151,22 @@ public class SyncUtils {
         }
     }
 
+    public static Class getClass(String client, String category) {
+        switch (category) {
+            case CATEGORY_PATIENT:
+                return client.equals(REST_CLIENT_KEY) ? Patient.class : org.hl7.fhir.dstu3.model.Patient.class;
+            case CATEGORY_LOCATION:
+                return client.equals(REST_CLIENT_KEY) ? Location.class : org.hl7.fhir.dstu3.model.Location.class;
+            case CATEGORY_PRIVILEGE:
+                return Privilege.class;
+            default:
+                LOGGER.warn(String.format("Unrecognized category %s", category));
+                return null;
+        }
+    }
+
+
+
     private static String extractUUIDFromRestResource(String link) {
         String[] tokens = link.split("/");
         // todo throw custom sync2 exception if tokens.length != 6
@@ -176,5 +212,9 @@ public class SyncUtils {
 
     private static String getResourceUrlWithCategory(String category, SyncConfigurationService cs, String ws) {
         return getParentUri(cs) + ws + category + "/" + SyncConstants.RECENT_FEED;
+    }
+
+    private static SyncConfigurationService getSyncConfigurationService() {
+        return Context.getService(SyncConfigurationService.class);
     }
 }
