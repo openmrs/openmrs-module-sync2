@@ -34,6 +34,8 @@ public class SyncAuditServiceImplTest {
 
     private static final String AUDIT_MESSAGE_JSON = "/audit/sampleAuditMessage.json";
     private static final String PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON = "/audit/sampleAuditMessages.json";
+    
+    private static final Integer AUDIT_ID = 1;
     private static final String AUDIT_ACTION = "testAction";
     private static final String AUDIT_DETAILS = "testDetails";
     private static final String AUDIT_NAME = "test";
@@ -44,7 +46,8 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_LINK_TYPE = "test";
     private static final String AUDIT_NEXT_MESSAGE_UUID = "next_message_uuid";
     private static final String AUDIT_UUID = "9f3dccc9-6bc3-4a2b-862d-af4ce41caa28";
-
+    private static final String AUDIT_CREATOR_INSTANCE = "sampleCreatorInstance1";
+    
     @InjectMocks
     private SyncAuditServiceImpl auditService;
 
@@ -87,12 +90,10 @@ public class SyncAuditServiceImplTest {
 
     @Test
     public void getJsonMessageById() throws Exception {
-        Integer id = 1;
-
-        when(dao.getMessageById(id)).thenReturn(prepareAuditMessage(false));
+        when(dao.getMessageById(AUDIT_ID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageById(id);
+        String fetched = auditService.getJsonMessageById(AUDIT_ID);
 
         Assert.assertEquals(expected, fetched);
     }
@@ -218,7 +219,7 @@ public class SyncAuditServiceImplTest {
 
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
         AuditMessage newMessage = new AuditMessage();
-        newMessage.setId(1);
+        newMessage.setId(AUDIT_ID);
         newMessage.setAvailableResourceUrls(prepareDummyAvailableResourcesUrls());
         newMessage.setOperation(AUDIT_OPERATION);
         newMessage.setAction(AUDIT_ACTION);
@@ -229,15 +230,15 @@ public class SyncAuditServiceImplTest {
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
         newMessage.setLinkType(AUDIT_LINK_TYPE);
         newMessage.setNextMessageUuid(AUDIT_NEXT_MESSAGE_UUID);
+        newMessage.setCreatorInstanceId(AUDIT_CREATOR_INSTANCE);
+        newMessage.setUuid(AUDIT_UUID);
         newMessage.setSuccess(success);
-
+    
         String createDate = "2017-12-07 00:00:00";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date parsedDate = dateFormat.parse(createDate);
-
+    
         newMessage.setTimestamp(new java.sql.Timestamp(parsedDate.getTime()));
-
-        newMessage.setUuid(AUDIT_UUID);
         return newMessage;
     }
     
@@ -249,9 +250,11 @@ public class SyncAuditServiceImplTest {
         result.add(prepareAuditMessage(false));
 
         result.get(0).setResourceName("Test 1");
+        result.get(0).setId(AUDIT_ID);
         result.get(0).setUuid(AUDIT_UUID);
 
         result.get(1).setResourceName("Test 2");
+        result.get(0).setId(2);
         result.get(1).setUuid("74e75d4a-393c-4611-a903-883a0fd5fc6f");
 
         return result;

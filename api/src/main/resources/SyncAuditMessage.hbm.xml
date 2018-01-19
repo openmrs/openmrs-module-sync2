@@ -24,8 +24,8 @@
         <property column="link_type" name="linkType" type="java.lang.String" />
         <property column="next_message_uuid" name="nextMessageUuid" type="java.lang.String" />
 
-        <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by" />
-
+        <property column="creator_instance_id" name="creatorInstanceId" type="java.lang.String" />
+        <many-to-one column="changed_by" name="changedBy" class="org.openmrs.User" />
         <many-to-one column="creator" name="creator" class="org.openmrs.User" />
 
         <property name="dateCreated" type="java.util.Date"

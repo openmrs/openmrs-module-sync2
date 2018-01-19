@@ -47,7 +47,9 @@ public class AuditMessage extends BaseOpenmrsData {
     private String linkType;
 
     private String nextMessageUuid;
-
+    
+    private String creatorInstanceId;
+    
     public AuditMessage() {
     }
 
@@ -166,11 +168,19 @@ public class AuditMessage extends BaseOpenmrsData {
     public String getNextMessageUuid() {
         return nextMessageUuid;
     }
-
+    
     public void setNextMessageUuid(String nextMessageUuid) {
         this.nextMessageUuid = nextMessageUuid;
     }
-
+    
+    public String getCreatorInstanceId() {
+        return creatorInstanceId;
+    }
+    
+    public void setCreatorInstanceId(String creatorInstanceId) {
+        this.creatorInstanceId = creatorInstanceId;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -195,16 +205,15 @@ public class AuditMessage extends BaseOpenmrsData {
                 && Objects.equals(this.action, auditMessage.action)
                 && Objects.equals(this.operation, auditMessage.operation)
                 && Objects.equals(this.linkType, auditMessage.linkType)
-                && Objects.equals(this.nextMessageUuid, auditMessage.nextMessageUuid);
+                && Objects.equals(this.nextMessageUuid, auditMessage.nextMessageUuid)
+                && Objects.equals(this.creatorInstanceId, auditMessage.creatorInstanceId);
     }
-
-
-
+    
     @Override
     public int hashCode() {
 
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
-                localUrl, action, details, action, linkType, nextMessageUuid);
+                localUrl, action, details, action, linkType, nextMessageUuid, creatorInstanceId);
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
@@ -229,7 +238,8 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("details", src.details);
             object.addProperty("linkType", src.linkType);
             object.addProperty("nextMessageUuid", src.nextMessageUuid);
-
+            object.addProperty("creatorInstanceId", src.creatorInstanceId);
+    
             return object;
         }
     }
