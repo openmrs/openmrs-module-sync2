@@ -59,4 +59,14 @@
         </property>
     </bean>
 
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.openmrs.module.sync2.api.SyncConfigurationService</value>
+                <ref bean="sync2.syncConfigurationService" />
+            </list>
+        </property>
+    </bean>
+
+
 </beans>

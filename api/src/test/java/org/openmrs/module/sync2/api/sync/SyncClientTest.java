@@ -10,8 +10,6 @@ import org.openmrs.PersonName;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.FHIRClient;
-import org.openmrs.module.sync2.api.impl.SyncPullServiceImpl;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientFactory;
 import org.openmrs.module.sync2.client.rest.RestClient;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -24,10 +22,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -91,7 +89,7 @@ public class SyncClientTest {
         SyncClient resourceManager = new SyncClient();
 
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, REST_CLIENT_KEY,
-                REST_FULL_RESOURCE_URL, true);
+                REST_FULL_RESOURCE_URL, PARENT);
 
         assertThat(pulledObject, is(expectedPatient));
     }
@@ -101,7 +99,7 @@ public class SyncClientTest {
         SyncClient resourceManager = new SyncClient();
 
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, FHIR_CLIENT_KEY,
-                FHIR_FULL_RESOURCE_URL, true);
+                FHIR_FULL_RESOURCE_URL, PARENT);
 
         assertThat(pulledObject, is(expectedPatient));
     }
