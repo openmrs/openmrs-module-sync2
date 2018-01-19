@@ -133,14 +133,4 @@ public class Patient implements RestResource {
     public int hashCode() {
         return Objects.hash(uuid, display, identifiers, person);
     }
-
-    @Override
-    public String toString() {
-        return "Patient{" +
-                "uuid='" + uuid + '\'' +
-                ", display='" + display + '\'' +
-                ", identifiers=" + identifiers +
-                ", person=" + person +
-                '}';
-    }
 }

@@ -40,12 +40,4 @@ public class Link {
     public int hashCode() {
         return Objects.hash(rel, url);
     }
-
-    @Override
-    public String toString() {
-        return "Link{" +
-                "rel='" + rel + '\'' +
-                ", url='" + url + '\'' +
-                '}';
-    }
 }

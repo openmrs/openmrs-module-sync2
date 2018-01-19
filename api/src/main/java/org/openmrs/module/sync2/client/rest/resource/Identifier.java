@@ -134,19 +134,4 @@ public class Identifier implements RestResource {
     public int hashCode() {
         return Objects.hash(uuid, identifier, identifierType, location, preferred, voided);
     }
-
-    @Override
-    public String toString() {
-        return "Identifier{" +
-                "display='" + display + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", identifier='" + identifier + '\'' +
-                ", identifierType=" + identifierType +
-                ", location=" + location +
-                ", preferred=" + preferred +
-                ", voided=" + voided +
-                ", links=" + links +
-                ", resourceVersion='" + resourceVersion + '\'' +
-                '}';
-    }
 }

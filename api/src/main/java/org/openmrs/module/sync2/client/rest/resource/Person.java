@@ -203,25 +203,4 @@ public class Person {
         return Objects.hash(uuid, display, preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead, causeOfDeath, deathDate, voided, deathdateEstimated);
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "uuid='" + uuid + '\'' +
-                ", display='" + display + '\'' +
-                ", preferredName=" + preferredName +
-                ", preferredAddress=" + preferredAddress +
-                ", names=" + names +
-                ", addresses=" + addresses +
-                ", birthdate=" + birthdate +
-                ", birthdateEstimated=" + birthdateEstimated +
-                ", age=" + age +
-                ", gender='" + gender + '\'' +
-                ", dead=" + dead +
-                ", causeOfDeath=" + causeOfDeath +
-                ", deathDate=" + deathDate +
-                ", voided=" + voided +
-                ", deathdateEstimated=" + deathdateEstimated +
-                ", birthtime=" + birthtime +
-                '}';
-    }
 }

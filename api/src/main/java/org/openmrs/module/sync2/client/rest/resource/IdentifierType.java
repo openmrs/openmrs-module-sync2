@@ -82,15 +82,4 @@ public class IdentifierType implements RestResource {
     public int hashCode() {
         return Objects.hash(uuid, name, description);
     }
-
-    @Override
-    public String toString() {
-        return "IdentifierType{" +
-                "uuid='" + uuid + '\'' +
-                ", display='" + display + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", links=" + links +
-                '}';
-    }
 }

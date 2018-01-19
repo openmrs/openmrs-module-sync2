@@ -134,18 +134,4 @@ public class PersonName implements RestResource {
         return Objects.hash(uuid, display, givenName, middleName, familyName, familyName2, voided);
     }
 
-    @Override
-    public String toString() {
-        return "PersonName{" +
-                "uuid='" + uuid + '\'' +
-                ", display='" + display + '\'' +
-                ", givenName='" + givenName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", familyName='" + familyName + '\'' +
-                ", familyName2='" + familyName2 + '\'' +
-                ", voided=" + voided +
-                ", links=" + links +
-                ", resourceVersion='" + resourceVersion + '\'' +
-                '}';
-    }
 }
