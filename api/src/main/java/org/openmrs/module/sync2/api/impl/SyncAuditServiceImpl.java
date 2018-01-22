@@ -10,7 +10,7 @@ import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
+import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -52,10 +52,9 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     @Override
     public String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String operation,
                                        String resourceName, String creatorInstanceId) throws APIException {
-        List<AuditMessage> auditMessageList = dao.getPaginatedMessages(page, pageSize, success, operation,
+        PaginatedAuditMessages paginatedAuditMessages = dao.getPaginatedAuditMessages(page, pageSize, success, operation,
                 resourceName, creatorInstanceId);
-        AuditMessageList result = new AuditMessageList(dao.getCountOfMessages(), page, pageSize, auditMessageList);
-        return serializeResultsWithAuditMessage(result);
+        return serializeResultsWithAuditMessage(paginatedAuditMessages);
     }
     
     @Override

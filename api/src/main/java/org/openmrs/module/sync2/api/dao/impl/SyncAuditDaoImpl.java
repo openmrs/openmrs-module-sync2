@@ -4,14 +4,18 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.loader.criteria.CriteriaQueryTranslator;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -41,22 +45,21 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
                 .uniqueResult();
     }
 
-    public List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action,
-                                                   String resourceName, String creatorInstanceId) {
+    public PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String action,
+                                                        String resourceName, String creatorInstanceId) {
         Criteria selectCriteria = createSelectCriteria(success, action, resourceName, creatorInstanceId);
-
+        
+        Long itemCount = countRows(selectCriteria);
+        
         selectCriteria.setFirstResult((page - 1) * pageSize);
         selectCriteria.setMaxResults(pageSize);
-
-        return (List<AuditMessage>) selectCriteria.list();
+        List<AuditMessage> list = Collections.checkedList(selectCriteria.list(), AuditMessage.class);
+        
+        return new PaginatedAuditMessages(itemCount, page, pageSize, list);
     }
 
     public Long getCountOfMessages() {
-        return (Long) getSession()
-                .createCriteria(AuditMessage.class)
-                .setProjection(Projections.rowCount())
-                .list()
-                .get(0);
+        return countRows(getSession().createCriteria(AuditMessage.class));
     }
 
     public AuditMessage saveItem(AuditMessage auditMessage) {
@@ -84,5 +87,16 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         }
 
         return selectCriteria;
+    }
+    
+    private Long countRows(Criteria criteria) {
+        Long rows = (Long) criteria
+                .setProjection(Projections.rowCount())
+                .list()
+                .get(0);
+        // resetting criteria
+        criteria.setProjection(null)
+                .setResultTransformer(Criteria.ROOT_ENTITY);
+        return rows;
     }
 }

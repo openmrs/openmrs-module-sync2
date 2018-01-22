@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.api.model.audit;
 
 import java.util.List;
 
-public class AuditMessageList {
+public class PaginatedAuditMessages {
 
     private final Long itemsCount;
 
@@ -12,7 +12,7 @@ public class AuditMessageList {
 
     private final List<AuditMessage> data;
 
-    public AuditMessageList(Long itemsCount, Integer page, Integer pageSize, List<AuditMessage> data) {
+    public PaginatedAuditMessages(Long itemsCount, Integer page, Integer pageSize, List<AuditMessage> data) {
         this.itemsCount = itemsCount;
         this.page = page;
         this.pageSize = pageSize;
