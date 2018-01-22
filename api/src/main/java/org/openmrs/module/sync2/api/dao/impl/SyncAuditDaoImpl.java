@@ -28,14 +28,14 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
     public AuditMessage getMessageByUuid(String uuid) {
         return (AuditMessage) getSession()
                 .createCriteria(AuditMessage.class)
-                .add(Restrictions.eq(SyncConstants.AUDIT_LOG_UUID_COLUMN_NAME, uuid))
+                .add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME, uuid))
                 .uniqueResult();
     }
 
     public AuditMessage getMessageById(Integer id) {
         return (AuditMessage) getSession()
                 .createCriteria(AuditMessage.class)
-                .add(Restrictions.eq(SyncConstants.AUDIT_LOG_ID_COLUMN_NAME, id))
+                .add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_ID_FIELD_NAME, id))
                 .uniqueResult();
     }
 
@@ -66,16 +66,16 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
                                           String creatorInstanceId) {
         Criteria selectCriteria = getSession().createCriteria(AuditMessage.class);
         if (success != null) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.STATUS_COLUMN_NAME, success));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_STATUS_FIELD_NAME, success));
         }
         if (StringUtils.isNotEmpty(action)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.ACTION_COLUMN_NAME, action));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_ACTION_FIELD_NAME, action));
         }
         if (StringUtils.isNotEmpty(resourceName)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.RESOURCE_NAME_COLUMN_NAME, resourceName));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_RESOURCE_FIELD_NAME, resourceName));
         }
         if (StringUtils.isNotEmpty(creatorInstanceId)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.CREATOR_INSTANCE_ID_COLUMN_NAME, resourceName));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID, creatorInstanceId));
         }
 
         return selectCriteria;

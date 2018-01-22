@@ -15,9 +15,9 @@ public class SyncConstants {
 
     public static final String CONFIGURATION_DIR = "configuration";
 
-    public static final String AUDIT_LOG_UUID_COLUMN_NAME = "uuid";
+    public static final String AUDIT_MESSAGE_UUID_FIELD_NAME = "uuid";
 
-    public static final String AUDIT_LOG_ID_COLUMN_NAME = "id";
+    public static final String AUDIT_MESSAGE_ID_FIELD_NAME = "id";
 
     public static final String PULL_SUCCESS_MESSAGE = "Success";
 
@@ -25,13 +25,13 @@ public class SyncConstants {
 
     public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
   
-    public static final String ACTION_COLUMN_NAME = "action";
+    public static final String AUDIT_MESSAGE_ACTION_FIELD_NAME = "action";
 
-    public static final String RESOURCE_NAME_COLUMN_NAME = "resourceName";
+    public static final String AUDIT_MESSAGE_RESOURCE_FIELD_NAME = "resourceName";
 
-    public static final String STATUS_COLUMN_NAME = "success";
+    public static final String AUDIT_MESSAGE_STATUS_FIELD_NAME = "success";
 
-    public static final String CREATOR_INSTANCE_ID_COLUMN_NAME = "creator_instance_id";
+    public static final String AUDIT_MESSAGE_CREATOR_INSTANCE_ID = "creatorInstanceId";
 
     public static final String PULL_OPERATION = "PULL";
 
