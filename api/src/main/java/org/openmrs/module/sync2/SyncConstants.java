@@ -31,6 +31,8 @@ public class SyncConstants {
 
     public static final String STATUS_COLUMN_NAME = "success";
 
+    public static final String CREATOR_INSTANCE_ID_COLUMN_NAME = "creator_instance_id";
+
     public static final String PULL_OPERATION = "PULL";
 
     public static final String PUSH_OPERATION = "PUSH";

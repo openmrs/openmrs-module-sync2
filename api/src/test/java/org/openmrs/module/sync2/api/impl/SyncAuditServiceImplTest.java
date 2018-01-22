@@ -114,10 +114,11 @@ public class SyncAuditServiceImplTest {
         Integer pageSize = 100;
 
         List<AuditMessage> messages = prepareAuditMessages();
-        when(dao.getPaginatedMessages(page, pageSize, null, "", "")).thenReturn(messages);
+        when(dao.getPaginatedMessages(page, pageSize, null, "", "", ""))
+                .thenReturn(messages);
         when(dao.getCountOfMessages()).thenReturn((long) messages.size());
         String expected = readJsonFromFile(PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON);
-        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "");
+        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "", "");
 
         Assert.assertEquals(expected, fetched);
     }

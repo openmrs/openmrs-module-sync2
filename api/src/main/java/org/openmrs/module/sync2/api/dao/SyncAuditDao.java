@@ -11,7 +11,8 @@ public interface SyncAuditDao {
 
     AuditMessage getMessageById(Integer id);
 
-    List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName);
+    List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action,
+                                            String resourceName, String creatorInstanceId);
 
     Long getCountOfMessages();
 

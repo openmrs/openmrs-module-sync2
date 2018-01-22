@@ -1,10 +1,12 @@
 package org.openmrs.module.sync2.web.controller.rest;
 
 import com.google.gson.JsonParseException;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncModuleConfig;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.enums.InstanceIds;
 import org.openmrs.module.sync2.api.model.enums.Operation;
 import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.model.enums.Status;
@@ -46,17 +48,20 @@ public class SyncAuditRestController {
     public String getMessagesList(
             @RequestParam(value = "pageIndex", defaultValue = "1") Integer pageIndex,
             @RequestParam(value = "pageSize", defaultValue = "100") Integer pageSize,
-            @RequestParam(value = "success", required = false) String successEnum,
-            @RequestParam(value = "operation", required = false) String operationEnum,
-            @RequestParam(value = "resourceName", required = false) String resourceNameEnum) {
+            @RequestParam(value = "success") String successEnum,
+            @RequestParam(value = "operation") String operationEnum,
+            @RequestParam(value = "resourceName") String resourceNameEnum,
+            @RequestParam(value = "creatorInstanceId") String creatorInstanceId) {
         LOGGER.debug("Get messages list with " + pageIndex + " page index and " + pageSize + " page size");
 
+        String creatorInstanceRegex = extractCreatorInstanceRegex(creatorInstanceId);
         Boolean success = extractStatus(successEnum);
         String operation = extractOperation(operationEnum);
         String resource = extractResourceName(resourceNameEnum.toUpperCase());
 
         if (Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            return syncAuditService.getPaginatedMessages(pageIndex, pageSize, success, operation, resource);
+            return syncAuditService.getPaginatedMessages(pageIndex, pageSize, success, operation,
+                    resource, creatorInstanceRegex);
         }
         return null;
     }
@@ -64,7 +69,7 @@ public class SyncAuditRestController {
     private Boolean extractStatus(String enumValue) {
         try {
             return Status.valueOf(enumValue).isSuccess();
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable status: %s.", enumValue), e);
         }
     }
@@ -73,8 +78,7 @@ public class SyncAuditRestController {
         try {
             return Operation.valueOf(enumValue).name().equals(Operation.ALL.name()) ?
                     "" : Operation.valueOf(enumValue).name();
-
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable action: %s.", enumValue), e);
         }
     }
@@ -83,9 +87,21 @@ public class SyncAuditRestController {
         try {
             return Resources.valueOf(enumValue).name().equals(Resources.ALL.name()) ?
                     "" : Resources.valueOf(enumValue).getName();
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable resource: %s.", enumValue), e);
         }
     }
 
+    private String extractCreatorInstanceRegex(String enumValue) {
+        try {
+            return InstanceIds.valueOf(enumValue).getRegex();
+        } catch (IllegalArgumentException e) {
+            if (StringUtils.isNotBlank(enumValue)) {
+                LOGGER.info("Used creatorInstanceId with value: {}.", enumValue);
+                return enumValue;
+            } else {
+                throw new SyncException(String.format("There is no suitable creatorInstanceId: %s.", enumValue), e);
+            }
+        }
+    }
 }
