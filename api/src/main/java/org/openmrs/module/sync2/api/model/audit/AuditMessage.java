@@ -20,6 +20,7 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 @Persister(impl = SingleTableEntityPersister.class)
 public class AuditMessage extends BaseOpenmrsData {
+    
     private static final long serialVersionUID = 6106269076155338045L;
 
     private Integer id;
@@ -61,16 +62,6 @@ public class AuditMessage extends BaseOpenmrsData {
     @Override
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    @Override
-    public String getUuid() {
-        return super.getUuid();
-    }
-
-    @Override
-    public void setUuid(String uuid) {
-        super.setUuid(uuid);
     }
 
     public Boolean getSuccess() {
@@ -214,6 +205,27 @@ public class AuditMessage extends BaseOpenmrsData {
 
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
                 localUrl, action, details, action, linkType, nextMessageUuid, creatorInstanceId);
+    }
+    
+    @Override
+    public String toString() {
+        return "AuditMessage{" +
+                "uuid='" + getUuid() + '\'' +
+                ", id=" + id +
+                ", success=" + success +
+                ", timestamp=" + timestamp +
+                ", resourceName='" + resourceName + '\'' +
+                ", usedResourceUrl='" + usedResourceUrl + '\'' +
+                ", availableResourceUrls='" + availableResourceUrls + '\'' +
+                ", parentUrl='" + parentUrl + '\'' +
+                ", localUrl='" + localUrl + '\'' +
+                ", details='" + details + '\'' +
+                ", action='" + action + '\'' +
+                ", operation='" + operation + '\'' +
+                ", linkType='" + linkType + '\'' +
+                ", nextMessageUuid='" + nextMessageUuid + '\'' +
+                ", creatorInstanceId='" + creatorInstanceId + '\'' +
+                '}';
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
