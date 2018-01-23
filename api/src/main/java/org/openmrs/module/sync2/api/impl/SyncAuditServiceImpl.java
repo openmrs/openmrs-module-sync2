@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -88,5 +89,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         Gson gson = gsonBuilder.create();
 
         return gson.toJson(results);
+        
+       // return SyncUtils.serialize(results);
     }
 }

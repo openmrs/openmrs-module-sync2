@@ -26,15 +26,15 @@ import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readReso
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
-
-
+import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.serialize;
 
 public class SyncConfigurationUtilsTest {
 
     private static final String SAMPLE_SYNC_CONFIGURATION_PATH = "sampleSyncConfiguration.json";
     private static final String INCORRECT_SYNC_CONFIGURATION_PATH = "incorrectSyncConfiguration.json";
     private static final String SAMPLE_SERIALIZED_MAP = "sampleSerializedMap.json";
+    private static final String SAMPLE_PRETTY_SERIALIZED_MAP = "samplePrettySerializedMap.json";
 
     private static final String NOT_EXISTING_FILE_PATH = "pathToNotExistingFile";
     private static final SyncConfiguration EXPECTED_CONFIGURATION = new SyncConfiguration();
@@ -143,11 +143,16 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void serializeMapToPrettyJson_shouldSerializeMapWithStrings() throws SyncException {
-        Assert.assertEquals(readResourceFile(SAMPLE_SERIALIZED_MAP), serializeMapToPrettyJson(createSampleMap()));
+        Assert.assertEquals(readResourceFile(SAMPLE_PRETTY_SERIALIZED_MAP), prettySerialize(createSampleMap()));
+    }
+    
+    @Test
+    public void serialize_shouldSerializeMapToJson() throws SyncException {
+        Assert.assertEquals(readResourceFile(SAMPLE_SERIALIZED_MAP), serialize(createSampleMap()));
     }
 
     @Test
-    public void serializeMapToPrettyJson_shouldDeserializeMapWithStrings() throws SyncException {
+    public void deserializeJsonToStringsMap_shouldDeserializeMapWithStrings() throws SyncException {
         Assert.assertEquals(createSampleMap(),
                 SyncUtils.deserializeJsonToStringsMap(readResourceFile(SAMPLE_SERIALIZED_MAP)));
     }

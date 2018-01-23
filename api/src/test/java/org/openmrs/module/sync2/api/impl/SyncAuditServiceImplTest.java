@@ -243,8 +243,6 @@ public class SyncAuditServiceImplTest {
         return newMessage;
     }
     
-
-
     private List<AuditMessage> prepareAuditMessages() throws ParseException {
         List<AuditMessage> result = new ArrayList<>();
         result.add(prepareAuditMessage(true));

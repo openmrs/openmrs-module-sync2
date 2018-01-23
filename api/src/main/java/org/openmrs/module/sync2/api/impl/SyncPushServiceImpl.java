@@ -48,7 +48,7 @@ public class SyncPushServiceImpl implements SyncPushService {
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(parentPush);
         auditMessage.setLinkType(clientName);
-        auditMessage.setAvailableResourceUrls(SyncUtils.serializeMapToPrettyJson(resourceLinks));
+        auditMessage.setAvailableResourceUrls(SyncUtils.prettySerialize(resourceLinks));
         auditMessage.setAction(action);
 
         try {

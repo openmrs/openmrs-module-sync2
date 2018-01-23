@@ -225,7 +225,7 @@ public class SyncUtils {
         return tokens[4];
     }
 
-    public static <T> String serializeMapToPrettyJson(Map<T, T> map) {
+    public static <T> String prettySerialize(Map<T, T> map) {
         try {
             return new ObjectMapper()
                     .writerWithDefaultPrettyPrinter()
@@ -234,7 +234,23 @@ public class SyncUtils {
             throw new SyncException("Cannot serialize map", ex);
         }
     }
-
+    
+    public static <T> String serialize(T object) {
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        } catch (IOException ex) {
+            throw new SyncException("Cannot serialize", ex);
+        }
+    }
+    
+    public static <T> T deserialize(String object, Class<T> clazz) {
+        try {
+            return new ObjectMapper().readValue(object, clazz);
+        } catch (IOException ex) {
+            throw new SyncException("Cannot deserialize", ex);
+        }
+    }
+    
     public static Map<String, String> deserializeJsonToStringsMap(String json) {
         try {
             return new ObjectMapper().readValue(json, new TypeReference<Map<String, String>>() {});

@@ -9,6 +9,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -20,6 +24,8 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 
 @Persister(impl = SingleTableEntityPersister.class)
 public class AuditMessage extends BaseOpenmrsData {
+    
+    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
     private static final long serialVersionUID = 6106269076155338045L;
 
@@ -229,12 +235,12 @@ public class AuditMessage extends BaseOpenmrsData {
     }
     
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
-
+        
         @Override
         public JsonElement serialize(AuditMessage src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
 
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 
             object.addProperty("id", src.id);
             object.addProperty("uuid", src.getUuid());
@@ -255,5 +261,15 @@ public class AuditMessage extends BaseOpenmrsData {
             return object;
         }
     }
-
+    
+    public static class AuditMessageDeserializer implements JsonDeserializer<AuditMessage> {
+        
+        @Override
+        public AuditMessage deserialize(JsonElement jsonElement, Type type,
+                                        JsonDeserializationContext jsonDeserializationContext) {
+            Gson gson = new GsonBuilder().setDateFormat(DATE_FORMAT).create();
+            return gson.fromJson(jsonElement, type);
+        }
+    }
+    
 }
