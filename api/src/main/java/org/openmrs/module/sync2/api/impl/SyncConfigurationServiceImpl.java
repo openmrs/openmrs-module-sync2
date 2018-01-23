@@ -4,13 +4,19 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+
+import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_CUSTOM_CONFIGURATION;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_DEFAULT_CONFIGURATION;
+import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE;
+import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.RELATIVE;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.customConfigExists;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
@@ -25,14 +31,16 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
     private SyncSchedulerService schedulerService;
 
     public SyncConfigurationServiceImpl() {
-        this.syncConfiguration = resourceFileExists(SYNC2_PATH_TO_CUSTOM_CONFIGURATION) ?
-                parseJsonFileToSyncConfiguration(SYNC2_PATH_TO_CUSTOM_CONFIGURATION) :
-                parseJsonFileToSyncConfiguration(SYNC2_PATH_TO_DEFAULT_CONFIGURATION);
+        String configFilePath = getConfigFilePath();
+
+        this.syncConfiguration = customConfigExists(configFilePath) ?
+                parseJsonFileToSyncConfiguration(configFilePath, ABSOLUTE) :
+                parseJsonFileToSyncConfiguration(SYNC2_PATH_TO_DEFAULT_CONFIGURATION, RELATIVE);
     }
 
     @Override
     public void saveConfiguration(SyncConfiguration configuration) throws SyncException {
-        writeSyncConfigurationToJsonFile(configuration, SYNC2_PATH_TO_CUSTOM_CONFIGURATION);
+        writeSyncConfigurationToJsonFile(configuration, getConfigFilePath());
         this.syncConfiguration = configuration;
         schedulerService.runSyncScheduler();
     }
@@ -41,7 +49,7 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
     public void saveConfiguration(String jsonConfiguration) {
         if (isValidateJson(jsonConfiguration)) {
             SyncConfiguration customConfiguration = parseJsonStringToSyncConfiguration(jsonConfiguration);
-            writeSyncConfigurationToJsonFile(customConfiguration, SYNC2_PATH_TO_CUSTOM_CONFIGURATION);
+            writeSyncConfigurationToJsonFile(customConfiguration, getConfigFilePath());
             this.syncConfiguration = customConfiguration;
 
             schedulerService.runSyncScheduler();
@@ -53,4 +61,8 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
         return this.syncConfiguration;
     }
 
+    private String getConfigFilePath() {
+        File configFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(CONFIGURATION_DIR);
+        return new File(configFileFolder, SYNC2_PATH_TO_CUSTOM_CONFIGURATION).getAbsolutePath();
+    }
 }

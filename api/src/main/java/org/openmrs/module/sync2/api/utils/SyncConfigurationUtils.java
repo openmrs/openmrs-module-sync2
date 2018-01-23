@@ -8,12 +8,17 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE;
 
 public class SyncConfigurationUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigurationUtils.class);
@@ -29,10 +34,34 @@ public class SyncConfigurationUtils {
         }
     }
 
-    public static SyncConfiguration parseJsonFileToSyncConfiguration(String resourcePath) {
+    public static String readResourceFileAbsolutePath(String file)  {
+        File initialFile = new File(file);
+        InputStream targetStream;
+        try {
+            targetStream = new FileInputStream(initialFile);
+        } catch (FileNotFoundException e) {
+            throw new SyncException("File Not found", e);
+        }
+
+
+        try (InputStream in = targetStream) {
+            if (in == null) {
+                throw new SyncException("Resource '" + file + "' doesn't exist");
+            }
+            return IOUtils.toString(in);
+        } catch (IOException e) {
+            throw new SyncException(e);
+        }
+    }
+
+
+    public static SyncConfiguration parseJsonFileToSyncConfiguration(String path, ResourcePathType absolutePath) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(readResourceFile(resourcePath), SyncConfiguration.class);
+            String resourceFile = absolutePath.equals(ABSOLUTE) ?
+                    readResourceFileAbsolutePath(path) : readResourceFile(path);
+
+            return mapper.readValue(resourceFile, SyncConfiguration.class);
         } catch (IOException e) {
             throw new SyncException(e);
         }
@@ -69,12 +98,12 @@ public class SyncConfigurationUtils {
         }
     }
 
-    public static void writeSyncConfigurationToJsonFile(SyncConfiguration syncConfigurations, String file)
+    public static void writeSyncConfigurationToJsonFile(SyncConfiguration syncConfigurations, String absolutePath)
             throws SyncException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
         try {
-            File resultFile = new File(SyncUtils.class.getClassLoader().getResource("").getPath() + file);
+            File resultFile = new File(absolutePath);
             writer.writeValue(resultFile, syncConfigurations);
         } catch (IOException e) {
             throw new SyncException(e);
@@ -84,5 +113,9 @@ public class SyncConfigurationUtils {
     public static boolean resourceFileExists(String path) {
         InputStream in = SyncUtils.class.getClassLoader().getResourceAsStream(path);
         return in != null;
+    }
+
+    public static boolean customConfigExists(String path) {
+        return new File(path).exists();
     }
 }

@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,16 +9,26 @@ import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
+import org.openmrs.util.OpenmrsUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
+import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.RELATIVE;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFileAbsolutePath;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
@@ -68,13 +79,13 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void parseJsonFileToSyncConfiguration_shouldCorrectlyParseSampleConfiguration() throws SyncException {
-        SyncConfiguration result = parseJsonFileToSyncConfiguration(sampleSyncConfigurationPath);
+        SyncConfiguration result = parseJsonFileToSyncConfiguration(sampleSyncConfigurationPath, RELATIVE);
         Assert.assertEquals(expectedConfiguration, result);
     }
 
     @Test(expected = SyncException.class)
     public void parseJsonFileToSyncConfiguration_shouldThrowJsonParseException() throws SyncException {
-        parseJsonFileToSyncConfiguration(incorrectSyncConfigurationPath);
+        parseJsonFileToSyncConfiguration(incorrectSyncConfigurationPath, RELATIVE);
     }
 
     @Test
@@ -112,11 +123,14 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void shouldWriteSyncConfigurationToJsonFile() throws SyncException {
-        final String path = "newFile.txt";
+        final String path = new File(OpenmrsUtil.getDirectoryInApplicationDataDirectory(
+                CONFIGURATION_DIR).getAbsolutePath(), "sync2.json").getAbsolutePath();
+
         writeSyncConfigurationToJsonFile(expectedConfiguration, path);
 
         String expected = readResourceFile(sampleSyncConfigurationPath);
-        String result = readResourceFile(path);
+
+        String result = readResourceFileAbsolutePath(path);
 
         Assert.assertEquals(expected, result);
     }
