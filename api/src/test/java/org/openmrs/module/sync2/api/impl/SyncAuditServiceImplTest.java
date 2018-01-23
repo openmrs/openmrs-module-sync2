@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
@@ -29,6 +30,7 @@ import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
 
 public class SyncAuditServiceImplTest {
 
@@ -47,6 +49,8 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_NEXT_MESSAGE_UUID = "next_message_uuid";
     private static final String AUDIT_UUID = "9f3dccc9-6bc3-4a2b-862d-af4ce41caa28";
     private static final String AUDIT_CREATOR_INSTANCE = "sampleCreatorInstance1";
+    
+    private StringToAuditMessageConverter stringToAuditMessageConverter = new StringToAuditMessageConverter();
     
     @InjectMocks
     private SyncAuditServiceImpl auditService;
@@ -205,6 +209,15 @@ public class SyncAuditServiceImplTest {
     
         Assert.assertEquals(auditMessage, fetched);
         Assert.assertNotNull(fetched.getTimestamp());
+    }
+    
+    @Test
+    public void convert_shouldConvertAuditMessage() throws Exception {
+        final String toDeserialize = readJsonFromFile(AUDIT_MESSAGE_JSON);
+        AuditMessage fetched = stringToAuditMessageConverter.convert(toDeserialize);
+        AuditMessage expected = prepareAuditMessage(false);
+        
+        Assert.assertEquals(expected, fetched);
     }
     
     private String prepareDummyAvailableResourcesUrls() {

@@ -203,7 +203,8 @@ public class AuditMessage extends BaseOpenmrsData {
                 && Objects.equals(this.operation, auditMessage.operation)
                 && Objects.equals(this.linkType, auditMessage.linkType)
                 && Objects.equals(this.nextMessageUuid, auditMessage.nextMessageUuid)
-                && Objects.equals(this.creatorInstanceId, auditMessage.creatorInstanceId);
+                && Objects.equals(this.creatorInstanceId, auditMessage.creatorInstanceId)
+                && Objects.equals(this.getVoided(), auditMessage.getVoided());
     }
     
     @Override
@@ -231,6 +232,7 @@ public class AuditMessage extends BaseOpenmrsData {
                 ", linkType='" + linkType + '\'' +
                 ", nextMessageUuid='" + nextMessageUuid + '\'' +
                 ", creatorInstanceId='" + creatorInstanceId + '\'' +
+                ", voided='" + getVoided() + '\'' +
                 '}';
     }
     
@@ -257,6 +259,8 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("linkType", src.linkType);
             object.addProperty("nextMessageUuid", src.nextMessageUuid);
             object.addProperty("creatorInstanceId", src.creatorInstanceId);
+            object.addProperty("voided", src.getVoided());
+    
     
             return object;
         }
