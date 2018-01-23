@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
-import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_CUSTOM_CONFIGURATION;
+import static org.openmrs.module.sync2.SyncConstants.SYNC2_NAME_OF_CUSTOM_CONFIGURATION;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_DEFAULT_CONFIGURATION;
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE;
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.RELATIVE;
@@ -63,6 +63,6 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
 
     private String getConfigFilePath() {
         File configFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(CONFIGURATION_DIR);
-        return new File(configFileFolder, SYNC2_PATH_TO_CUSTOM_CONFIGURATION).getAbsolutePath();
+        return new File(configFileFolder, SYNC2_NAME_OF_CUSTOM_CONFIGURATION).getAbsolutePath();
     }
 }

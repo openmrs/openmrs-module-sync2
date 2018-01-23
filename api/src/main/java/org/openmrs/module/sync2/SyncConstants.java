@@ -11,7 +11,7 @@ public class SyncConstants {
 
     public static final String SYNC2_PATH_TO_DEFAULT_CONFIGURATION = "defaultSyncConfiguration.json";
 
-    public static final String SYNC2_PATH_TO_CUSTOM_CONFIGURATION = "sync2.json";
+    public static final String SYNC2_NAME_OF_CUSTOM_CONFIGURATION = "sync2.json";
 
     public static final String CONFIGURATION_DIR = "configuration";
 

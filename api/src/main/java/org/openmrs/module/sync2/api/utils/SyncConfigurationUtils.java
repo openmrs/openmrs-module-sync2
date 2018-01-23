@@ -36,15 +36,8 @@ public class SyncConfigurationUtils {
 
     public static String readResourceFileAbsolutePath(String file)  {
         File initialFile = new File(file);
-        InputStream targetStream;
-        try {
-            targetStream = new FileInputStream(initialFile);
-        } catch (FileNotFoundException e) {
-            throw new SyncException("File Not found", e);
-        }
 
-
-        try (InputStream in = targetStream) {
+        try (InputStream in = new FileInputStream(initialFile)) {
             if (in == null) {
                 throw new SyncException("Resource '" + file + "' doesn't exist");
             }
