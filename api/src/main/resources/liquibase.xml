@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
-    <changeSet id="sync2-2017-01-19-13:41" author="Soldevelo">
+    <changeSet id="sync2-2017-12-19" author="Soldevelo">
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="sync_audit_message"/></not>
         </preConditions>
@@ -33,9 +33,8 @@
             <column name="details" type="LONGTEXT"/>
             <column name="operation" type="varchar(255)"/>
             <column name="link_type" type="varchar(255)"/>
-            <column name="next_message_uuid" type="char(38)" />
+            <column name="next_message" type="int" />
 
-            <column name="creator_instance_id" type="varchar(255)" />
             <column name="changed_by" type="varchar(255)" />
             <column name="creator" type="int"/>
             <column name="date_changed" type="datetime" />
@@ -49,6 +48,18 @@
             </column>
             <column name="voided_by" type="varchar(255)"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="sync2-2017-01-24" author="Soldevelo">
+        <comment>
+            Changed the identification of AuditMessage from id to UUID value.
+            Added a creator's instance information (instance ID)
+        </comment>
+        <dropColumn tableName="sync_audit_message" columnName="next_message" />
+        <addColumn tableName="sync_audit_message">
+            <column name="next_message_uuid" type="char(38)" />
+            <column name="creator_instance_id" type="varchar(255)" />
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

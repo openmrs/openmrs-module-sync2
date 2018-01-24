@@ -52,7 +52,7 @@ public class SyncAuditRestController {
     
     @RequestMapping(value = "/messages", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> createAuditMebbssage(@RequestBody String auditMessageJson) {
+    public ResponseEntity<String> createAuditMessage(@RequestBody String auditMessageJson) {
         LOGGER.debug("Fetched POST request for creating AuditMessage: {}", auditMessageJson);
         AuditMessage auditMessage = stringToAuditMessageConverter.convert(auditMessageJson);
         
