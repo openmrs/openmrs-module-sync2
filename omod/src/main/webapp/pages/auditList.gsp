@@ -26,15 +26,16 @@
     ];
 
     var originName = [
-        { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
         { id: "<%= localInstanceId %>", name: "${ ui.message('sync2.log.origin.thisInstance') }" },
+        { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
     ];
 
     var syncResourceName = [
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
         { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
-        { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" }
+        { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.audit_message') }" }
     ];
 
     var syncStatus = [

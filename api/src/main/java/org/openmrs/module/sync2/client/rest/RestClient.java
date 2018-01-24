@@ -2,6 +2,8 @@ package org.openmrs.module.sync2.client.rest;
 
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.fhir.api.client.Client;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.RestResourceCreationUtil;
 import org.openmrs.module.sync2.client.rest.resource.Location;
@@ -26,6 +28,7 @@ public class RestClient implements Client {
     private static final String PATIENT_CATEGORY = "patient";
     private static final String LOCATION_CATEGORY = "location";
     private static final String PRIVILEGE_CATEGORY = "privilege";
+    private static final String AUDIT_MESSAGE_CATEGORY = "audit_message";
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -76,8 +79,10 @@ public class RestClient implements Client {
                 return Location.class;
             case PRIVILEGE_CATEGORY:
                 return Privilege.class;
+            case AUDIT_MESSAGE_CATEGORY:
+                return AuditMessage.class;
             default:
-                return null;
+                throw new SyncException(String.format("Cannot resolve '%s' category", category));
         }
     }
 }
