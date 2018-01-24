@@ -2,19 +2,26 @@ package org.openmrs.module.sync2.api.utils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
+import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.sync.SyncClient;
+import org.openmrs.module.sync2.client.RestResourceCreationUtil;
 import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
+import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -165,7 +172,28 @@ public class SyncUtils {
         }
     }
 
+    public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
+        boolean result = false;
 
+        if (null != dest && !(from instanceof String)) {
+            switch (clientName) {
+                case REST_CLIENT_KEY:
+                    RestResource restLocal = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
+                    RestResource restPulled = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
+
+                    result = restLocal.equals(restPulled);
+                    break;
+                case FHIR_CLIENT_KEY:
+                    result = category.equals(CATEGORY_PATIENT) ?
+                            FHIRPatientUtil.compareCurrentPatients(dest, from) : dest.equals(from);
+                    break;
+                default:
+                    result = dest.equals(from);
+            }
+        }
+
+        return result;
+    }
 
     private static String extractUUIDFromRestResource(String link) {
         String[] tokens = link.split("/");
