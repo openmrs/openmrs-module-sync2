@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2;
 
 public class SyncConstants {
+
     public static final String PARENT_USERNAME_PROPERTY = "sync2.parent.user.login";
 
     public static final String PARENT_PASSWORD_PROPERTY = "sync2.parent.user.password";
@@ -32,6 +33,8 @@ public class SyncConstants {
     public static final String AUDIT_MESSAGE_STATUS_FIELD_NAME = "success";
 
     public static final String AUDIT_MESSAGE_CREATOR_INSTANCE_ID = "creatorInstanceId";
+
+    public static final String AUDIT_MESSAGE_VOIDED_FIELD_NAME = "voided";
 
     public static final String PULL_OPERATION = "PULL";
 

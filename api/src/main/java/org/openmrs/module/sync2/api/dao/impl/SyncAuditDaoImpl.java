@@ -18,6 +18,8 @@ import java.util.List;
 @Repository
 public class SyncAuditDaoImpl implements SyncAuditDao {
 
+    private static final boolean areVoidedEntriesInPaginatedResult = false;
+
     @Autowired
     private DbSessionFactory sessionFactory;
 
@@ -76,6 +78,9 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         }
         if (StringUtils.isNotEmpty(creatorInstanceId)) {
             selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID, creatorInstanceId));
+        }
+        if (!areVoidedEntriesInPaginatedResult) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_VOIDED_FIELD_NAME, false));
         }
 
         return selectCriteria;
