@@ -65,7 +65,7 @@ public class SyncAuditRestController {
                     HttpStatus.UNAUTHORIZED);
         } else {
             auditMessage.setId(null);
-            syncAuditService.saveAuditMessage(auditMessage);
+            syncAuditService.saveAuditMessageDuringSync(auditMessage);
             LOGGER.info("Created AuditMessage with {} uuid", auditMessage.getUuid());
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -89,7 +89,7 @@ public class SyncAuditRestController {
                     HttpStatus.UNAUTHORIZED);
         } else {
             auditMessage.setId(alreadyExistingAuditMessage.getId());
-            syncAuditService.saveAuditMessage(auditMessage);
+            syncAuditService.saveAuditMessageDuringSync(auditMessage);
             LOGGER.info("Updated AuditMessage with {} uuid", auditMessage.getUuid());
             return new ResponseEntity<>(HttpStatus.OK);
         }

@@ -241,7 +241,6 @@ public class AuditMessage extends BaseOpenmrsData {
         @Override
         public JsonElement serialize(AuditMessage src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject object = new JsonObject();
-
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 
             object.addProperty("id", src.id);
@@ -260,8 +259,7 @@ public class AuditMessage extends BaseOpenmrsData {
             object.addProperty("nextMessageUuid", src.nextMessageUuid);
             object.addProperty("creatorInstanceId", src.creatorInstanceId);
             object.addProperty("voided", src.getVoided());
-    
-    
+
             return object;
         }
     }

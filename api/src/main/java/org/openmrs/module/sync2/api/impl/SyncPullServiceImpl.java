@@ -71,7 +71,7 @@ public class SyncPullServiceImpl implements SyncPullService {
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
             if (pullToTheLocal) {
-                auditMessage = syncAuditService.saveAuditMessage(auditMessage);
+                auditMessage = syncAuditService.saveAuditMessageDuringSync(auditMessage);
             }
         }
         return auditMessage;

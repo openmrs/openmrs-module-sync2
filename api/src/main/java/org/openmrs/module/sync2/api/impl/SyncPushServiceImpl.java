@@ -67,7 +67,7 @@ public class SyncPushServiceImpl implements SyncPushService {
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
             if (pushToTheParent) {
-                auditMessage = syncAuditService.saveAuditMessage(auditMessage);
+                auditMessage = syncAuditService.saveAuditMessageDuringSync(auditMessage);
             }
         }
         return auditMessage;

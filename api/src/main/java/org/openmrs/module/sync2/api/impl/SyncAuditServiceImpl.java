@@ -11,7 +11,6 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.AuditMessageList;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -60,7 +59,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     }
     
     @Override
-    public AuditMessage saveAuditMessage(AuditMessage auditMessage) {
+    public AuditMessage saveAuditMessageDuringSync(AuditMessage auditMessage) {
         boolean persistSuccessAudit = BooleanUtils.isTrue(auditMessage.getSuccess())
                 && configuration.getSyncConfiguration().getGeneral().isPersistSuccessAudit();
         boolean persistFailureAudit = BooleanUtils.isFalse(auditMessage.getSuccess())
@@ -72,6 +71,11 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
             return dao.saveItem(auditMessage);
         }
         return null;
+    }
+
+    @Override
+    public AuditMessage saveAuditMessage(AuditMessage auditMessage) throws APIException {
+        return dao.saveItem(auditMessage);
     }
 
     @Override
@@ -89,7 +93,5 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         Gson gson = gsonBuilder.create();
 
         return gson.toJson(results);
-        
-       // return SyncUtils.serialize(results);
     }
 }

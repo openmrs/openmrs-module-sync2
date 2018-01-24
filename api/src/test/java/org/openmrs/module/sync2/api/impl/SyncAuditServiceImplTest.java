@@ -30,7 +30,6 @@ import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
 
 public class SyncAuditServiceImplTest {
 
@@ -136,7 +135,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertEquals(auditMessage, fetched);
     }
@@ -151,7 +150,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertNull(fetched);
     }
@@ -165,7 +164,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertEquals(auditMessage, fetched);
     }
@@ -178,7 +177,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
-        auditService.saveAuditMessage(auditMessage);
+        auditService.saveAuditMessageDuringSync(auditMessage);
     }
     
     @Test
@@ -191,7 +190,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertNull(fetched);
     }
@@ -205,7 +204,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
     
         Assert.assertEquals(auditMessage, fetched);
         Assert.assertNotNull(fetched.getTimestamp());

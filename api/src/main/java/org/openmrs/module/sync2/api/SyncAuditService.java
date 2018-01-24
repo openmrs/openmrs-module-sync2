@@ -36,6 +36,10 @@ public interface SyncAuditService extends OpenmrsService {
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    AuditMessage saveAuditMessageDuringSync(AuditMessage auditMessage) throws APIException;
+
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    @Transactional
     AuditMessage saveAuditMessage(AuditMessage auditMessage) throws APIException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
