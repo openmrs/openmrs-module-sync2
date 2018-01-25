@@ -8,6 +8,7 @@ import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.client.ClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -19,6 +20,7 @@ import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 
 public class SyncClient {
@@ -29,12 +31,23 @@ public class SyncClient {
     private String password;
 
     public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
+        Object result;
         setUpCredentials(instance);
 
         ClientFactory clientFactory = new ClientFactory();
         Client client = clientFactory.createClient(clientName);
 
-        return client.retrieveObject(category, resourceUrl, username, password);
+        try {
+            result = client.retrieveObject(category, resourceUrl, username, password);
+        } catch(HttpClientErrorException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                result = null;
+            } else {
+                throw new SyncException("Error during reading local object: ", e);
+            }
+        }
+
+        return result;
     }
 
     public ResponseEntity<String> pushData(Object object, String clientName,
