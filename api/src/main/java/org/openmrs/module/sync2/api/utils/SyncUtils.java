@@ -12,16 +12,10 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
-import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.client.RestResourceCreationUtil;
-import org.openmrs.module.sync2.client.rest.resource.Location;
-import org.openmrs.module.sync2.client.rest.resource.Patient;
-import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,12 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.CATEGORY_LOCATION;
-import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncConstants.CATEGORY_PRIVILEGE;
-import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 
 public class SyncUtils {
@@ -138,9 +130,9 @@ public class SyncUtils {
     public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
         for (String client : resourceLinks.keySet()) {
             switch (client) {
-                case REST_CLIENT_KEY:
+                case REST_CLIENT:
                     return extractUUIDFromRestResource(resourceLinks.get(client));
-                case FHIR_CLIENT_KEY:
+                case FHIR_CLIENT:
                     return extractUUIDFromFHIRResource(resourceLinks.get(client));
                 default:
             }
@@ -163,20 +155,6 @@ public class SyncUtils {
         }
     }
 
-    public static Class getClass(String client, String category) {
-        switch (category) {
-            case CATEGORY_PATIENT:
-                return client.equals(REST_CLIENT_KEY) ? Patient.class : org.hl7.fhir.dstu3.model.Patient.class;
-            case CATEGORY_LOCATION:
-                return client.equals(REST_CLIENT_KEY) ? Location.class : org.hl7.fhir.dstu3.model.Location.class;
-            case CATEGORY_PRIVILEGE:
-                return Privilege.class;
-            default:
-                LOGGER.warn(String.format("Unrecognized category %s", category));
-                return null;
-        }
-    }
-
     public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
         boolean result = false;
 
@@ -184,7 +162,7 @@ public class SyncUtils {
             //If 'from' is  instance of String it represent uuid and should be used to delete object action.
             if (!(from instanceof String)) {
                 switch (clientName) {
-                    case REST_CLIENT_KEY:
+                    case REST_CLIENT:
 
                         //TODO: Work around for deleting patient through REST API. Should be refactored.
                         if (from instanceof org.openmrs.Patient && dest instanceof org.openmrs.Patient) {
@@ -200,7 +178,7 @@ public class SyncUtils {
                         RestResource obj2 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
                         result = obj1.equals(obj2);
                         break;
-                    case FHIR_CLIENT_KEY:
+                    case FHIR_CLIENT:
                         result = category.equals(CATEGORY_PATIENT) ?
                                 FHIRPatientUtil.compareCurrentPatients(dest, from) : dest.equals(from);
                         break;

@@ -40,10 +40,10 @@ public class SyncConstants {
 
     public static final String PUSH_OPERATION = "PUSH";
 
-    public static final String FHIR_CLIENT_KEY = "fhir";
+    public static final String FHIR_CLIENT = "fhir";
 
-    public static final String REST_CLIENT_KEY = "rest";
-    
+    public static final String REST_CLIENT = "rest";
+
     public static final String RECENT_FEED = "recent";
 
     public static final String ACTION_VOIDED = "VOIDED";
@@ -52,10 +52,7 @@ public class SyncConstants {
 
     public static final String ACTION_CREATED = "CREATED";
 
-    public static final String CATEGORY_PATIENT = "patient";
+    public static final int ZERO = 0;
 
-    public static final String CATEGORY_LOCATION = "location";
-
-    public static final String CATEGORY_PRIVILEGE = "privilege";
-
+    private SyncConstants() {}
 }

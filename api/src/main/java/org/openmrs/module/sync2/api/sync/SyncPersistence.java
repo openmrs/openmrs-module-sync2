@@ -21,8 +21,8 @@ import java.util.Set;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
-import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT_KEY;
-import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT_KEY;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 
 public class SyncPersistence {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPersistence.class);
@@ -45,9 +45,9 @@ public class SyncPersistence {
 
     public Object retrieveData(String client, String category, String uuid) {
         switch (client) {
-            case FHIR_CLIENT_KEY:
+            case FHIR_CLIENT:
                 return retrieveFhirObject(category, uuid);
-            case REST_CLIENT_KEY:
+            case REST_CLIENT:
                 return retrieveRestObject(category, uuid);
             default:
                 LOGGER.warn(String.format("Unrecognized client %s, falling back to core OpenMrs object", client));
