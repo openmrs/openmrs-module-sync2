@@ -175,20 +175,23 @@ public class SyncUtils {
     public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
         boolean result = false;
 
-        if (null != dest && !(from instanceof String)) {
-            switch (clientName) {
-                case REST_CLIENT_KEY:
-                    RestResource restLocal = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
-                    RestResource restPulled = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
+        if (null != dest && null != from) {
+            //If 'from' is  instance of String it represent uuid and should be used to delete object action.
+            if (!(from instanceof String)) {
+                switch (clientName) {
+                    case REST_CLIENT_KEY:
+                        RestResource obj1 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
+                        RestResource obj2 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
 
-                    result = restLocal.equals(restPulled);
-                    break;
-                case FHIR_CLIENT_KEY:
-                    result = category.equals(CATEGORY_PATIENT) ?
-                            FHIRPatientUtil.compareCurrentPatients(dest, from) : dest.equals(from);
-                    break;
-                default:
-                    result = dest.equals(from);
+                        result = obj1.equals(obj2);
+                        break;
+                    case FHIR_CLIENT_KEY:
+                        result = category.equals(CATEGORY_PATIENT) ?
+                                FHIRPatientUtil.compareCurrentPatients(dest, from) : dest.equals(from);
+                        break;
+                    default:
+                        result = dest.equals(from);
+                }
             }
         }
 

@@ -40,7 +40,7 @@ public class SyncPushServiceImpl implements SyncPushService {
         String localPull = getPullUrl(resourceLinks, clientName, CHILD);
         String parentPull = getPullUrl(resourceLinks, clientName, PARENT);
 
-        boolean pulledObjectExist = false;
+        boolean pushToTheParent = true;
         LOGGER.info(String.format("SyncPushService category: %s, address: %s, action: %s", category, parentPush, action));
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
     
@@ -53,11 +53,9 @@ public class SyncPushServiceImpl implements SyncPushService {
 
         try {
             Object localObj = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, localPull, CHILD);
-            Object parentObj = syncClient.pullData(category, clientName, parentPull, PARENT);
-            pulledObjectExist = localObj != null ?
-                    compareLocalAndPulled(clientName, category, localObj, parentObj) : true;
+            pushToTheParent = shouldPushObject(localObj, category, clientName, parentPull);
 
-            if (!pulledObjectExist) {
+            if (pushToTheParent) {
                 syncClient.pushData(localObj, clientName, parentPush, action, PARENT);
             }
 
@@ -68,7 +66,7 @@ public class SyncPushServiceImpl implements SyncPushService {
             auditMessage.setSuccess(false);
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
-            if (!pulledObjectExist) {
+            if (pushToTheParent) {
                 auditMessage = syncAuditService.saveAuditMessage(auditMessage);
             }
         }
@@ -80,5 +78,20 @@ public class SyncPushServiceImpl implements SyncPushService {
                                                 String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
         return readDataAndPushToParent(category, resourceLinks, action, clientName);
+    }
+
+    /**
+     *
+     * @param   localObj the object from the local instance
+     * @param   category the category of the object. Represents name of the object class
+     * @param   clientName the name of the used client i.e. rest, fhir
+     * @param   url the url to pull parent instance of the object
+     *
+     * @return  true if the parent and local objects are not equal.
+     *          false if the objects are equal or pulled object from the local instance doesn't exists.
+     */
+    private boolean shouldPushObject(Object localObj, String category, String clientName, String url) {
+        Object parentObj = syncClient.pullData(category, clientName, url, PARENT);
+        return localObj != null ? !compareLocalAndPulled(clientName, category, localObj, parentObj) : false;
     }
 }
