@@ -180,9 +180,19 @@ public class SyncUtils {
             if (!(from instanceof String)) {
                 switch (clientName) {
                     case REST_CLIENT_KEY:
+
+                        //TODO: Work around for deleting patient through REST API. Should be refactored.
+                        if (from instanceof org.openmrs.Patient && dest instanceof org.openmrs.Patient) {
+                            boolean fromIsVoided = ((org.openmrs.Patient) from).getVoided();
+                            boolean destIsVoided = ((org.openmrs.Patient) dest).getVoided();
+
+                            if (fromIsVoided && destIsVoided) {
+                                return fromIsVoided && destIsVoided;
+                            }
+                        }
+
                         RestResource obj1 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
                         RestResource obj2 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
-
                         result = obj1.equals(obj2);
                         break;
                     case FHIR_CLIENT_KEY:
