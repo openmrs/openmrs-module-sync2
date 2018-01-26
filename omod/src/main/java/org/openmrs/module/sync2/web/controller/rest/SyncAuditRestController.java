@@ -6,7 +6,7 @@ import org.openmrs.module.sync2.SyncModuleConfig;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.model.enums.InstanceIds;
+import org.openmrs.module.sync2.api.model.enums.InstanceId;
 import org.openmrs.module.sync2.api.model.enums.Operation;
 import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.model.enums.Status;
@@ -168,7 +168,7 @@ public class SyncAuditRestController {
 
     private String extractCreatorInstanceRegex(String enumValue) {
         try {
-            return InstanceIds.valueOf(enumValue).getRegex();
+            return InstanceId.valueOf(enumValue).getRegex();
         } catch (IllegalArgumentException e) {
             if (StringUtils.isNotBlank(enumValue)) {
                 LOGGER.info("Used creatorInstanceId with value: {}.", enumValue);

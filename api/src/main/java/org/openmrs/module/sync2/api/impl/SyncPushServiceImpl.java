@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.api.impl;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncPushService;
+import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -29,6 +30,9 @@ public class SyncPushServiceImpl implements SyncPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPushService.class);
 
     @Autowired
+    private PushFilterService pushFilterService;
+
+    @Autowired
     private SyncAuditService syncAuditService;
 
     private SyncClient syncClient = new SyncClient();
@@ -53,7 +57,8 @@ public class SyncPushServiceImpl implements SyncPushService {
 
         try {
             Object localObj = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, localPull, CHILD);
-            pushToTheParent = shouldPushObject(localObj, category, clientName, parentPull);
+            pushToTheParent = pushFilterService.shouldBeSynced(category, localObj, action);
+            pushToTheParent &= shouldPushObject(localObj, category, clientName, parentPull);
 
             if (pushToTheParent) {
                 syncClient.pushData(localObj, clientName, parentPush, action, PARENT);

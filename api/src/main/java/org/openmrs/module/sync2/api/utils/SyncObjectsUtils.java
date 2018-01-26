@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
+import org.openmrs.BaseOpenmrsData;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.rest.resource.Location;

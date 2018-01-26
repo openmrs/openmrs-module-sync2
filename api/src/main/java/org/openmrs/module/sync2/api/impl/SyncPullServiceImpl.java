@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncPullService;
+import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -31,6 +32,9 @@ public class SyncPullServiceImpl implements SyncPullService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);
 
     @Autowired
+    private PullFilterService pullFilterService;
+
+    @Autowired
     private SyncAuditService syncAuditService;
 
     private SyncClient syncClient = new SyncClient();
@@ -55,8 +59,10 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setAction(action);
 
         try {
-            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, parentPull, PARENT);
-            pullToTheLocal = shouldPullObject(pulledObject, category,clientName, localPull);
+            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category,
+                    clientName, parentPull, PARENT);
+            pullToTheLocal = pullFilterService.shouldBeSynced(category, pulledObject, action);
+            pullToTheLocal &= shouldPullObject(pulledObject, category,clientName, localPull);
 
             if (pullToTheLocal) {
                 syncClient.pushData(pulledObject, clientName, localPush, action, CHILD);

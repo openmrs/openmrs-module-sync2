@@ -13,6 +13,10 @@ public class AuditMessagePushFilter implements ObjectFilter {
     @Override
     public boolean shouldObjectBeSynced(Object object, String action) {
         AuditMessage auditMessage = (AuditMessage) object;
+        return checkIfEntryDoesNotDescribeAuditMessage(auditMessage);
+    }
+
+    private boolean checkIfEntryDoesNotDescribeAuditMessage(AuditMessage auditMessage) {
         return !StringUtils.equals(auditMessage.getResourceName(), SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE);
     }
 }

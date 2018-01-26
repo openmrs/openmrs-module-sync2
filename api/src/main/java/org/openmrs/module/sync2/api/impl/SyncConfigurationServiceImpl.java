@@ -21,7 +21,6 @@ import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyn
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
 
-
 @Component("sync2.syncConfigurationService")
 public class SyncConfigurationServiceImpl implements SyncConfigurationService {
 
