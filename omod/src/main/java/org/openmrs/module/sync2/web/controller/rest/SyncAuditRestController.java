@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.web.controller.rest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncModuleConfig;
 import org.openmrs.module.sync2.api.SyncAuditService;
@@ -25,11 +26,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller("${artifactid}.SyncAuditRestController")
+@Controller("sync2.SyncAuditRestController")
 @RequestMapping(value = "/rest/sync2", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncAuditRestController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SyncAuditRestController.class);
+
+    private final static String INVALID_JSON = "Incorrect AuditMessage JSON given";
+
+    private final static ResponseEntity<String> NOT_FOUND_RESPONSE = new ResponseEntity<>(
+            "The entity doesn't exists", HttpStatus.NOT_FOUND);
+
+    private final static ResponseEntity<String> ENTITY_ALREADY_EXISTS_RESPONSE = new ResponseEntity<>(
+            "The entity already exists", HttpStatus.FORBIDDEN);
+
+    private final static ResponseEntity<String> MISSING_PRIVILEGE_RESPONSE = new ResponseEntity<>(
+            String.format("Tried to post AuditMessage without '%s' privilege",
+                    SyncModuleConfig.SYNC_AUDIT_PRIVILEGE),
+            HttpStatus.UNAUTHORIZED);
 
     @Autowired
     private SyncAuditService syncAuditService;
@@ -37,32 +51,39 @@ public class SyncAuditRestController {
     @Autowired
     private StringToAuditMessageConverter stringToAuditMessageConverter;
 
-    @RequestMapping(value = "/messages/{uuid}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/messages/{uuid}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getJsonMessageByUuid(@PathVariable String uuid) {
         LOGGER.debug("Get single message with " + uuid + "uuid via REST API");
-        if (Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            String json = syncAuditService.getJsonMessageByUuid(uuid);
-            LOGGER.debug("Get Single message reached by message uuid");
-            return ResponseEntity.ok(json);
+        if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
+            return MISSING_PRIVILEGE_RESPONSE;
         } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            String json = syncAuditService.getJsonMessageByUuid(uuid);
+            if (StringUtils.isEmpty(json)) {
+                return NOT_FOUND_RESPONSE;
+            } else {
+                LOGGER.debug("Get Single message reached by message uuid");
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+            }
         }
     }
-    
+
     @RequestMapping(value = "/messages", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> createAuditMessage(@RequestBody String auditMessageJson) {
         LOGGER.debug("Fetched POST request for creating AuditMessage: {}", auditMessageJson);
-        AuditMessage auditMessage = stringToAuditMessageConverter.convert(auditMessageJson);
+        AuditMessage auditMessage;
+        try {
+            auditMessage = stringToAuditMessageConverter.convert(auditMessageJson);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(INVALID_JSON + "\n"
+                    + ExceptionUtils.getFullStackTrace(ex), HttpStatus.BAD_REQUEST);
+        }
         
         if (syncAuditService.getMessageByUuid(auditMessage.getUuid()) != null) {
-            return new ResponseEntity<>("The entity already exists", HttpStatus.FORBIDDEN);
+            return ENTITY_ALREADY_EXISTS_RESPONSE;
         } else if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            LOGGER.error("Tried to post AuditMessage without '{}' privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE);
-            return new ResponseEntity<>(
-                    String.format("You don't have %s privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE),
-                    HttpStatus.UNAUTHORIZED);
+            return MISSING_PRIVILEGE_RESPONSE;
         } else {
             auditMessage.setId(null);
             syncAuditService.saveAuditMessageDuringSync(auditMessage);
@@ -75,18 +96,21 @@ public class SyncAuditRestController {
     @ResponseBody
     public ResponseEntity<String> updateAuditMessage(@PathVariable String uuid, @RequestBody String auditMessageJson) {
         LOGGER.debug("Fetched POST request for updating AuditMessage: {}", auditMessageJson);
-        AuditMessage auditMessage = stringToAuditMessageConverter.convert(auditMessageJson);
+        AuditMessage auditMessage;
+        try {
+            auditMessage = stringToAuditMessageConverter.convert(auditMessageJson);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(INVALID_JSON + "\n"
+                    + ExceptionUtils.getFullStackTrace(ex), HttpStatus.BAD_REQUEST);
+        }
+
         AuditMessage alreadyExistingAuditMessage = syncAuditService.getMessageByUuid(uuid);
-        
         if (!StringUtils.equals(uuid, auditMessage.getUuid())) {
-            return new ResponseEntity<>("Sent UUID and object's UUID don't match", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Sent UUID and object's UUID don't match", HttpStatus.BAD_REQUEST);
         } else if (alreadyExistingAuditMessage == null) {
-            return new ResponseEntity<>("The entity doesn't exists", HttpStatus.FORBIDDEN);
+            return NOT_FOUND_RESPONSE;
         } else if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            LOGGER.error("Tried to post AuditMessage without '{}' privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE);
-            return new ResponseEntity<>(
-                    String.format("You don't have %s privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE),
-                    HttpStatus.UNAUTHORIZED);
+            return MISSING_PRIVILEGE_RESPONSE;
         } else {
             auditMessage.setId(alreadyExistingAuditMessage.getId());
             syncAuditService.saveAuditMessageDuringSync(auditMessage);
@@ -102,12 +126,9 @@ public class SyncAuditRestController {
         AuditMessage alreadyExistingAuditMessage = syncAuditService.getMessageByUuid(uuid);
     
         if (alreadyExistingAuditMessage == null) {
-            return new ResponseEntity<>("The entity doesn't exists", HttpStatus.FORBIDDEN);
+            return NOT_FOUND_RESPONSE;
         } else if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            LOGGER.error("Tried to post AuditMessage without '{}' privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE);
-            return new ResponseEntity<>(
-                    String.format("You don't have %s privilege", SyncModuleConfig.SYNC_AUDIT_PRIVILEGE),
-                    HttpStatus.UNAUTHORIZED);
+            return MISSING_PRIVILEGE_RESPONSE;
         } else {
             alreadyExistingAuditMessage.setVoided(true);
             syncAuditService.saveAuditMessage(alreadyExistingAuditMessage);
@@ -132,11 +153,12 @@ public class SyncAuditRestController {
         String operation = extractOperation(operationEnum);
         String resource = extractResourceName(resourceNameEnum.toUpperCase());
 
-        if (Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
-            return ResponseEntity.ok(syncAuditService.getPaginatedMessages(pageIndex, pageSize, success, operation,
-                    resource, creatorInstanceRegex));
+        if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
+            return MISSING_PRIVILEGE_RESPONSE;
         } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            String body = syncAuditService.getPaginatedMessages(pageIndex, pageSize, success,
+                    operation, resource, creatorInstanceRegex);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
         }
     }
 

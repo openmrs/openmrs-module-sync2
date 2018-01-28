@@ -57,8 +57,8 @@ public class SyncPushServiceImpl implements SyncPushService {
 
         try {
             Object localObj = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, localPull, CHILD);
-            pushToTheParent = pushFilterService.shouldBeSynced(category, localObj, action);
-            pushToTheParent &= shouldPushObject(localObj, category, clientName, parentPull);
+            pushToTheParent = pushFilterService.shouldBeSynced(category, localObj, action)
+                    && shouldPushObject(localObj, category, clientName, parentPull);
 
             if (pushToTheParent) {
                 syncClient.pushData(localObj, clientName, parentPush, action, PARENT);

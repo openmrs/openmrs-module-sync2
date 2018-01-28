@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.openmrs.module.sync2.api.utils.SyncObjectsUtils.getOpenmrsClass;
+import static org.openmrs.module.sync2.api.utils.SyncObjectsUtils.getRestClass;
 
 public class RestClient implements Client {
 
@@ -32,7 +32,7 @@ public class RestClient implements Client {
             throws RestClientException {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
-        RestResource restResource = (RestResource) restTemplate.getForObject(url, getOpenmrsClass(category));
+        RestResource restResource = (RestResource) restTemplate.getForObject(url, getRestClass(category));
         return restResource.getOpenMrsObject();
     }
 

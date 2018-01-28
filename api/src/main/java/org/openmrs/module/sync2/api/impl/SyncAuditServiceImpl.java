@@ -40,13 +40,21 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
     @Override
     public String getJsonMessageByUuid(String uuid) throws APIException, JsonParseException {
         AuditMessage auditMessage = dao.getMessageByUuid(uuid);
-        return serializeResultsWithAuditMessage(auditMessage);
+        if (auditMessage == null) {
+            return null;
+        } else {
+            return serializeResultsWithAuditMessage(auditMessage);
+        }
     }
 
     @Override
     public String getJsonMessageById(Integer id) throws APIException, JsonParseException {
         AuditMessage auditMessage = dao.getMessageById(id);
-        return serializeResultsWithAuditMessage(auditMessage);
+        if (auditMessage == null) {
+            return null;
+        } else {
+            return serializeResultsWithAuditMessage(auditMessage);
+        }
     }
 
     @Override

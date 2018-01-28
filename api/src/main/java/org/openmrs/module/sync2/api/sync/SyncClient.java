@@ -39,7 +39,7 @@ public class SyncClient {
 
         try {
             result = client.retrieveObject(category, resourceUrl, username, password);
-        } catch(HttpClientErrorException e) {
+        } catch (HttpClientErrorException e) {
             if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                 result = null;
             } else {

@@ -25,15 +25,17 @@ public class Sync2ModuleActivator extends BaseModuleActivator {
 	/**
 	 * @see #started()
 	 */
+	@Override
 	public void started() {
 		Context.getRegisteredComponents(SyncSchedulerServiceImpl.class).get(0).runSyncScheduler();
 		LOGGER.info("Started Sync2 Module");
 	}
 	
 	/**
-	 * @see #shutdown()
+	 * @see #stopped()
 	 */
-	public void shutdown() {
+	@Override
+	public void stopped() {
 		Context.getRegisteredComponents(SyncSchedulerServiceImpl.class).get(0).shutdownSyncScheduler();
 		LOGGER.info("Shutdown Sync2 Module");
 	}

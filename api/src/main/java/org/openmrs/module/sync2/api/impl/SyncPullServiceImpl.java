@@ -61,8 +61,8 @@ public class SyncPullServiceImpl implements SyncPullService {
         try {
             Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category,
                     clientName, parentPull, PARENT);
-            pullToTheLocal = pullFilterService.shouldBeSynced(category, pulledObject, action);
-            pullToTheLocal &= shouldPullObject(pulledObject, category,clientName, localPull);
+            pullToTheLocal = pullFilterService.shouldBeSynced(category, pulledObject, action)
+                    && shouldPullObject(pulledObject, category,clientName, localPull);
 
             if (pullToTheLocal) {
                 syncClient.pushData(pulledObject, clientName, localPush, action, CHILD);

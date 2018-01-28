@@ -20,10 +20,12 @@ import com.google.gson.JsonSerializer;
 import org.hibernate.annotations.Persister;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.openmrs.BaseOpenmrsData;
+import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.client.rest.resource.RestResource;
 
 @Persister(impl = SingleTableEntityPersister.class)
-public class AuditMessage extends BaseOpenmrsData {
+public class AuditMessage extends BaseOpenmrsData implements RestResource {
     
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
@@ -235,7 +237,12 @@ public class AuditMessage extends BaseOpenmrsData {
                 ", voided='" + getVoided() + '\'' +
                 '}';
     }
-    
+
+    @Override
+    public BaseOpenmrsObject getOpenMrsObject() {
+        return this;
+    }
+
     public static class AuditMessageSerializer implements JsonSerializer<AuditMessage> {
         
         @Override

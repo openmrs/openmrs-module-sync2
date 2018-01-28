@@ -7,13 +7,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StringToAuditMessageConverter implements Converter<String, AuditMessage> {
-   
+public class AuditMessageToStringConverter implements Converter<AuditMessage, String> {
+
     @Override
-    public AuditMessage convert(String json) {
+    public String convert(AuditMessage auditMessage) {
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageDeserializer())
+                .registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer())
                 .create();
-        return gson.fromJson(json, AuditMessage.class);
+        return gson.toJson(auditMessage);
     }
 }

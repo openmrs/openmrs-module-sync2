@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.loader.criteria.CriteriaQueryTranslator;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.sync2.SyncConstants;
@@ -14,7 +13,6 @@ import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Collections;
 import java.util.List;
 

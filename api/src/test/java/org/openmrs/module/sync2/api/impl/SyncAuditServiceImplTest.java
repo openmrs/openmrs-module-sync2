@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.converter.AuditMessageToStringConverter;
 import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
@@ -54,6 +55,7 @@ public class SyncAuditServiceImplTest {
     private static final Integer PAGINATED_PAGE_SIZE = 100;
 
     private StringToAuditMessageConverter stringToAuditMessageConverter = new StringToAuditMessageConverter();
+    private AuditMessageToStringConverter auditMessageToStringConverter = new AuditMessageToStringConverter();
 
     @InjectMocks
     private SyncAuditServiceImpl auditService;
@@ -215,11 +217,20 @@ public class SyncAuditServiceImplTest {
     }
     
     @Test
-    public void convert_shouldConvertAuditMessage() throws Exception {
+    public void convert_shouldDeserializeAuditMessage() throws Exception {
         final String toDeserialize = readJsonFromFile(AUDIT_MESSAGE_JSON);
         AuditMessage fetched = stringToAuditMessageConverter.convert(toDeserialize);
         AuditMessage expected = prepareAuditMessage(false);
         
+        Assert.assertEquals(expected, fetched);
+    }
+
+    @Test
+    public void convert_shouldSerializeAuditMessage() throws Exception {
+        AuditMessage toSerialize = prepareAuditMessage(false);
+        String fetched = auditMessageToStringConverter.convert(toSerialize);
+        final String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
+
         Assert.assertEquals(expected, fetched);
     }
     

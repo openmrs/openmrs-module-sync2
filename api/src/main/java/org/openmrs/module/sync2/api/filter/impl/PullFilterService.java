@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.api.filter.impl;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.filter.FilterConstant;
 import org.openmrs.module.sync2.api.filter.FilterService;
 import org.openmrs.module.sync2.api.filter.ObjectFilter;
@@ -23,7 +22,7 @@ public class PullFilterService implements FilterService {
     }
 
     private ObjectFilter getFilter(String category) {
-        return ContextUtils.getRegisteredComponent(
+        return ContextUtils.getRegisteredComponentSafely(
                 FilterConstant.PULL_FILTERS_COMPONENT_PREFIX + category,
                 ObjectFilter.class);
     }
