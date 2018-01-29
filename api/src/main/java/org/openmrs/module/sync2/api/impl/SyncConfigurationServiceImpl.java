@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.api.impl;
 
-import net.sf.saxon.trans.Err;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;

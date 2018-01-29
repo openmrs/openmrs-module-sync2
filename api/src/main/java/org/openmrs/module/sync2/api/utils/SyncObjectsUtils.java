@@ -1,14 +1,18 @@
 package org.openmrs.module.sync2.api.utils;
 
-import org.openmrs.BaseOpenmrsData;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.*;
-import static org.openmrs.module.sync2.SyncConstants.*;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
+
 
 public class SyncObjectsUtils {
 
@@ -24,7 +28,7 @@ public class SyncObjectsUtils {
     }
 
     public static Class getFhirClass(String category) {
-        // TODO: it should be refactored - placed in FHIR_CLIENT module and only here
+        // TODO: it should be refactored - placed in FHIR_CLIENT module and only used here
         switch (category) {
             case CATEGORY_PATIENT:
                 return org.hl7.fhir.dstu3.model.Patient.class;
