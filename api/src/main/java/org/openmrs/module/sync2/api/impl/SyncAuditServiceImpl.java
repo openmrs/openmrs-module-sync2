@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {
 
@@ -92,6 +93,11 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         }
         current.setNextMessageUuid(next.getUuid());
         return dao.saveItem(current);
+    }
+
+    @Override
+    public Set<String> getAllCreatorIds() throws APIException {
+        return dao.getAllCreatorIds();
     }
 
     private <T> String serializeResultsWithAuditMessage(T results) {

@@ -3,6 +3,8 @@ package org.openmrs.module.sync2.api.dao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 
+import java.util.Set;
+
 
 public interface SyncAuditDao {
 
@@ -12,6 +14,8 @@ public interface SyncAuditDao {
     
     PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String action,
                                                      String resourceName, String creatorInstanceId);
+
+    Set<String> getAllCreatorIds();
 
     Long getCountOfMessages();
 

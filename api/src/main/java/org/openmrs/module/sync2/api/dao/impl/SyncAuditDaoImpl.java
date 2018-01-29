@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Repository
@@ -54,6 +56,14 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         List<AuditMessage> list = Collections.checkedList(selectCriteria.list(), AuditMessage.class);
         
         return new PaginatedAuditMessages(itemCount, page, pageSize, list);
+    }
+
+    @Override
+    public Set<String> getAllCreatorIds() {
+        Criteria selectCriteria = getSession().createCriteria(AuditMessage.class)
+                .setProjection(Projections.distinct(
+                        Projections.property(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID)));
+        return new HashSet<>(Collections.checkedList(selectCriteria.list(), String.class));
     }
 
     public Long getCountOfMessages() {
