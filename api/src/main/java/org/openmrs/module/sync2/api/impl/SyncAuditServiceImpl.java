@@ -14,7 +14,6 @@ import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
 public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAuditService {

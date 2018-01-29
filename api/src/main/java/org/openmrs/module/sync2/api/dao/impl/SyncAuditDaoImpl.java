@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.dao.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -61,6 +62,7 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
     @Override
     public Set<String> getAllCreatorIds() {
         Criteria selectCriteria = getSession().createCriteria(AuditMessage.class)
+                .add(Restrictions.isNotNull(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID))
                 .setProjection(Projections.distinct(
                         Projections.property(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID)));
         return new HashSet<>(Collections.checkedList(selectCriteria.list(), String.class));

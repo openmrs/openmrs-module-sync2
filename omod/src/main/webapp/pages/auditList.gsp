@@ -28,6 +28,9 @@
     var originName = [
         { id: "<%= localInstanceId %>", name: "${ ui.message('sync2.log.origin.thisInstance') }" },
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
+        <% creatorIds.each { %>
+            { id: "<%= it %>", name: "<%= it %>"},
+        <% } %>
     ];
 
     var syncResourceName = [
