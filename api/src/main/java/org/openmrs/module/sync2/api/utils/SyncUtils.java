@@ -254,7 +254,7 @@ public class SyncUtils {
         return getParentUri(cs) + ws + category + "/" + SyncConstants.RECENT_FEED;
     }
 
-    private static SyncConfigurationService getSyncConfigurationService() {
+    public static SyncConfigurationService getSyncConfigurationService() {
         return Context.getService(SyncConfigurationService.class);
     }
 }

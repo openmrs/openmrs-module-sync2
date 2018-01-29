@@ -38,7 +38,7 @@
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
         { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
         { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
-        { id: "audit_message", name: "${ ui.message('sync2.log.resource.audit_message') }" }
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" }
     ];
 
     var syncStatus = [
@@ -53,7 +53,14 @@
         { id: "PULL", name: "${ ui.message('sync2.log.operation.pull') }" }
     ];
 </script>
+<% if (configurationValidationErrors.hasErrors()) { %>
+    <h2><%= ui.message("sync2.error.validationError") %></h2>
+    <% configurationValidationErrors.errors.each { %>
+        <div style="margin-left: 15px"><%= ui.message(it) %></div>
+    <% } %>
+<% } else { %>
+    <div id="jsGrid" class="jsgrid" style="position: relative; height: auto; width: 100%;"></div>
+<% } %>
 
-<div id="jsGrid" class="jsgrid" style="position: relative; height: auto; width: 100%;"></div>
 
 <% } %>
