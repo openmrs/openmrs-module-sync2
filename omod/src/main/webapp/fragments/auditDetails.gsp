@@ -83,7 +83,7 @@
             <i class="icon-chevron-right"></i>
             ${ ui.message(messagesPrefix + '.nextMessage') }
         </a>
-    <% } else {  %>
+    <% } else if (localInstanceId.equals(auditLog.creatorInstanceId)) {  %>
         <a class="button confirm right" onClick="retry();">
             <i class="icon-retweet"></i>
             ${ ui.message(messagesPrefix + '.retry') }
