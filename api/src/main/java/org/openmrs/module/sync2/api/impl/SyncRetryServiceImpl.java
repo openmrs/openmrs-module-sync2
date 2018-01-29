@@ -2,12 +2,11 @@ package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.SyncRetryService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +25,10 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     @Autowired
     private SyncAuditService syncAuditService;
 
-    @Autowired
-    private SyncConfigurationService configuration;
-
     @Override
     public AuditMessage retryMessage(AuditMessage message) throws APIException {
-        switch(message.getOperation()) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+        switch (message.getOperation()) {
             case PULL_OPERATION:
                 return retryPull(message);
             case PUSH_OPERATION:

@@ -6,24 +6,24 @@ import java.util.List;
 
 public class Errors {
 
-    private List<String> errors = new ArrayList<>();
+    private List<String> errorCodes = new ArrayList<>();
 
-    public void addError(String error) {
-        errors.add(error);
+    public void addErrorCode(String errorCode) {
+        errorCodes.add(errorCode);
     }
 
-    public List<String> getErrors(String error) {
-        return Collections.unmodifiableList(errors);
+    public List<String> getErrorsCodes() {
+        return Collections.unmodifiableList(errorCodes);
     }
 
     public boolean hasErrors() {
-        return !errors.isEmpty();
+        return !errorCodes.isEmpty();
     }
 
     @Override
     public String toString() {
         return "Errors{" +
-                "errors=" + errors +
+                "errorCodes=" + errorCodes +
                 '}';
     }
 }

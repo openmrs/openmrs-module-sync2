@@ -6,6 +6,7 @@ import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.openmrs.module.sync2.client.reader.ParentFeedWorker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
     }
 
     public void readAllFeedsForPull() {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
         List<ClassConfiguration> pullConf = configurationService.getSyncConfiguration().getPull().getClasses();
 
         for(ClassConfiguration classConf : pullConf) {

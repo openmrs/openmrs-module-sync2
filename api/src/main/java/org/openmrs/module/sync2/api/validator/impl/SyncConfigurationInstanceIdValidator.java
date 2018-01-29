@@ -14,7 +14,7 @@ public class SyncConfigurationInstanceIdValidator implements SyncConfigurationVa
     @Override
     public void validate(SyncConfiguration syncConfiguration, Errors errors) {
         if (StringUtils.isBlank(syncConfiguration.getGeneral().getLocalInstanceId())) {
-            errors.addError(ERROR_CODE);
+            errors.addErrorCode(ERROR_CODE);
         }
     }
 }

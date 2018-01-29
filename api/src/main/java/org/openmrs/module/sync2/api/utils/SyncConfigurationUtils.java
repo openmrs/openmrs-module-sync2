@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.openmrs.module.sync2.api.validator.Errors;
@@ -27,8 +28,8 @@ public class SyncConfigurationUtils {
     public static void checkIfConfigurationIsValid() {
         Errors errors = SyncUtils.getSyncConfigurationService().validateConfiguration();
         if (errors.hasErrors()) {
-            throw new SyncException(String.format("It is impossible to invoke synchronization. " +
-                    "Configuration validation errors occur. \n%s", errors));
+            throw new SyncValidationException(String.format("It is impossible to invoke synchronization. " +
+                    "Configuration validation errors occur. \n%s", errors), errors);
         }
     }
 

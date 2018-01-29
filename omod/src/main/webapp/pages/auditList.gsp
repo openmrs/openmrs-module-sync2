@@ -55,7 +55,7 @@
 </script>
 <% if (configurationValidationErrors.hasErrors()) { %>
     <h2><%= ui.message("sync2.error.validationError") %></h2>
-    <% configurationValidationErrors.errors.each { %>
+    <% configurationValidationErrors.errorCodes.each { %>
         <div style="margin-left: 15px"><%= ui.message(it) %></div>
     <% } %>
 <% } else { %>
