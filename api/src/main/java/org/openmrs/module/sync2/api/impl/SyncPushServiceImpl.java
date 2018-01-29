@@ -6,6 +6,7 @@ import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,8 @@ public class SyncPushServiceImpl implements SyncPushService {
     @Override
     public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks,
                                                 String action, String clientName) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+
         String parentPush = getPushUrl(resourceLinks, clientName, PARENT);
         String localPull = getPullUrl(resourceLinks, clientName, CHILD);
         String parentPull = getPullUrl(resourceLinks, clientName, PARENT);

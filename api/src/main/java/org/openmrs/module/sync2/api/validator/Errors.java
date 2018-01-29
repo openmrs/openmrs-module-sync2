@@ -19,4 +19,11 @@ public class Errors {
     public boolean hasErrors() {
         return !errors.isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "Errors{" +
+                "errors=" + errors +
+                '}';
+    }
 }

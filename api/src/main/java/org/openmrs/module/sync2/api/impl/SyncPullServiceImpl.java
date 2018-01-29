@@ -6,6 +6,7 @@ import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,8 @@ public class SyncPullServiceImpl implements SyncPullService {
     @Override
     public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+
         String parentPull = getPullUrl(resourceLinks, clientName, PARENT);
         String localPull = getPullUrl(resourceLinks, clientName, CHILD);
         String localPush = getPushUrl(resourceLinks, clientName, CHILD);
