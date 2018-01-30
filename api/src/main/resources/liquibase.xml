@@ -50,4 +50,16 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="sync2-2017-01-24" author="Soldevelo">
+        <comment>
+            Changed the identification of AuditMessage from id to UUID value.
+            Added a creator's instance information (instance ID)
+        </comment>
+        <dropColumn tableName="sync_audit_message" columnName="next_message" />
+        <addColumn tableName="sync_audit_message">
+            <column name="next_message_uuid" type="char(38)" />
+            <column name="creator_instance_id" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

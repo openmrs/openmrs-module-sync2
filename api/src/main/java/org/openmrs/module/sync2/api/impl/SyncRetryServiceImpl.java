@@ -1,12 +1,14 @@
 package org.openmrs.module.sync2.api.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.SyncPushService;
 import org.openmrs.module.sync2.api.SyncRetryService;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,12 +28,12 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     @Autowired
     private SyncAuditService syncAuditService;
 
-    @Autowired
-    private SyncConfigurationService configuration;
-
     @Override
     public AuditMessage retryMessage(AuditMessage message) throws APIException {
-        switch(message.getOperation()) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+        checkIfCurrentIstanceIsCreatorInstance(message);
+
+        switch (message.getOperation()) {
             case PULL_OPERATION:
                 return retryPull(message);
             case PUSH_OPERATION:
@@ -64,5 +66,17 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
         syncAuditService.setNextAudit(message, newMessage);
         return newMessage;
+    }
+
+    private void checkIfCurrentIstanceIsCreatorInstance(AuditMessage message) {
+        String localInstanceId = SyncUtils.getLocalInstanceId();
+        if (!StringUtils.equals(message.getCreatorInstanceId(), localInstanceId)) {
+            throw new SyncException(String.format("Retry cannot be done. " +
+                    "Current instance ID is not equal creator of the message.\n" +
+                    "LocalInstanceId=%s\n" +
+                    "The AuditMessage's creatorId=%s\n" +
+                    "The AuditMessage's UUID=%s\n",
+                    localInstanceId, message.getCreatorInstanceId(), message.getUuid()));
+        }
     }
 }

@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.api.utils;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,14 +8,9 @@ import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
-import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -32,23 +26,26 @@ import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readReso
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
-
-
+import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.serialize;
 
 public class SyncConfigurationUtilsTest {
 
-    private static final String sampleSyncConfigurationPath = "sampleSyncConfiguration.json";
-    private static final String incorrectSyncConfigurationPath = "incorrectSyncConfiguration.json";
-    private static final String sampleSerializedMap = "sampleSerializedMap.json";
+    private static final String SAMPLE_SYNC_CONFIGURATION_PATH = "sampleSyncConfiguration.json";
+    private static final String INCORRECT_SYNC_CONFIGURATION_PATH = "incorrectSyncConfiguration.json";
+    private static final String SAMPLE_SERIALIZED_MAP = "sampleSerializedMap.json";
+    private static final String SAMPLE_PRETTY_SERIALIZED_MAP = "samplePrettySerializedMap.json";
 
-    private static final String notExistingFilePath = "pathToNotExistingFile";
-    private static final SyncConfiguration expectedConfiguration = new SyncConfiguration();
-
+    private static final String NOT_EXISTING_FILE_PATH = "pathToNotExistingFile";
+    private static final SyncConfiguration EXPECTED_CONFIGURATION = new SyncConfiguration();
+    
+    private static final String SAMPLE_LOCAL_INSTANCE_ID = "localInstanceId";
+    
     @Before
     public void setUp() {
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress", false, false);
-        expectedConfiguration.setGeneral(general);
+        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
+                SAMPLE_LOCAL_INSTANCE_ID, false, false);
+        EXPECTED_CONFIGURATION.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
                 "location", "org.openmrs.Location", true);
@@ -57,10 +54,10 @@ public class SyncConfigurationUtilsTest {
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
 
         SyncMethodConfiguration push = new SyncMethodConfiguration(true, 12, classes);
-        expectedConfiguration.setPush(push);
+        EXPECTED_CONFIGURATION.setPush(push);
 
         SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
-        expectedConfiguration.setPull(pull);
+        EXPECTED_CONFIGURATION.setPull(pull);
     }
 
     @Test
@@ -74,49 +71,49 @@ public class SyncConfigurationUtilsTest {
 
     @Test(expected = SyncException.class)
     public void readResourceFile_shouldThrowIoExceptionIfFileDoesNotExist() throws SyncException {
-        readResourceFile(notExistingFilePath);
+        readResourceFile(NOT_EXISTING_FILE_PATH);
     }
 
     @Test
     public void parseJsonFileToSyncConfiguration_shouldCorrectlyParseSampleConfiguration() throws SyncException {
-        SyncConfiguration result = parseJsonFileToSyncConfiguration(sampleSyncConfigurationPath, RELATIVE);
-        Assert.assertEquals(expectedConfiguration, result);
+        SyncConfiguration result = parseJsonFileToSyncConfiguration(SAMPLE_SYNC_CONFIGURATION_PATH, RELATIVE);
+        Assert.assertEquals(EXPECTED_CONFIGURATION, result);
     }
 
     @Test(expected = SyncException.class)
     public void parseJsonFileToSyncConfiguration_shouldThrowJsonParseException() throws SyncException {
-        parseJsonFileToSyncConfiguration(incorrectSyncConfigurationPath, RELATIVE);
+        parseJsonFileToSyncConfiguration(INCORRECT_SYNC_CONFIGURATION_PATH, RELATIVE);
     }
 
     @Test
     public void parseJsonStringToSyncConfiguration_shouldCorrectlyParseSampleConfiguration() throws SyncException {
-        String json = readResourceFile(sampleSyncConfigurationPath);
+        String json = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
         SyncConfiguration result = parseJsonStringToSyncConfiguration(json);
-        Assert.assertEquals(expectedConfiguration, result);
+        Assert.assertEquals(EXPECTED_CONFIGURATION, result);
     }
 
     @Test(expected = SyncException.class)
     public void parseJsonStringToSyncConfiguration_shouldThrowJsonParseException() throws SyncException {
-        String json = readResourceFile(incorrectSyncConfigurationPath);
+        String json = readResourceFile(INCORRECT_SYNC_CONFIGURATION_PATH);
         parseJsonStringToSyncConfiguration(json);
     }
 
     @Test
     public void isValidateJson_correct() throws SyncException {
-        String json = readResourceFile(sampleSyncConfigurationPath);
+        String json = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
         Assert.assertTrue(isValidateJson(json));
     }
 
     @Test
     public void isValidateJson_incorrect() throws SyncException {
-        String json = readResourceFile(incorrectSyncConfigurationPath);
+        String json = readResourceFile(INCORRECT_SYNC_CONFIGURATION_PATH);
         Assert.assertFalse(isValidateJson(json));
     }
 
     @Test
     public void shouldWriteSyncConfigurationToJsonString() throws SyncException {
-        String result = writeSyncConfigurationToJsonString(expectedConfiguration);
-        String expected = readResourceFile(sampleSyncConfigurationPath);
+        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION);
+        String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
 
         Assert.assertEquals(expected, result);
     }
@@ -126,10 +123,9 @@ public class SyncConfigurationUtilsTest {
         final String path = new File(OpenmrsUtil.getDirectoryInApplicationDataDirectory(
                 CONFIGURATION_DIR).getAbsolutePath(), "sync2.json").getAbsolutePath();
 
-        writeSyncConfigurationToJsonFile(expectedConfiguration, path);
+        writeSyncConfigurationToJsonFile(EXPECTED_CONFIGURATION, path);
 
-        String expected = readResourceFile(sampleSyncConfigurationPath);
-
+        String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
         String result = readResourceFileAbsolutePath(path);
 
         Assert.assertEquals(expected, result);
@@ -137,23 +133,28 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void resourceFileExists_exist() throws SyncException {
-        Assert.assertTrue(resourceFileExists(sampleSyncConfigurationPath));
+        Assert.assertTrue(resourceFileExists(SAMPLE_SYNC_CONFIGURATION_PATH));
     }
 
     @Test
     public void resourceFileExists_notExist() throws SyncException {
-        Assert.assertFalse(resourceFileExists(notExistingFilePath));
+        Assert.assertFalse(resourceFileExists(NOT_EXISTING_FILE_PATH));
     }
 
     @Test
     public void serializeMapToPrettyJson_shouldSerializeMapWithStrings() throws SyncException {
-        Assert.assertEquals(readResourceFile(sampleSerializedMap), serializeMapToPrettyJson(createSampleMap()));
+        Assert.assertEquals(readResourceFile(SAMPLE_PRETTY_SERIALIZED_MAP), prettySerialize(createSampleMap()));
+    }
+    
+    @Test
+    public void serialize_shouldSerializeMapToJson() throws SyncException {
+        Assert.assertEquals(readResourceFile(SAMPLE_SERIALIZED_MAP), serialize(createSampleMap()));
     }
 
     @Test
-    public void serializeMapToPrettyJson_shouldDeserializeMapWithStrings() throws SyncException {
+    public void deserializeJsonToStringsMap_shouldDeserializeMapWithStrings() throws SyncException {
         Assert.assertEquals(createSampleMap(),
-                SyncUtils.deserializeJsonToStringsMap(readResourceFile(sampleSerializedMap)));
+                SyncUtils.deserializeJsonToStringsMap(readResourceFile(SAMPLE_SERIALIZED_MAP)));
     }
 
     private Map<String, String> createSampleMap() {

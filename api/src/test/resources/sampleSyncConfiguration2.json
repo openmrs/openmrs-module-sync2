@@ -1,7 +1,8 @@
 {
   "general" : {
     "parentFeedLocation" : "",
-    "localFeedLocation" : "defaultAddress2"
+    "localFeedLocation" : "defaultAddress2",
+    "localInstanceId" : "localInstanceId2"
   },
   "push" : {
     "enabled" : false,

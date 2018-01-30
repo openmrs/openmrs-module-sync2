@@ -2,6 +2,7 @@
   "general" : {
     "parentFeedLocation" : "http://localhost:8081/openmrs",
     "localFeedLocation" : "http://localhost:8080/openmrs",
+    "localInstanceId" : null,
     "persistSuccessAudit" : true,
     "persistFailureAudit" : true
   },
@@ -116,6 +117,12 @@
         "category" : "privilege",
         "openMrsClass": "org.openmrs.Privilege",
         "enabled" : true
+      },
+      {
+        "classTitle" : "AuditMessage",
+        "category" : "audit_message",
+        "openMrsClass": "org.openmrs.module.sync2.api.model.audit.AuditMessage",
+        "enabled" : true
       }
     ]
   },
@@ -229,6 +236,12 @@
         "classTitle" : "Privilege",
         "category" : "privilege",
         "openMrsClass": "org.openmrs.Privilege",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "AuditMessage",
+        "category" : "audit_message",
+        "openMrsClass": "org.openmrs.module.sync2.api.model.audit.AuditMessage",
         "enabled" : true
       }
     ]

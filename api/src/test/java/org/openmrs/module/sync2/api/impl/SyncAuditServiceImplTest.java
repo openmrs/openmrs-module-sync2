@@ -10,8 +10,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.converter.AuditMessageToStringConverter;
+import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.springframework.core.io.ClassPathResource;
@@ -34,6 +37,8 @@ public class SyncAuditServiceImplTest {
 
     private static final String AUDIT_MESSAGE_JSON = "/audit/sampleAuditMessage.json";
     private static final String PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON = "/audit/sampleAuditMessages.json";
+    
+    private static final Integer AUDIT_ID = 1;
     private static final String AUDIT_ACTION = "testAction";
     private static final String AUDIT_DETAILS = "testDetails";
     private static final String AUDIT_NAME = "test";
@@ -42,7 +47,15 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_PARENT_URL = "parentUrl";
     private static final String AUDIT_LOCAL_URL = "localUrl";
     private static final String AUDIT_LINK_TYPE = "test";
-    private static final Integer AUDIT_NEXT_MESSAGE = 1;
+    private static final String AUDIT_NEXT_MESSAGE_UUID = "next_message_uuid";
+    private static final String AUDIT_UUID = "9f3dccc9-6bc3-4a2b-862d-af4ce41caa28";
+    private static final String AUDIT_CREATOR_INSTANCE = "sampleCreatorInstance1";
+
+    private static final Integer PAGINATED_PAGE = 1;
+    private static final Integer PAGINATED_PAGE_SIZE = 100;
+
+    private StringToAuditMessageConverter stringToAuditMessageConverter = new StringToAuditMessageConverter();
+    private AuditMessageToStringConverter auditMessageToStringConverter = new AuditMessageToStringConverter();
 
     @InjectMocks
     private SyncAuditServiceImpl auditService;
@@ -75,13 +88,31 @@ public class SyncAuditServiceImplTest {
     }
 
     @Test
-    public void getJsonMessageById() throws Exception {
-        Integer id = 1;
+    public void getMessageByUuid() throws ParseException {
+        AuditMessage expected = prepareAuditMessage(true);
+        when(dao.getMessageByUuid(AUDIT_UUID)).thenReturn(expected);
 
-        when(dao.getMessageById(id)).thenReturn(prepareAuditMessage(false));
+        AuditMessage fetched = auditService.getMessageByUuid(AUDIT_UUID);
+
+        Assert.assertEquals(expected, fetched);
+    }
+
+    @Test
+    public void getJsonMessageById() throws Exception {
+        when(dao.getMessageById(AUDIT_ID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageById(id);
+        String fetched = auditService.getJsonMessageById(AUDIT_ID);
+
+        Assert.assertEquals(expected, fetched);
+    }
+
+    @Test
+    public void getJsonMessageByUuid() throws Exception {
+        when(dao.getMessageByUuid(AUDIT_UUID)).thenReturn(prepareAuditMessage(false));
+
+        String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
+        String fetched = auditService.getJsonMessageByUuid(AUDIT_UUID);
 
         Assert.assertEquals(expected, fetched);
     }
@@ -91,11 +122,12 @@ public class SyncAuditServiceImplTest {
         Integer page = 1;
         Integer pageSize = 100;
 
-        List<AuditMessage> messages = prepareAuditMessages();
-        when(dao.getPaginatedMessages(page, pageSize, null, "", "")).thenReturn(messages);
-        when(dao.getCountOfMessages()).thenReturn((long) messages.size());
+        PaginatedAuditMessages messages = preparePaginatedAuditMessages();
+        when(dao.getPaginatedAuditMessages(page, pageSize, null, "", "", ""))
+                .thenReturn(messages);
+        
         String expected = readJsonFromFile(PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON);
-        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "");
+        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "", "");
 
         Assert.assertEquals(expected, fetched);
     }
@@ -109,7 +141,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertEquals(auditMessage, fetched);
     }
@@ -124,7 +156,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertNull(fetched);
     }
@@ -138,7 +170,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertEquals(auditMessage, fetched);
     }
@@ -151,7 +183,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
-        auditService.saveAuditMessage(auditMessage);
+        auditService.saveAuditMessageDuringSync(auditMessage);
     }
     
     @Test
@@ -164,7 +196,7 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
         
         Assert.assertNull(fetched);
     }
@@ -178,10 +210,28 @@ public class SyncAuditServiceImplTest {
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
-        AuditMessage fetched = auditService.saveAuditMessage(auditMessage);
+        AuditMessage fetched = auditService.saveAuditMessageDuringSync(auditMessage);
     
         Assert.assertEquals(auditMessage, fetched);
         Assert.assertNotNull(fetched.getTimestamp());
+    }
+    
+    @Test
+    public void convert_shouldDeserializeAuditMessage() throws Exception {
+        final String toDeserialize = readJsonFromFile(AUDIT_MESSAGE_JSON);
+        AuditMessage fetched = stringToAuditMessageConverter.convert(toDeserialize);
+        AuditMessage expected = prepareAuditMessage(false);
+        
+        Assert.assertEquals(expected, fetched);
+    }
+
+    @Test
+    public void convert_shouldSerializeAuditMessage() throws Exception {
+        AuditMessage toSerialize = prepareAuditMessage(false);
+        String fetched = auditMessageToStringConverter.convert(toSerialize);
+        final String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
+
+        Assert.assertEquals(expected, fetched);
     }
     
     private String prepareDummyAvailableResourcesUrls() {
@@ -196,9 +246,8 @@ public class SyncAuditServiceImplTest {
     }
 
     private AuditMessage prepareAuditMessage(Boolean success) throws ParseException {
-        ObjectMapper objectMapper = new ObjectMapper();
         AuditMessage newMessage = new AuditMessage();
-        newMessage.setId(1);
+        newMessage.setId(AUDIT_ID);
         newMessage.setAvailableResourceUrls(prepareDummyAvailableResourcesUrls());
         newMessage.setOperation(AUDIT_OPERATION);
         newMessage.setAction(AUDIT_ACTION);
@@ -208,33 +257,33 @@ public class SyncAuditServiceImplTest {
         newMessage.setLocalUrl(AUDIT_LOCAL_URL);
         newMessage.setUsedResourceUrl(AUDIT_USED_URL);
         newMessage.setLinkType(AUDIT_LINK_TYPE);
-        newMessage.setNextMessage(AUDIT_NEXT_MESSAGE);
+        newMessage.setNextMessageUuid(AUDIT_NEXT_MESSAGE_UUID);
+        newMessage.setCreatorInstanceId(AUDIT_CREATOR_INSTANCE);
+        newMessage.setUuid(AUDIT_UUID);
         newMessage.setSuccess(success);
-
+    
         String createDate = "2017-12-07 00:00:00";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date parsedDate = dateFormat.parse(createDate);
-
+    
         newMessage.setTimestamp(new java.sql.Timestamp(parsedDate.getTime()));
-
-        newMessage.setUuid("9f3dccc9-6bc3-4a2b-862d-af4ce41caa28");
         return newMessage;
     }
-    
 
+    private PaginatedAuditMessages preparePaginatedAuditMessages() throws ParseException {
+        List<AuditMessage> list = new ArrayList<>();
+        list.add(prepareAuditMessage(true));
+        list.add(prepareAuditMessage(false));
 
-    private List<AuditMessage> prepareAuditMessages() throws ParseException {
-        List<AuditMessage> result = new ArrayList<>();
-        result.add(prepareAuditMessage(true));
-        result.add(prepareAuditMessage(false));
+        list.get(0).setResourceName("Test 1");
+        list.get(0).setId(AUDIT_ID);
+        list.get(0).setUuid(AUDIT_UUID);
 
-        result.get(0).setResourceName("Test 1");
-        result.get(0).setUuid("9f3dccc9-6bc3-4a2b-862d-af4ce41caa28");
-
-        result.get(1).setResourceName("Test 2");
-        result.get(1).setUuid("74e75d4a-393c-4611-a903-883a0fd5fc6f");
-
-        return result;
+        list.get(1).setResourceName("Test 2");
+        list.get(0).setId(2);
+        list.get(1).setUuid("74e75d4a-393c-4611-a903-883a0fd5fc6f");
+        
+        return new PaginatedAuditMessages((long) list.size(), PAGINATED_PAGE, PAGINATED_PAGE_SIZE, list);
     }
 
     private String readJsonFromFile(String filename) throws Exception {
@@ -246,5 +295,4 @@ public class SyncAuditServiceImplTest {
 
         return json;
     }
-
 }

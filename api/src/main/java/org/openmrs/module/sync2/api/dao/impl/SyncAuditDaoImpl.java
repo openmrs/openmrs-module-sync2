@@ -2,8 +2,7 @@ package org.openmrs.module.sync2.api.dao.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -11,14 +10,20 @@ import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Repository
 public class SyncAuditDaoImpl implements SyncAuditDao {
+
+    private static final boolean areVoidedEntriesInPaginatedResult = false;
 
     @Autowired
     private DbSessionFactory sessionFactory;
@@ -27,28 +32,44 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         return sessionFactory.getCurrentSession();
     }
 
-    public AuditMessage getMessageById(Integer id) {
+    public AuditMessage getMessageByUuid(String uuid) {
         return (AuditMessage) getSession()
                 .createCriteria(AuditMessage.class)
-                .add(Restrictions.eq(SyncConstants.ID_COLUMN_NAME, id))
+                .add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME, uuid))
                 .uniqueResult();
     }
 
-    public List<AuditMessage> getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action, String resourceName) {
-        Criteria selectCriteria = createSelectCriteria(success, action, resourceName);
+    public AuditMessage getMessageById(Integer id) {
+        return (AuditMessage) getSession()
+                .createCriteria(AuditMessage.class)
+                .add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_ID_FIELD_NAME, id))
+                .uniqueResult();
+    }
 
+    public PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String action,
+                                                        String resourceName, String creatorInstanceId) {
+        Criteria selectCriteria = createSelectCriteria(success, action, resourceName, creatorInstanceId);
+        
+        Long itemCount = countRows(selectCriteria);
+        
         selectCriteria.setFirstResult((page - 1) * pageSize);
         selectCriteria.setMaxResults(pageSize);
+        List<AuditMessage> list = Collections.checkedList(selectCriteria.list(), AuditMessage.class);
+        
+        return new PaginatedAuditMessages(itemCount, page, pageSize, list);
+    }
 
-        return (List<AuditMessage>) selectCriteria.list();
+    @Override
+    public Set<String> getAllCreatorIds() {
+        Criteria selectCriteria = getSession().createCriteria(AuditMessage.class)
+                .add(Restrictions.isNotNull(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID))
+                .setProjection(Projections.distinct(
+                        Projections.property(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID)));
+        return new HashSet<>(Collections.checkedList(selectCriteria.list(), String.class));
     }
 
     public Long getCountOfMessages() {
-        return (Long) getSession()
-                .createCriteria(AuditMessage.class)
-                .setProjection(Projections.rowCount())
-                .list()
-                .get(0);
+        return countRows(getSession().createCriteria(AuditMessage.class));
     }
 
     public AuditMessage saveItem(AuditMessage auditMessage) {
@@ -56,21 +77,36 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         return auditMessage;
     }
 
-    private Criteria createSelectCriteria(Boolean success, String action, String resourceName) {
+    private Criteria createSelectCriteria(Boolean success, String action, String resourceName,
+                                          String creatorInstanceId) {
         Criteria selectCriteria = getSession().createCriteria(AuditMessage.class);
-
         if (success != null) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.STATUS_COLUMN_NAME, success));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_STATUS_FIELD_NAME, success));
         }
-
         if (StringUtils.isNotEmpty(action)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.ACTION_COLUMN_NAME, action));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_ACTION_FIELD_NAME, action));
         }
-
         if (StringUtils.isNotEmpty(resourceName)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.RESOURCE_NAME_COLUMN_NAME, resourceName));
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_RESOURCE_FIELD_NAME, resourceName));
+        }
+        if (StringUtils.isNotEmpty(creatorInstanceId)) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID, creatorInstanceId));
+        }
+        if (!areVoidedEntriesInPaginatedResult) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_VOIDED_FIELD_NAME, false));
         }
 
         return selectCriteria;
+    }
+    
+    private Long countRows(Criteria criteria) {
+        Long rows = (Long) criteria
+                .setProjection(Projections.rowCount())
+                .list()
+                .get(0);
+        // resetting criteria
+        criteria.setProjection(null)
+                .setResultTransformer(Criteria.ROOT_ENTITY);
+        return rows;
     }
 }

@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api;
 
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.validator.Errors;
 
 public interface SyncConfigurationService {
 
@@ -9,4 +10,6 @@ public interface SyncConfigurationService {
     void saveConfiguration(String jsonConfiguration);
 
     SyncConfiguration getSyncConfiguration();
+
+    Errors validateConfiguration();
 }

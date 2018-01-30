@@ -7,6 +7,7 @@ import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.client.reader.LocalFeedWorker;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
 
     @Override
     public void readAllFeedsForPush() {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
         List<ClassConfiguration> pushConf = configurationService.getSyncConfiguration().getPush().getClasses();
 
         for (ClassConfiguration classConf : pushConf) {

@@ -22,10 +22,13 @@ import java.util.List;
 import java.util.Set;
 
 public class RestResourceCreationUtil {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RestResourceCreationUtil.class);
 
     public static RestResource createRestResourceFromOpenMRSData(OpenmrsObject object) {
-        if (object instanceof org.openmrs.Patient) {
+        if (object instanceof RestResource) {
+            return (RestResource) object;
+        } else if (object instanceof org.openmrs.Patient) {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
         } else if (object instanceof org.openmrs.Location) {
             return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);

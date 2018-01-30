@@ -30,15 +30,17 @@ jQuery(document).ready(function() {
             }
         },
         fields: [ {
-                name: 'id', type: "number", visible: false
+                name: 'uuid', type: "number", visible: false
             }, {
-                title: titles[0], name: "resourceName", type: "select", items: syncResourceName, valueField: "id", textField: "name", sorting: true, filtering: true, width: '10%'
+                title: titles[0], name: "creatorInstanceId", type: "select", items: originName, valueField: "id", textField: "name", sorting: true, filtering: true, width: '15%'
             }, {
-                title: titles[1], name: "timestamp", sorting: true, filtering: false, width: '20%'
+                title: titles[1], name: "resourceName", type: "select", items: syncResourceName, valueField: "id", textField: "name", sorting: true, filtering: true, width: '10%'
             }, {
-                title: titles[2], name: "usedResourceUrl", sorting: true, filtering: false, width: '50%'
+                title: titles[2], name: "timestamp", sorting: true, filtering: false, width: '20%'
             }, {
-                title: titles[3], name: "success", type: "select", items: syncStatus, valueField: "id", textField: "name" , sorting: true, filtering: true, align: "center", width: '10%',
+                title: titles[3], name: "usedResourceUrl", sorting: true, filtering: false, width: '50%'
+            }, {
+                title: titles[4], name: "success", type: "select", items: syncStatus, valueField: "id", textField: "name" , sorting: true, filtering: true, align: "center", width: '10%',
                 itemTemplate: function(value) {
                     var result;
                     if (value === true) {
@@ -49,16 +51,16 @@ jQuery(document).ready(function() {
                     return result;
                 }
             }, {
-                title: titles[4], name: "operation" , type: "select", items: syncOperation, valueField: "id", textField: "name", filtering: true, width: '10%'
+                title: titles[5], name: "operation" , type: "select", items: syncOperation, valueField: "id", textField: "name", filtering: true, width: '10%'
             }
         ],
         rowClick: function(args) {
-            $("#jsGrid").jsGrid("fieldOption", "id", "visible", true);
+            $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", true);
             var $row = this.rowByItem(args.item);
-            var messageId = $row.children().first().text();
+            var messageUuid = $row.children().first().text();
             var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
-            window.location.href="details.page?messageId=" + messageId + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
-            $("#jsGrid").jsGrid("fieldOption", "id", "visible", false);
+            window.location.href="details.page?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", false);
         }
     });
 });

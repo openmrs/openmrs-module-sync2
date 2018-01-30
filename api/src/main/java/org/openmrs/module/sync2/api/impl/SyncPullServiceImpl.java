@@ -2,9 +2,11 @@ package org.openmrs.module.sync2.api.impl;
 
 import org.openmrs.module.sync2.api.SyncAuditService;
 import org.openmrs.module.sync2.api.SyncPullService;
+import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +24,16 @@ import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAudit
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.serializeMapToPrettyJson;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.compareLocalAndPulled;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl implements SyncPullService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);
+
+    @Autowired
+    private PullFilterService pullFilterService;
 
     @Autowired
     private SyncAuditService syncAuditService;
@@ -38,6 +43,8 @@ public class SyncPullServiceImpl implements SyncPullService {
     @Override
     public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+
         String parentPull = getPullUrl(resourceLinks, clientName, PARENT);
         String localPull = getPullUrl(resourceLinks, clientName, CHILD);
         String localPush = getPushUrl(resourceLinks, clientName, CHILD);
@@ -51,12 +58,14 @@ public class SyncPullServiceImpl implements SyncPullService {
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(parentPull);
         auditMessage.setLinkType(clientName);
-        auditMessage.setAvailableResourceUrls(serializeMapToPrettyJson(resourceLinks));
+        auditMessage.setAvailableResourceUrls(prettySerialize(resourceLinks));
         auditMessage.setAction(action);
 
         try {
-            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category, clientName, parentPull, PARENT);
-            pullToTheLocal = shouldPullObject(pulledObject, category,clientName, localPull);
+            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category,
+                    clientName, parentPull, PARENT);
+            pullToTheLocal = pullFilterService.shouldBeSynced(category, pulledObject, action)
+                    && shouldPullObject(pulledObject, category,clientName, localPull);
 
             if (pullToTheLocal) {
                 syncClient.pushData(pulledObject, clientName, localPush, action, CHILD);
@@ -71,7 +80,7 @@ public class SyncPullServiceImpl implements SyncPullService {
             auditMessage.setDetails(ExceptionUtils.getFullStackTrace(e));
         } finally {
             if (pullToTheLocal) {
-                auditMessage = syncAuditService.saveAuditMessage(auditMessage);
+                auditMessage = syncAuditService.saveAuditMessageDuringSync(auditMessage);
             }
         }
         return auditMessage;

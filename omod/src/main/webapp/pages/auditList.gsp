@@ -17,6 +17,7 @@
         { label: "${ ui.message('sync2.audit.label') }" }
     ];
     var titles = [
+        "${ ui.message('sync2.log.header.creatorInstanceId') }",
         "${ ui.message('sync2.log.header.resource') }",
         "${ ui.message('sync2.log.header.timestamp') }",
         "${ ui.message('sync2.log.header.url') }",
@@ -24,11 +25,20 @@
         "${ ui.message('sync2.log.header.operation') }"
     ];
 
+    var originName = [
+        { id: "<%= localInstanceId %>", name: "${ ui.message('sync2.log.origin.thisInstance') }" },
+        { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
+        <% creatorIds.each { %>
+            { id: "<%= it %>", name: "<%= it %>"},
+        <% } %>
+    ];
+
     var syncResourceName = [
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
         { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
-        { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" }
+        { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" }
     ];
 
     var syncStatus = [
@@ -43,7 +53,14 @@
         { id: "PULL", name: "${ ui.message('sync2.log.operation.pull') }" }
     ];
 </script>
+<% if (configurationValidationErrors.hasErrors()) { %>
+    <h2><%= ui.message("sync2.error.validationError") %></h2>
+    <% configurationValidationErrors.errorCodes.each { %>
+        <div style="margin-left: 15px"><%= ui.message(it) %></div>
+    <% } %>
+<% } else { %>
+    <div id="jsGrid" class="jsgrid" style="position: relative; height: auto; width: 100%;"></div>
+<% } %>
 
-<div id="jsGrid" class="jsgrid" style="position: relative; height: auto; width: 100%;"></div>
 
 <% } %>

@@ -1,7 +1,10 @@
 package org.openmrs.module.sync2.page.controller;
 
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
@@ -30,12 +33,18 @@ public class ManualSyncPushPageController {
             LOGGER.info("Start Local Feed Reader...");
             localFeedReader.readAllFeedsForPush();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
+        } catch (SyncValidationException e) {
+            LOGGER.error("Error during pushing objects: ", e);
+            InfoErrorMessageUtil.flashErrorMessage(session, ui.message(getFirstErrorCode(e.getErrors())));
         } catch (Exception e) {
             LOGGER.error("Error during pushing objects: ", e);
             InfoErrorMessageUtil.flashErrorMessage(session, ui.message(SYNC_FAILURE));
         }
         return "redirect:/sync2/sync2.page";
     }
-    
+
+    private String getFirstErrorCode(Errors errors) {
+        return errors.getErrorsCodes().get(SyncConstants.ZERO);
+    }
 }
 

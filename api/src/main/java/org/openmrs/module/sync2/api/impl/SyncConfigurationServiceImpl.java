@@ -1,14 +1,18 @@
 package org.openmrs.module.sync2.api.impl;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
+import org.openmrs.module.sync2.api.validator.Errors;
+import org.openmrs.module.sync2.api.validator.SyncConfigurationValidator;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_NAME_OF_CUSTOM_CONFIGURATION;
@@ -20,7 +24,6 @@ import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJso
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
-
 
 @Component("sync2.syncConfigurationService")
 public class SyncConfigurationServiceImpl implements SyncConfigurationService {
@@ -59,6 +62,16 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
     @Override
     public SyncConfiguration getSyncConfiguration() {
         return this.syncConfiguration;
+    }
+
+    @Override
+    public Errors validateConfiguration() {
+        Errors errors = new Errors();
+        List<SyncConfigurationValidator> validators = Context.getRegisteredComponents(SyncConfigurationValidator.class);
+        for (SyncConfigurationValidator syncConfigurationValidator : validators) {
+            syncConfigurationValidator.validate(syncConfiguration, errors);
+        }
+        return errors;
     }
 
     private String getConfigFilePath() {

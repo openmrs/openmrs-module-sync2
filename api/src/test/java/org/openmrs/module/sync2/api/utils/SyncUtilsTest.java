@@ -3,7 +3,6 @@ package org.openmrs.module.sync2.api.utils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
@@ -15,12 +14,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SyncUtilsTest {
-    private static final SyncConfiguration expectedConfiguration = new SyncConfiguration();
-
+    
+    private static final SyncConfiguration EXPECTED_CONFIGURATION = new SyncConfiguration();
+    private static final String SAMPLE_LOCAL_INSTANCE_ID = "localInstanceId";
+    
     @Before
     public void setUp() {
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress", false, false);
-        expectedConfiguration.setGeneral(general);
+        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
+                SAMPLE_LOCAL_INSTANCE_ID, false, false);
+        EXPECTED_CONFIGURATION.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
                 "location", "org.openmrs.Location", true);
@@ -29,10 +31,10 @@ public class SyncUtilsTest {
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
 
         SyncMethodConfiguration push = new SyncMethodConfiguration(true, 12, classes);
-        expectedConfiguration.setPush(push);
+        EXPECTED_CONFIGURATION.setPush(push);
 
         SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
-        expectedConfiguration.setPull(pull);
+        EXPECTED_CONFIGURATION.setPull(pull);
     }
 
     @Test
