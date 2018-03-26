@@ -12,7 +12,7 @@ public interface SyncAuditDao {
 
     AuditMessage getMessageById(Integer id);
     
-    PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String action,
+    PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String operation,
                                                      String resourceName, String creatorInstanceId);
 
     Set<String> getAllCreatorIds();
