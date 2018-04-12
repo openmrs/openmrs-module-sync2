@@ -175,7 +175,7 @@ public class SyncAuditRestController {
             return Operation.valueOf(enumValue).name().equals(Operation.ALL.name()) ?
                     "" : Operation.valueOf(enumValue).name();
         } catch (IllegalArgumentException e) {
-            throw new SyncException(String.format("There is no suitable action: %s.", enumValue), e);
+            throw new SyncException(String.format("There is no suitable operation: %s.", enumValue), e);
         }
     }
 
