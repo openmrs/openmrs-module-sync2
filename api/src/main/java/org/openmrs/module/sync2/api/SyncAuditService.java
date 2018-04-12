@@ -32,7 +32,7 @@ public interface SyncAuditService extends OpenmrsService {
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     @Transactional(readOnly = true)
-    String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String action,
+    String getPaginatedMessages(Integer page, Integer pageSize, Boolean success, String operation,
                                 String resourceName, String creatorInstanceId) throws APIException;
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)

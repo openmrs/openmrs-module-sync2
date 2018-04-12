@@ -46,9 +46,9 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
                 .uniqueResult();
     }
 
-    public PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String action,
+    public PaginatedAuditMessages getPaginatedAuditMessages(Integer page, Integer pageSize, Boolean success, String operation,
                                                         String resourceName, String creatorInstanceId) {
-        Criteria selectCriteria = createSelectCriteria(success, action, resourceName, creatorInstanceId);
+        Criteria selectCriteria = createSelectCriteria(success, operation, resourceName, creatorInstanceId);
         
         Long itemCount = countRows(selectCriteria);
         
@@ -77,14 +77,14 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
         return auditMessage;
     }
 
-    private Criteria createSelectCriteria(Boolean success, String action, String resourceName,
+    private Criteria createSelectCriteria(Boolean success, String operation, String resourceName,
                                           String creatorInstanceId) {
         Criteria selectCriteria = getSession().createCriteria(AuditMessage.class);
         if (success != null) {
             selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_STATUS_FIELD_NAME, success));
         }
-        if (StringUtils.isNotEmpty(action)) {
-            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_ACTION_FIELD_NAME, action));
+        if (StringUtils.isNotEmpty(operation)) {
+            selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_OPERATION_FIELD_NAME, operation));
         }
         if (StringUtils.isNotEmpty(resourceName)) {
             selectCriteria.add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_RESOURCE_FIELD_NAME, resourceName));
