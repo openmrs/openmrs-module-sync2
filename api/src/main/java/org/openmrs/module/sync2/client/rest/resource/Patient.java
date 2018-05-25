@@ -4,12 +4,9 @@ import com.google.gson.annotations.Expose;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
+import org.openmrs.api.context.Context;
 
-import java.util.Objects;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class Patient implements RestResource {
@@ -21,6 +18,8 @@ public class Patient implements RestResource {
     private List<Identifier> identifiers = new ArrayList<Identifier>();
     @Expose
     private Person person;
+
+
 
     public Patient() {
     }
@@ -65,50 +64,71 @@ public class Patient implements RestResource {
     public org.openmrs.BaseOpenmrsObject getOpenMrsObject() {
         org.openmrs.Patient patient = new org.openmrs.Patient();
         patient.setUuid(uuid);
-
         Set<PatientIdentifier> patientIdentifierList = new TreeSet<>();
-        for (Identifier identifier : identifiers) {
-            patientIdentifierList.add((PatientIdentifier) identifier.getOpenMrsObject());
-        }
-        patient.setIdentifiers(patientIdentifierList);
-        patient.setGender(person.getGender());
-        patient.setBirthdate(person.getBirthdate());
-        patient.setDead(person.getDead());
-        patient.setDeathDate(person.getDeathDate());
-        patient.setCauseOfDeath(person.getCauseOfDeath());
-
-        Set<PersonName> personNameSet = new TreeSet<>();
-        PersonName preferredName = null;
-        if (person.getPreferredName() != null) {
-            preferredName = (PersonName) person.getPreferredName().getOpenMrsObject();
-        }
-        for (org.openmrs.module.sync2.client.rest.resource.PersonName name : person.getNames()) {
-            PersonName openmrsName = (PersonName)name.getOpenMrsObject();
-            if (preferredName != null && preferredName.equalsContent(openmrsName)) {
-                openmrsName.setPreferred(true);
+        if(identifiers.size() > 0) {
+            for (Identifier identifier : identifiers) {
+                patientIdentifierList.add((PatientIdentifier) identifier.getOpenMrsObject());
             }
+            patient.setIdentifiers(patientIdentifierList);
+        }
+
+        if(person != null) {
+            patient.setGender(person.getGender());
+            patient.setBirthdate(person.getBirthdate());
+            patient.setDead(person.getDead());
+            patient.setDeathDate(person.getDeathDate());
+//            patient.setCauseOfDeath(person.getCauseOfDeath());
+
+            Set<PersonName> personNameSet = new TreeSet<>();
+            PersonName preferredName = null;
+            if (person.getPreferredName() != null) {
+                preferredName = (PersonName) person.getPreferredName().getOpenMrsObject();
+            }
+            for (org.openmrs.module.sync2.client.rest.resource.PersonName name : person.getNames()) {
+                PersonName openmrsName = (PersonName) name.getOpenMrsObject();
+                if (preferredName != null && preferredName.equalsContent(openmrsName)) {
+                    openmrsName.setPreferred(true);
+                }
+                if(openmrsName != null) {
+                    try {
+                        personNameSet.add(openmrsName);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            patient.setNames(personNameSet);
+
+            Set<PersonAddress> personAddressesSet = new TreeSet<>();
+            PersonAddress preferredAddress = null;
+            if (person.getPreferredAddress() != null) {
+                preferredAddress = (PersonAddress) person.getPreferredAddress().getOpenMrsObject();
+            }
+            for (Address address : person.getAddresses()) {
+                PersonAddress openmrsAddress = (PersonAddress) address.getOpenMrsObject();
+                if (preferredAddress != null && preferredAddress.equalsContent(openmrsAddress)) {
+                    openmrsAddress.setPreferred(true);
+                }
+                personAddressesSet.add(openmrsAddress);
+            }
+            patient.setAddresses(personAddressesSet);
+
+            patient.setVoided(person.getVoided());
+            patient.setDeathdateEstimated(person.getDeathdateEstimated());
+            patient.setBirthtime(person.getBirthtime());
+        } else {
+            org.openmrs.Patient tempPatient = Context.getPatientService().getPatientByUuid(uuid);
+            patient.setGender(tempPatient.getGender());
+            patient.setBirthdate(tempPatient.getBirthdate());
+            Set<PersonName> personNameSet = new TreeSet<>();
+            String[] nameFromDisplay = display.split(" ");
+            PersonName openmrsName = new PersonName();
+            openmrsName.setGivenName(nameFromDisplay[2]);
+            openmrsName.setFamilyName(nameFromDisplay[3]);
             personNameSet.add(openmrsName);
+            patient.setNames(personNameSet);
+            patient.setAddresses(tempPatient.getAddresses());
         }
-        patient.setNames(personNameSet);
-
-        Set<PersonAddress> personAddressesSet = new TreeSet<>();
-        PersonAddress preferredAddress = null;
-        if (person.getPreferredAddress() != null) {
-            preferredAddress = (PersonAddress) person.getPreferredAddress().getOpenMrsObject();
-        }
-        for (Address address : person.getAddresses()) {
-            PersonAddress openmrsAddress = (PersonAddress) address.getOpenMrsObject();
-            if (preferredAddress != null && preferredAddress.equalsContent(openmrsAddress)) {
-                openmrsAddress.setPreferred(true);
-            }
-            personAddressesSet.add(openmrsAddress);
-        }
-        patient.setAddresses(personAddressesSet);
-
-        patient.setVoided(person.getVoided());
-        patient.setDeathdateEstimated(person.getDeathdateEstimated());
-        patient.setBirthtime(person.getBirthtime());
-
         return patient;
     }
 

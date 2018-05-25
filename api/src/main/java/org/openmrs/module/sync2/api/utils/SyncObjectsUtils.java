@@ -5,11 +5,11 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
+import org.openmrs.module.sync2.client.rest.resource.Visit;
+import org.openmrs.module.sync2.client.rest.resource.Encounter;
+import org.openmrs.module.sync2.client.rest.resource.Observation;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
+import static org.openmrs.module.sync2.SyncCategoryConstants.*;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 
@@ -32,6 +32,12 @@ public class SyncObjectsUtils {
         switch (category) {
             case CATEGORY_PATIENT:
                 return org.hl7.fhir.dstu3.model.Patient.class;
+            case CATEGORY_VISIT:
+                return org.hl7.fhir.dstu3.model.Encounter.class;
+            case CATEGORY_ENCOUNTER:
+                return org.hl7.fhir.dstu3.model.Encounter.class;
+            case CATEGORY_OB:
+                return org.hl7.fhir.dstu3.model.Observation.class;
             case CATEGORY_LOCATION:
                 return org.hl7.fhir.dstu3.model.Location.class;
             default:
@@ -43,6 +49,12 @@ public class SyncObjectsUtils {
         switch (category) {
             case CATEGORY_PATIENT:
                 return Patient.class;
+            case CATEGORY_VISIT:
+                return Visit.class;
+            case CATEGORY_ENCOUNTER:
+                return Encounter.class;
+            case CATEGORY_OB:
+                return Observation.class;
             case CATEGORY_LOCATION:
                 return Location.class;
             case CATEGORY_PRIVILEGE:
@@ -58,6 +70,12 @@ public class SyncObjectsUtils {
         switch (category) {
             case CATEGORY_PATIENT:
                 return org.openmrs.Patient.class;
+            case CATEGORY_VISIT:
+                return org.openmrs.Visit.class;
+            case CATEGORY_ENCOUNTER:
+                return org.openmrs.Encounter.class;
+            case CATEGORY_OB:
+                return org.openmrs.Obs.class;
             case CATEGORY_LOCATION:
                 return org.openmrs.Location.class;
             case CATEGORY_PRIVILEGE:

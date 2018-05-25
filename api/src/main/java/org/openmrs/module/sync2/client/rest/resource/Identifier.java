@@ -95,6 +95,7 @@ public class Identifier implements RestResource {
     }
     // endregion
 
+    //TODO add handling visits
     @Override
     public BaseOpenmrsObject getOpenMrsObject() {
         org.openmrs.PatientIdentifier patientIdentifier = new org.openmrs.PatientIdentifier();

@@ -30,8 +30,8 @@ public class Person {
     private String gender;
     @Expose
     private Boolean dead;
-    @Expose
-    private Concept causeOfDeath;
+//    @Expose
+//    private Concept causeOfDeath;
     @Expose
     private Date deathDate;
     @Expose
@@ -132,13 +132,13 @@ public class Person {
         this.dead = dead;
     }
 
-    public Concept getCauseOfDeath() {
-        return causeOfDeath;
-    }
+//    public Concept getCauseOfDeath() {
+//        return causeOfDeath;
+//    }
 
-    public void setCauseOfDeath(Concept causeOfDeath) {
-        this.causeOfDeath = causeOfDeath;
-    }
+//    public void setCauseOfDeath(Concept causeOfDeath) {
+//        this.causeOfDeath = causeOfDeath;
+//    }
 
     public Date getDeathDate() {
         return deathDate;
@@ -192,7 +192,7 @@ public class Person {
                 Objects.equals(age, person.age) &&
                 Objects.equals(gender, person.gender) &&
                 Objects.equals(dead, person.dead) &&
-                Objects.equals(causeOfDeath, person.causeOfDeath) &&
+//                Objects.equals(causeOfDeath, person.causeOfDeath) &&
                 Objects.equals(deathDate, person.deathDate) &&
                 Objects.equals(voided, person.voided) &&
                 Objects.equals(deathdateEstimated, person.deathdateEstimated);
@@ -200,7 +200,7 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, display, preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead, causeOfDeath, deathDate, voided, deathdateEstimated);
+        return Objects.hash(uuid, display, preferredName, preferredAddress, names, addresses, birthdateEstimated, age, gender, dead, deathDate, voided, deathdateEstimated);
     }
 
 }

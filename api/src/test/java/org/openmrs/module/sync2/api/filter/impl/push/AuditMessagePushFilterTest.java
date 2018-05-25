@@ -11,6 +11,7 @@ public class AuditMessagePushFilterTest {
 
     private AuditMessagePushFilter auditMessagePushFilter = new AuditMessagePushFilter();
 
+    //TODO handle visits, encounters and obs
     @Test
     public void shouldObjectBeSynced_shouldReturnTrueIfEntryDoesNotDescribeAuditMessage() {
         boolean fetched = auditMessagePushFilter.shouldObjectBeSynced(prepareDummyAuditMessage(

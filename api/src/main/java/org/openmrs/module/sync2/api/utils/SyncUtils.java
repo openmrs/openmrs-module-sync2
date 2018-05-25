@@ -7,6 +7,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
+import org.openmrs.module.fhir.api.util.OMRSFHIRVisitUtil;
+import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
+import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -25,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
@@ -155,9 +161,9 @@ public class SyncUtils {
         }
     }
 
+    //TODO add handling Visits, Encounters and Obs
     public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
         boolean result = false;
-
         if (null != dest && null != from) {
             //If 'from' is  instance of String it represent uuid and should be used to delete object action.
             if (!(from instanceof String)) {
@@ -179,8 +185,22 @@ public class SyncUtils {
                         result = obj1.equals(obj2);
                         break;
                     case FHIR_CLIENT:
-                        result = category.equals(CATEGORY_PATIENT) ?
-                                FHIRPatientUtil.compareCurrentPatients(dest, from) : dest.equals(from);
+//                        result = category.equals(CATEGORY_PATIENT) ?
+                        if(category.equals(CATEGORY_PATIENT)) {
+                            result = FHIRPatientUtil.compareCurrentPatients(dest, from);
+                        }
+                        else if(category.equals(CATEGORY_VISIT)) {
+                            result = OMRSFHIRVisitUtil.compareCurrentVisits(dest, from);
+                        }
+                        else if(category.equals(CATEGORY_ENCOUNTER)) {
+//                            result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
+                        }
+                        else if(category.equals(CATEGORY_OB)) {
+//                            result = FHIRObsUtil.compareCurrentObs(dest, from);
+                        }
+                        else {
+                            dest.equals(from);
+                        }
                         break;
                     default:
                         result = dest.equals(from);

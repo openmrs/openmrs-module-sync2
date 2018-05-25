@@ -4,6 +4,12 @@ public class SyncCategoryConstants {
 
     public static final String CATEGORY_PATIENT = "patient";
 
+    public static final String CATEGORY_VISIT = "visit";
+
+    public static final String CATEGORY_ENCOUNTER = "encounter";
+
+    public static final String CATEGORY_OB = "ob";
+
     public static final String CATEGORY_LOCATION = "location";
 
     public static final String CATEGORY_PRIVILEGE = "privilege";

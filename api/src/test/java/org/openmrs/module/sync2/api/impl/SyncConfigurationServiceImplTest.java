@@ -84,6 +84,7 @@ public class SyncConfigurationServiceImplTest {
                 "encounter", "org.openmrs.Encounter", false);
         ClassConfiguration visitClass = new ClassConfiguration("Visit",
                 "visit", "org.openmrs.Visit", false);
+
         List<ClassConfiguration> classes = Arrays.asList(encounterClass, visitClass);
 
         SyncMethodConfiguration push = new SyncMethodConfiguration(false, 24, classes);

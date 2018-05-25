@@ -4,9 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonName;
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.FHIRClient;
@@ -36,11 +34,17 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class SyncClientTest {
 
     private static final String PATIENT_UUID = "patientUuid";
+    private static final String VISIT_UUID = "visitUuid";
+    private static final String ENCOUNTER_UUID = "encounterUuid";
+    private static final String OBS_UUID = "obsUuid";
     private static final String FHIR_CLIENT_KEY = "fhir";
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_RESOURCE_LINK = "openmrs/ws/fhir/Patient/";
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
     private static final String PATIENT_CATEGORY = "patient";
+    private static final String VISIT_CATEGORY = "visit";
+    private static final String ENCOUNTER_CATEGORY = "encounter";
+    private static final String OB_CATEGORY = "ob";
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
@@ -51,12 +55,15 @@ public class SyncClientTest {
     
     private AdministrationService administrationServiceMock;
     private Patient expectedPatient;
+    private Visit expectedVisit;
+    private Encounter expectedEncounter;
+    private Obs expectedOb;
     private Map<String, String> links;
 
     @Before
     public void setUp() throws Exception {
         expectedPatient = createPatient();
-
+        expectedVisit = createVisit();
         administrationServiceMock = mock(AdministrationService.class);
 
         mockStatic(Context.class);
@@ -74,9 +81,11 @@ public class SyncClientTest {
 
         RestClient restClientMock = mock(RestClient.class);
         doReturn(createPatient()).when(restClientMock).retrieveObject(PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
+        doReturn(createVisit()).when(restClientMock).retrieveObject(VISIT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
 
         FHIRClient fhirClientMock = mock(FHIRClient.class);
         doReturn(createPatient()).when(fhirClientMock).retrieveObject(PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
+        doReturn(createVisit()).when(restClientMock).retrieveObject(VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
 
         ClientFactory clientFactory = mock(ClientFactory.class);
         doReturn(restClientMock).when(clientFactory).createClient(REST_CLIENT_KEY);
@@ -141,5 +150,69 @@ public class SyncClientTest {
         patient.setBirthtime(new Date());
 
         return patient;
+    }
+
+    private Visit createVisit() {
+        Visit visit =  new Visit();
+        visit.setUuid(VISIT_UUID);
+        visit.setDateChanged(new Date());
+        visit.setDateCreated(new Date());
+        Encounter encounter = new Encounter();
+        encounter.setUuid(ENCOUNTER_UUID);
+        encounter.setDateChanged(new Date());
+        encounter.setDateCreated(new Date());
+        encounter.setEncounterDatetime(new Date());
+        visit.addEncounter(encounter);
+        visit.setIndication(null);
+        visit.setLocation(null);
+        visit.setStartDatetime(new Date());
+        visit.setStopDatetime(new Date());
+        visit.setVoided(false);
+        return visit;
+    }
+
+    private Encounter createEncounter() {
+        Encounter encounter = new Encounter();
+        encounter.setUuid(ENCOUNTER_UUID);
+        encounter.setDateChanged(new Date());
+        encounter.setDateCreated(new Date());
+        encounter.setEncounterDatetime(new Date());
+        encounter.setForm(null);
+        encounter.setLocation(null);
+        Obs obs = new org.openmrs.Obs();
+        obs.setUuid(OBS_UUID);
+        obs.setAccessionNumber("");
+        obs.setComment("");
+        obs.setDateCreated(new Date());
+        obs.setDateChanged(new Date());
+        Set<Obs> observations = new TreeSet<>();
+        observations.add(obs);
+        encounter.setObs(observations);
+        Order order = new org.openmrs.Order();
+        order.setUuid("orderId");
+        order.setDateCreated(new Date());
+        order.setDateActivated(new Date());
+        order.setDateChanged(new Date());
+        Set<Order> orders = new TreeSet<>();
+        orders.add(order);
+        encounter.setOrders(orders);
+        encounter.setVoided(true);
+        return encounter;
+    }
+
+    private Obs createOb() {
+        Obs obs = new org.openmrs.Obs();
+        obs.setUuid(OBS_UUID);
+        obs.setAccessionNumber("");
+        obs.setComment("");
+        obs.setDateCreated(new Date());
+        obs.setDateChanged(new Date());
+        obs.setObsGroup(null);
+        obs.setLocation(null);
+        obs.setObsDatetime(new Date());
+        obs.setValueText("");
+        obs.setValueTime(new Date());
+        obs.setVoided(false);
+        return obs;
     }
 }

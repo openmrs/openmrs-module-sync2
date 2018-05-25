@@ -25,5 +25,6 @@ public class PullFilterService implements FilterService {
         return ContextUtils.getRegisteredComponentSafely(
                 FilterConstant.PULL_FILTERS_COMPONENT_PREFIX + category,
                 ObjectFilter.class);
+//        return ContextUtils.getRegisteredComponentSafely("visitService", ObjectFilter.class);
     }
 }

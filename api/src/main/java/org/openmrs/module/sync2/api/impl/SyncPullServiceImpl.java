@@ -49,7 +49,7 @@ public class SyncPullServiceImpl implements SyncPullService {
         String localPull = getPullUrl(resourceLinks, clientName, CHILD);
         String localPush = getPushUrl(resourceLinks, clientName, CHILD);
 
-        boolean pullToTheLocal = false;
+        boolean pullToTheLocal = true;
         LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, parentPull, action));
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
 

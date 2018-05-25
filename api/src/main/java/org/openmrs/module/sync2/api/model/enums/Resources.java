@@ -4,6 +4,9 @@ public enum Resources {
 
     ALL(""),
     PATIENT("patient"),
+    VISIT("visit"),
+    ENCOUNTER("encounter"),
+    OB("ob"),
     LOCATION("location"),
     PRIVILEGE("privilege"),
     AUDIT_MESSAGE("audit_message");

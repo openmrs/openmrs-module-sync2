@@ -3,20 +3,14 @@ package org.openmrs.module.sync2.client;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+//import org.openmrs.VisitIdentifier;
+//import org.openmrs.VisitIdentifierType;
 import org.openmrs.PersonAddress;
-import org.openmrs.module.sync2.client.rest.resource.Address;
-import org.openmrs.module.sync2.client.rest.resource.Identifier;
-import org.openmrs.module.sync2.client.rest.resource.IdentifierType;
-import org.openmrs.module.sync2.client.rest.resource.Location;
-import org.openmrs.module.sync2.client.rest.resource.LocationTag;
-import org.openmrs.module.sync2.client.rest.resource.Patient;
-import org.openmrs.module.sync2.client.rest.resource.Person;
-import org.openmrs.module.sync2.client.rest.resource.PersonName;
-import org.openmrs.module.sync2.client.rest.resource.Privilege;
-import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.openmrs.module.sync2.client.rest.resource.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +24,8 @@ public class RestResourceCreationUtil {
             return (RestResource) object;
         } else if (object instanceof org.openmrs.Patient) {
             return createPatientFromOpenMRSPatient((org.openmrs.Patient) object);
+        } else if (object instanceof org.openmrs.Visit) {
+            return createVisitFromOpenMRSVisit((org.openmrs.Visit) object);
         } else if (object instanceof org.openmrs.Location) {
             return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);
         } else if (object instanceof org.openmrs.Privilege) {
@@ -50,8 +46,34 @@ public class RestResourceCreationUtil {
         patient.setIdentifiers(identifiers);
 
         patient.setPerson(createPersonFromOpenMRSPerson(openMRSPatient.getPerson()));
-
+//        patient.setUuid(patient.getPerson().getUuid());
         return patient;
+    }
+
+    private static VisitType createVisitTypeFromOpenMRSVisitType(org.openmrs.VisitType openMRSvisitType) {
+        VisitType visitType = new VisitType();
+        visitType.setUuid(openMRSvisitType.getUuid());
+        return visitType;
+    }
+
+    private static Visit createVisitFromOpenMRSVisit(org.openmrs.Visit openMRSVisit) {
+        Visit visit = new Visit();
+        if(openMRSVisit.getCreator() != null) {
+//            visit.setCreator(openMRSVisit.getCreator().getDisplayString());
+        }
+        visit.setStartDatetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(openMRSVisit.getStartDatetime()));
+        visit.setStopDatetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(openMRSVisit.getStopDatetime()));
+//        visit.setIndicationConcept(openMRSVisit.getIndication());
+        visit.setLocation(createLocationFromOpenMRSLocation(openMRSVisit.getLocation(),true));
+        visit.setVisitType(createVisitTypeFromOpenMRSVisitType(openMRSVisit.getVisitType()));
+        visit.setPatient(createPatientFromOpenMRSPatient(openMRSVisit.getPatient()));
+        List<Encounter> encounters = new ArrayList<Encounter>();
+//        for(org.openmrs.Encounter omrsEncounter : openMRSVisit.getEncounters())
+//        {
+//            encounters.add(createEncounterFromOpenMRSEncounter(omrsEncounter));
+//        }
+        visit.setEncounters(encounters);
+        return visit;
     }
 
     private static RestResource createPrivilegeFromOpenMrsPrivilege(org.openmrs.Privilege openMrsPrivilege) {
@@ -80,12 +102,36 @@ public class RestResourceCreationUtil {
         return identifier;
     }
 
+//    private static Identifier createIdentifierFromOpenMRSVisitIdentifier(VisitIdentifier visitIdentifier) {
+//        Identifier identifier = new Identifier();
+//
+//        identifier.setUuid(visitIdentifier.getUuid());
+//        identifier.setIdentifier(visitIdentifier.getIdentifier());
+//        if (visitIdentifier.getIdentifierType() != null) {
+//            identifier.setIdentifierType(createIdentifierTypeFromOpenMRSVisitIdentifierType(visitIdentifier.getIdentifierType()));
+//        }
+//        if (visitIdentifier.getLocation() != null) {
+//            identifier.setLocation(createLocationFromOpenMRSLocation(visitIdentifier.getLocation(), true));
+//        }
+//        identifier.setPreferred(visitIdentifier.getPreferred());
+//        identifier.setVoided(visitIdentifier.getVoided());
+//
+//        return identifier;
+//    }
+
     private static IdentifierType createIdentifierTypeFromOpenMRSPatientIdentifierType(PatientIdentifierType patientIdentifierType) {
         IdentifierType identifierType = new IdentifierType();
         identifierType.setName(patientIdentifierType.getName());
         identifierType.setDescription(patientIdentifierType.getDescription());
         return identifierType;
     }
+
+//    private static IdentifierType createIdentifierTypeFromOpenMRSVisitIdentifierType(VisitIdentifierType visitIdentifierType) {
+//        IdentifierType identifierType = new IdentifierType();
+//        identifierType.setName(visitIdentifierType.getName());
+//        identifierType.setDescription(visitIdentifierType.getDescription());
+//        return identifierType;
+//    }
 
     private static Location createLocationFromOpenMRSLocation(org.openmrs.Location openMRSLocation, boolean reference) {
         Location location = new Location();
@@ -122,11 +168,12 @@ public class RestResourceCreationUtil {
 
     private static List<PersonName> createNamesFromOpenMRSPersonName(org.openmrs.PersonName openMRSPersonName) {
         PersonName personName = new PersonName();
-        personName.setGivenName(openMRSPersonName.getGivenName());
-        personName.setMiddleName(openMRSPersonName.getMiddleName());
-        personName.setFamilyName(openMRSPersonName.getFamilyName());
-        personName.setFamilyName2(openMRSPersonName.getFamilyName2());
-
+        if (openMRSPersonName != null) {
+            personName.setGivenName(openMRSPersonName.getGivenName());
+            personName.setMiddleName(openMRSPersonName.getMiddleName());
+            personName.setFamilyName(openMRSPersonName.getFamilyName());
+            personName.setFamilyName2(openMRSPersonName.getFamilyName2());
+        }
         List<PersonName> names = new ArrayList<>();
         names.add(personName);
         return names;
@@ -140,7 +187,7 @@ public class RestResourceCreationUtil {
         person.setBirthdate(openMRSPerson.getBirthdate());
         person.setDead(openMRSPerson.getDead());
         person.setDeathDate(openMRSPerson.getDeathDate());
-        person.setCauseOfDeath(openMRSPerson.getCauseOfDeath());
+//        person.setCauseOfDeath(openMRSPerson.getCauseOfDeath());
         person.setNames(createNamesFromOpenMRSPersonName(openMRSPerson.getPersonName()));
         person.setVoided(openMRSPerson.getVoided());
         person.setDeathdateEstimated(openMRSPerson.getDeathdateEstimated());

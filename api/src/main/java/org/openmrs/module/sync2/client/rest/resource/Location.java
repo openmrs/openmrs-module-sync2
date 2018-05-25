@@ -227,18 +227,24 @@ public class Location implements RestResource {
 
     @Override
     public BaseOpenmrsObject getOpenMrsObject() {
+        org.openmrs.Location omrsLocation = new org.openmrs.Location();
         if (uuid != null) {
-            org.openmrs.Location omrsLocation = Context.getLocationService().getLocationByUuid(uuid);
+
+            omrsLocation = Context.getLocationService().getLocationByUuid(uuid);
+
             if (omrsLocation != null) {
                 return omrsLocation;
             }
+
         }
 
-        org.openmrs.Location omrsLocation = Context.getLocationService().getLocation(name);
-        // If location with given name already exists then we can just return it.
-        if (omrsLocation != null) {
-            return omrsLocation;
-        }
+            omrsLocation = Context.getLocationService().getLocation(name);
+//        org.openmrs.Location omrsLocation = Context.getLocationService().getLocation("Inpatient Ward");
+            // If location with given name already exists then we can just return it.
+            if (omrsLocation != null) {
+                return omrsLocation;
+            }
+
         omrsLocation = new org.openmrs.Location();
         omrsLocation.setUuid(uuid);
         omrsLocation.setName(name);
@@ -267,6 +273,7 @@ public class Location implements RestResource {
         omrsLocation.setRetired(retired);
 
         return omrsLocation;
+
     }
 
 
