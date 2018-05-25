@@ -26,7 +26,7 @@ public class SyncConstants {
 
     public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
   
-    public static final String AUDIT_MESSAGE_ACTION_FIELD_NAME = "action";
+    public static final String AUDIT_MESSAGE_OPERATION_FIELD_NAME = "operation";
 
     public static final String AUDIT_MESSAGE_RESOURCE_FIELD_NAME = "resourceName";
 
