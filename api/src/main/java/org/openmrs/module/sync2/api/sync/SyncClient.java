@@ -1,7 +1,14 @@
 package org.openmrs.module.sync2.api.sync;
 
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Encounter;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
+import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
+import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
+
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.Client;
@@ -14,19 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
-import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
-import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
-import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
-import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
-import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
-import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
-import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
-import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 
 public class SyncClient {
 

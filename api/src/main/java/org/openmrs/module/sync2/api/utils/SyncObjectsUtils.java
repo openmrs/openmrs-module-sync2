@@ -1,21 +1,28 @@
 package org.openmrs.module.sync2.api.utils;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
+
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.client.rest.resource.Encounter;
 import org.openmrs.module.sync2.client.rest.resource.Location;
+import org.openmrs.module.sync2.client.rest.resource.Observation;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.Visit;
-import org.openmrs.module.sync2.client.rest.resource.Encounter;
-import org.openmrs.module.sync2.client.rest.resource.Observation;
-
-import static org.openmrs.module.sync2.SyncCategoryConstants.*;
-import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 
 
 public class SyncObjectsUtils {
 
+    @SuppressWarnings("rawtypes")
     public static Class getSyncedClassByClient(String client, String category) {
         switch (client) {
             case FHIR_CLIENT:
@@ -27,6 +34,7 @@ public class SyncObjectsUtils {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Class getFhirClass(String category) {
         // TODO: it should be refactored - placed in FHIR_CLIENT module and only used here
         switch (category) {
@@ -45,6 +53,7 @@ public class SyncObjectsUtils {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Class getRestClass(String category) {
         switch (category) {
             case CATEGORY_PATIENT:
@@ -66,6 +75,7 @@ public class SyncObjectsUtils {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public static Class getOpenmrsClass(String category) {
         switch (category) {
             case CATEGORY_PATIENT:

@@ -1,5 +1,21 @@
 package org.openmrs.module.sync2.api.utils;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
+import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
+import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.OpenmrsObject;
@@ -8,8 +24,6 @@ import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
 import org.openmrs.module.fhir.api.util.OMRSFHIRVisitUtil;
-import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
-import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -19,22 +33,6 @@ import org.openmrs.module.sync2.client.RestResourceCreationUtil;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
-import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
-import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 
 public class SyncUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
@@ -169,23 +167,9 @@ public class SyncUtils {
             if (!(from instanceof String)) {
                 switch (clientName) {
                     case REST_CLIENT:
-
-                        //TODO: Work around for deleting patient through REST API. Should be refactored.
-                        if (from instanceof org.openmrs.Patient && dest instanceof org.openmrs.Patient) {
-                            boolean fromIsVoided = ((org.openmrs.Patient) from).getVoided();
-                            boolean destIsVoided = ((org.openmrs.Patient) dest).getVoided();
-
-                            if (fromIsVoided && destIsVoided) {
-                                return fromIsVoided && destIsVoided;
-                            }
-                        }
-
-                        RestResource obj1 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
-                        RestResource obj2 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
-                        result = obj1.equals(obj2);
+                        result = ((OpenmrsObject) from).getUuid().equals(((OpenmrsObject) dest).getUuid());
                         break;
                     case FHIR_CLIENT:
-//                        result = category.equals(CATEGORY_PATIENT) ?
                         if(category.equals(CATEGORY_PATIENT)) {
                             result = FHIRPatientUtil.compareCurrentPatients(dest, from);
                         }
@@ -193,10 +177,8 @@ public class SyncUtils {
                             result = OMRSFHIRVisitUtil.compareCurrentVisits(dest, from);
                         }
                         else if(category.equals(CATEGORY_ENCOUNTER)) {
-//                            result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
                         }
                         else if(category.equals(CATEGORY_OB)) {
-//                            result = FHIRObsUtil.compareCurrentObs(dest, from);
                         }
                         else {
                             dest.equals(from);

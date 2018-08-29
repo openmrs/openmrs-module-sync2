@@ -194,6 +194,7 @@
 		<fhirVersion>1.13.1</fhirVersion>
 		<atomfeedVersion>1.0.5</atomfeedVersion>
 		<gsonVersion>2.8.1</gsonVersion>
+		<webservices.restVersion>2.21.0</webservices.restVersion>
 	</properties>
 
     <distributionManagement>

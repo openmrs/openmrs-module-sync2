@@ -89,9 +89,6 @@ public class Visit implements RestResource {
             }
             if (getStopDatetime() != null) {
                 visit.setStopDatetime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(getStopDatetime()));
-            } else {
-                Date stopDate = ((Date) visit.getStartDatetime().clone());
-                visit.setStopDatetime(stopDate);
             }
         } catch(ParseException e) {
             e.printStackTrace();

@@ -30,6 +30,8 @@ public class RestResourceCreationUtil {
             return createLocationFromOpenMRSLocation((org.openmrs.Location) object, false);
         } else if (object instanceof org.openmrs.Privilege) {
             return createPrivilegeFromOpenMrsPrivilege((org.openmrs.Privilege) object);
+        } else if(object instanceof org.openmrs.Encounter) {
+          return null;
         }
 
         LOGGER.warn(String.format("Unrecognized openmrs object type %s", object.getClass().getSimpleName()));

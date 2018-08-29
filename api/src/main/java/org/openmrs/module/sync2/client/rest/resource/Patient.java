@@ -118,8 +118,11 @@ public class Patient implements RestResource {
             patient.setBirthtime(person.getBirthtime());
         } else {
             org.openmrs.Patient tempPatient = Context.getPatientService().getPatientByUuid(uuid);
-            patient.setGender(tempPatient.getGender());
-            patient.setBirthdate(tempPatient.getBirthdate());
+            if(tempPatient != null) {
+              patient.setGender(tempPatient.getGender());
+              patient.setBirthdate(tempPatient.getBirthdate());
+              patient.setAddresses(tempPatient.getAddresses());
+            }
             Set<PersonName> personNameSet = new TreeSet<>();
             String[] nameFromDisplay = display.split(" ");
             PersonName openmrsName = new PersonName();
@@ -127,7 +130,6 @@ public class Patient implements RestResource {
             openmrsName.setFamilyName(nameFromDisplay[3]);
             personNameSet.add(openmrsName);
             patient.setNames(personNameSet);
-            patient.setAddresses(tempPatient.getAddresses());
         }
         return patient;
     }
