@@ -29,8 +29,7 @@ import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
-import org.openmrs.module.sync2.client.RestResourceCreationUtil;
-import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,7 +166,7 @@ public class SyncUtils {
             if (!(from instanceof String)) {
                 switch (clientName) {
                     case REST_CLIENT:
-                        result = ((OpenmrsObject) from).getUuid().equals(((OpenmrsObject) dest).getUuid());
+                        result = ((SimpleObject) from).get("uuid").equals(((SimpleObject) dest).get("uuid"));
                         break;
                     case FHIR_CLIENT:
                         if(category.equals(CATEGORY_PATIENT)) {

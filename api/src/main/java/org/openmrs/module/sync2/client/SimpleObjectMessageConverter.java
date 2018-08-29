@@ -5,7 +5,8 @@ import java.nio.charset.Charset;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
-import org.openmrs.OpenmrsObject;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -17,27 +18,26 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 
-public class RestOpenMRSObjectMessageConverter extends AbstractHttpMessageConverter<OpenmrsObject> {
+public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<SimpleObject> {
 
   private static final String CHARSET = "UTF-8";
   private static final String TYPE = "application";
   private static final String SUBTYPE = "json";
-  private static final String ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
   private final Gson defaultJsonParser;
 
-  public RestOpenMRSObjectMessageConverter() {
+  public SimpleObjectMessageConverter() {
     super(new MediaType(TYPE, SUBTYPE, Charset.forName(CHARSET)));
     defaultJsonParser = createDefaultGson();
   }
 
   @Override
   protected boolean supports(Class<?> clazz) {
-    return OpenmrsObject.class.isAssignableFrom(clazz);
+    return SimpleObject.class.isAssignableFrom(clazz);
   }
 
   @Override
-  protected OpenmrsObject readInternal(Class<? extends OpenmrsObject> clazz, HttpInputMessage inputMessage)
+  protected SimpleObject readInternal(Class<? extends SimpleObject> clazz, HttpInputMessage inputMessage)
       throws IOException, HttpMessageNotReadableException {
     try {
       String json = IOUtils.toString(inputMessage.getBody());
@@ -48,7 +48,7 @@ public class RestOpenMRSObjectMessageConverter extends AbstractHttpMessageConver
   }
 
   @Override
-  protected void writeInternal(OpenmrsObject restResource, HttpOutputMessage outputMessage)
+  protected void writeInternal(SimpleObject restResource, HttpOutputMessage outputMessage)
       throws IOException, HttpMessageNotWritableException {
     try {
       String json = defaultJsonParser.toJson(restResource);
@@ -64,9 +64,9 @@ public class RestOpenMRSObjectMessageConverter extends AbstractHttpMessageConver
    * @return definitive null safe Gson instance
    */
   private Gson createDefaultGson() {
-    Gson gson = new GsonBuilder().setDateFormat(ISO_8601).create();
+    Gson gson = new GsonBuilder().setDateFormat(ConversionUtil.DATE_FORMAT).create();
     TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
     TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-    return new GsonBuilder().setDateFormat(ISO_8601).registerTypeAdapter(Date.class, safeDateTypeAdapter).create();
+    return new GsonBuilder().setDateFormat(ConversionUtil.DATE_FORMAT).registerTypeAdapter(Date.class, safeDateTypeAdapter).create();
   }
 }

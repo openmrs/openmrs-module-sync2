@@ -5,9 +5,8 @@ import java.util.Collections;
 
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.fhir.api.client.Client;
-import org.openmrs.module.sync2.api.utils.SyncObjectsUtils;
-import org.openmrs.module.sync2.client.RestHttpMessageConverter;
-import org.openmrs.module.sync2.client.RestOpenMRSObjectMessageConverter;
+import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +21,14 @@ public class RestClient implements Client {
 
     public RestClient() {
         restTemplate.setMessageConverters(Arrays.asList(new HttpMessageConverter<?>[]
-                { new RestHttpMessageConverter(), new StringHttpMessageConverter(), new RestOpenMRSObjectMessageConverter() }));
+                { new StringHttpMessageConverter(), new SimpleObjectMessageConverter() }));
     }
 
     @Override
     public Object retrieveObject(String category, String url, String username, String password)
             throws RestClientException {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
-        @SuppressWarnings("unchecked")
-        Object restResource = restTemplate.getForObject(url, SyncObjectsUtils.getOpenmrsClass(category));
+        SimpleObject restResource = restTemplate.getForObject(url, SimpleObject.class);
     
         return restResource;
     }
@@ -53,7 +51,7 @@ public class RestClient implements Client {
     public ResponseEntity<String> updateObject(String url, String username, String password, Object object) {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
-        url += "/" + ((OpenmrsObject) object).getUuid();
+        url += "/" + ((SimpleObject) object).get("uuid");
         return restTemplate.postForEntity(url, object, String.class);
     }
 }
