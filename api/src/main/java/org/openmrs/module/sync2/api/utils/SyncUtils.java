@@ -18,12 +18,12 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
+import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
+import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
-import org.openmrs.module.fhir.api.util.OMRSFHIRVisitUtil;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -169,20 +169,23 @@ public class SyncUtils {
                         result = ((SimpleObject) from).get("uuid").equals(((SimpleObject) dest).get("uuid"));
                         break;
                     case FHIR_CLIENT:
-                        if(category.equals(CATEGORY_PATIENT)) {
-                            result = FHIRPatientUtil.compareCurrentPatients(dest, from);
-                        }
-                        else if(category.equals(CATEGORY_VISIT)) {
-                            result = OMRSFHIRVisitUtil.compareCurrentVisits(dest, from);
-                        }
-                        else if(category.equals(CATEGORY_ENCOUNTER)) {
-                        }
-                        else if(category.equals(CATEGORY_OB)) {
-                        }
-                        else {
-                            dest.equals(from);
-                        }
-                        break;
+						switch (category) {
+							case CATEGORY_PATIENT:
+								result = FHIRPatientUtil.compareCurrentPatients(dest, from);
+								break;
+							case CATEGORY_ENCOUNTER:
+								result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
+								break;
+							case CATEGORY_VISIT:
+								result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
+								break;
+							case CATEGORY_OB:
+								result = FHIRObsUtil.compareCurrentObs(dest, from);
+								break;
+							default:
+								result = dest.equals(from);
+						}
+						break;
                     default:
                         result = dest.equals(from);
                 }
@@ -258,4 +261,5 @@ public class SyncUtils {
     public static SyncConfigurationService getSyncConfigurationService() {
         return Context.getService(SyncConfigurationService.class);
     }
+
 }
