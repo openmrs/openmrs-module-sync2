@@ -24,9 +24,11 @@ import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
 import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
+import org.openmrs.module.sync2.SyncCategoryConstants;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -166,7 +168,11 @@ public class SyncUtils {
             if (!(from instanceof String)) {
                 switch (clientName) {
                     case REST_CLIENT:
-                        result = ((SimpleObject) from).get("uuid").equals(((SimpleObject) dest).get("uuid"));
+                    	if(category.equals(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE)) {
+                    		result = ((AuditMessage) from).getUuid().equals( ((AuditMessage) dest).getUuid());
+                    	} else {
+                    		result = ((SimpleObject) from).get("uuid").equals(((SimpleObject) dest).get("uuid"));
+                    	}
                         break;
                     case FHIR_CLIENT:
 						switch (category) {

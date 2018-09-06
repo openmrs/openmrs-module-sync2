@@ -3,8 +3,10 @@ package org.openmrs.module.sync2.client.rest;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.openmrs.OpenmrsObject;
 import org.openmrs.module.fhir.api.client.Client;
+import org.openmrs.module.sync2.SyncCategoryConstants;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.http.HttpEntity;
@@ -21,15 +23,20 @@ public class RestClient implements Client {
 
     public RestClient() {
         restTemplate.setMessageConverters(Arrays.asList(new HttpMessageConverter<?>[]
-                { new StringHttpMessageConverter(), new SimpleObjectMessageConverter() }));
+                { new StringHttpMessageConverter(), new RestHttpMessageConverter(), new SimpleObjectMessageConverter() }));
     }
 
     @Override
     public Object retrieveObject(String category, String url, String username, String password)
             throws RestClientException {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
-        SimpleObject restResource = restTemplate.getForObject(url, SimpleObject.class);
-    
+        
+        Object restResource;
+        if(category.equals(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE)) {
+            restResource = restTemplate.getForObject(url, AuditMessage.class);
+        } else {
+        	restResource = restTemplate.getForObject(url, SimpleObject.class);
+        }
         return restResource;
     }
     
@@ -51,7 +58,11 @@ public class RestClient implements Client {
     public ResponseEntity<String> updateObject(String url, String username, String password, Object object) {
         restTemplate.setInterceptors(Collections.singletonList(new BasicAuthInterceptor(username, password)));
 
-        url += "/" + ((SimpleObject) object).get("uuid");
+        if(object instanceof AuditMessage) {
+            url += "/" + ((AuditMessage) object).getUuid();
+        } else {
+        	url += "/" + ((SimpleObject) object).get("uuid");
+        }
         return restTemplate.postForEntity(url, object, String.class);
     }
 }
