@@ -32,6 +32,7 @@
 		<require_module version="${atomfeedVersion}">
 			org.openmrs.module.atomfeed
 		</require_module>
+		<require_module>org.openmrs.module.webservices.rest</require_module>
 	</require_modules>
 	
 	<!-- Extensions -->

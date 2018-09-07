@@ -1,8 +1,9 @@
 package org.openmrs.module.sync2.client;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Date;
+
 import org.apache.commons.io.IOUtils;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
@@ -14,9 +15,9 @@ import org.springframework.http.converter.AbstractHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Date;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 
 public class RestHttpMessageConverter extends AbstractHttpMessageConverter<RestResource> {
 
