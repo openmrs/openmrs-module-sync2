@@ -16,13 +16,17 @@
         <i class="icon-calendar"></i>
         ${ ui.message("sync2.configuration.label") }
     </a>
-    <a class="button app big" href="${ui.pageLink("sync2", "ManualSync")}"
-       id="sync.pull">
+    <a class="button app big ${validParentInstanceUri ? '' : 'disabled'}"
+        href="${validParentInstanceUri ? ui.pageLink("sync2", "ManualSync") : '#'}"
+        title = "${validParentInstanceUri ? '' : ui.message("sync2.configuration.parentUrl.notValid")}"
+        id="sync.pull">
         <i class="icon-random"></i>
         ${ ui.message("sync2.sync.manual.pull.label") }
     </a>
-    <a class="button app big" href="${ui.pageLink("sync2", "ManualSyncPush")}"
-       id="sync.push">
+    <a class="button app big ${validParentInstanceUri ? '' : 'disabled'}"
+        href="${validParentInstanceUri ? ui.pageLink("sync2", "ManualSyncPush") : '#'}"
+        title = "${validParentInstanceUri ? '' : ui.message("sync2.configuration.parentUrl.notValid")}"
+        id="sync.push">
         <i class="icon-random"></i>
         ${ ui.message("sync2.sync.manual.push.label") }
     </a>
