@@ -4,7 +4,7 @@ import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;

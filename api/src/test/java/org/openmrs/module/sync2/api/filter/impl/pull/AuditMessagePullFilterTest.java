@@ -8,8 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.openmrs.module.sync2.SyncCategoryConstants;
-import org.openmrs.module.sync2.api.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 
 @RunWith(MockitoJUnitRunner.class)

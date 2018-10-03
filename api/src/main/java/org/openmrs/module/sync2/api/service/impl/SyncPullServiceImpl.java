@@ -1,7 +1,7 @@
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2.api.service.impl;
 
-import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncPullService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;

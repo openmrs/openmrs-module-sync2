@@ -1,8 +1,8 @@
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncPushService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;

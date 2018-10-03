@@ -1,8 +1,7 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
-import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;

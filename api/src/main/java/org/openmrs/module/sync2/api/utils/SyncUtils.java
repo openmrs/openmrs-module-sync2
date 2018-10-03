@@ -10,7 +10,7 @@ import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
 import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;

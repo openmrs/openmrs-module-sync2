@@ -7,14 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.sync2.api;
+package org.openmrs.module.sync2.api.service.impl;
 
-import org.openmrs.api.OpenmrsService;
+import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.sync2.api.service.SyncModuleService;
+import org.springframework.stereotype.Component;
 
-/**
- * The main service of this module, which is exposed for other modules. See
- * moduleApplicationContext.xml on how it is wired up.
- */
-public interface SyncModuleService extends OpenmrsService {
+@Component("sync2.SyncModuleService")
+public class SyncModuleServiceImpl extends BaseOpenmrsService implements SyncModuleService {
 	
 }

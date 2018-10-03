@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.api.filter.impl.pull;
 
 import org.openmrs.module.sync2.SyncCategoryConstants;
-import org.openmrs.module.sync2.api.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.filter.FilterConstant;
 import org.openmrs.module.sync2.api.filter.ObjectFilter;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;

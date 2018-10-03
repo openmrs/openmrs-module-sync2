@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.converter.AuditMessageToStringConverter;
 import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;

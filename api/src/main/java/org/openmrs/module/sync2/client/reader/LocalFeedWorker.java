@@ -3,7 +3,7 @@ package org.openmrs.module.sync2.client.reader;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
-import org.openmrs.module.sync2.api.SyncPushService;
+import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
