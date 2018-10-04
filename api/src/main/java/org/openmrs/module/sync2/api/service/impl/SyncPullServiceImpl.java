@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
@@ -8,6 +9,7 @@ import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class SyncPullServiceImpl implements SyncPullService {
 
     @Autowired
     private SyncAuditService syncAuditService;
+
+    @Autowired
+    private ParentFeedReader parentFeedReader;
 
     private SyncClient syncClient = new SyncClient();
 
@@ -84,6 +89,11 @@ public class SyncPullServiceImpl implements SyncPullService {
             }
         }
         return auditMessage;
+    }
+
+    @Override
+    public void manuallyPullFromParent(String category) throws SyncException {
+        parentFeedReader.readFeedsForPull(category);
     }
 
     @Override

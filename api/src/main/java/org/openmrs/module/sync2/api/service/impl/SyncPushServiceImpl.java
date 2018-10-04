@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
@@ -8,6 +9,8 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.client.reader.LocalFeedReader;
+import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class SyncPushServiceImpl implements SyncPushService {
 
     @Autowired
     private SyncAuditService syncAuditService;
+
+    @Autowired
+    private LocalFeedReader localFeedReader;
 
     private SyncClient syncClient = new SyncClient();
 
@@ -80,7 +86,12 @@ public class SyncPushServiceImpl implements SyncPushService {
         }
         return auditMessage;
     }
-    
+
+    @Override
+    public void manuallyPushToParent(String category) throws SyncException {
+        localFeedReader.readFeedsForPush(category);
+    }
+
     @Override
     public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks,
                                                 String action) {
@@ -100,6 +111,6 @@ public class SyncPushServiceImpl implements SyncPushService {
      */
     private boolean shouldPushObject(Object localObj, String category, String clientName, String url) {
         Object parentObj = syncClient.pullData(category, clientName, url, PARENT);
-        return localObj != null ? !compareLocalAndPulled(clientName, category, localObj, parentObj) : false;
+        return localObj != null && !compareLocalAndPulled(clientName, category, localObj, parentObj);
     }
 }

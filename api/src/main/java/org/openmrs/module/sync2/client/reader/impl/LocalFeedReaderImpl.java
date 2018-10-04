@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component("sync2.localFeedReader")
 public class LocalFeedReaderImpl implements LocalFeedReader {
@@ -37,7 +38,25 @@ public class LocalFeedReaderImpl implements LocalFeedReader {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
         List<ClassConfiguration> pushConf = configurationService.getSyncConfiguration().getPush().getClasses();
 
-        for (ClassConfiguration classConf : pushConf) {
+        readFeedsByConfiguration(pushConf);
+    }
+
+    @Override
+    public void readFeedsForPush(String category) throws SyncException {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+        List<ClassConfiguration> pushConf = configurationService.getSyncConfiguration().getPush().getClasses()
+                .stream().filter(conf -> conf.getCategory().equals(category))
+                .collect(Collectors.toList());
+
+        if (pushConf.isEmpty()) {
+        	throw new SyncException("There's no AtomFeed configuration for category " + category);
+        }
+
+        readFeedsByConfiguration(pushConf);
+    }
+
+    private void readFeedsByConfiguration(List<ClassConfiguration> conf) {
+        for (ClassConfiguration classConf : conf) {
             if (classConf.isEnabled()) {
                 readFeedByCategory(classConf.getCategory());
             }

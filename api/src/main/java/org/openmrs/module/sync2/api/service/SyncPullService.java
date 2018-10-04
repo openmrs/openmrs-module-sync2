@@ -11,4 +11,6 @@ public interface SyncPullService {
     
     AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
                                            String action, String clientName);
+
+    void manuallyPullFromParent(String category);
 }

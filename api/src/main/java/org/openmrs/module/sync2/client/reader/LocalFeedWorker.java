@@ -14,12 +14,10 @@ import java.util.List;
 public class LocalFeedWorker implements FeedEventWorker {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalFeedWorker.class);
 
-    private SyncPushService pushService;
-
     @Override
     public void process(Event event) {
         LOGGER.info("Started local feed event processing (id: {})", event.getId());
-        pushService = Context.getRegisteredComponent("sync2.syncPushService", SyncPushService.class);
+        SyncPushService pushService = Context.getRegisteredComponent("sync2.syncPushService", SyncPushService.class);
         List tags = event.getCategories();
 
         pushService.readDataAndPushToParent(

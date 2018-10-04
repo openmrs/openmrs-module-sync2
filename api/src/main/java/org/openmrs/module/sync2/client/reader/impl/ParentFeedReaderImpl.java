@@ -4,6 +4,7 @@ import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.atomfeed.client.AtomFeedClientFactory;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.openmrs.module.sync2.api.utils.SyncUtils.readFeedByCategory;
 
@@ -30,12 +32,31 @@ public class ParentFeedReaderImpl implements ParentFeedReader {
         AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
     }
 
+    @Override
     public void readAllFeedsForPull() {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
         List<ClassConfiguration> pullConf = configurationService.getSyncConfiguration().getPull().getClasses();
 
-        for(ClassConfiguration classConf : pullConf) {
-            if(classConf.isEnabled()) {
+        readFeedsByCategory(pullConf);
+    }
+
+    @Override
+    public void readFeedsForPull(String category) throws SyncException {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+        List<ClassConfiguration> pullConf = configurationService.getSyncConfiguration().getPull().getClasses()
+                .stream().filter(conf -> conf.getCategory().equals(category))
+                .collect(Collectors.toList());
+
+        if (pullConf.isEmpty()) {
+            throw new SyncException("There's no AtomFeed configuration for category " + category);
+        }
+
+        readFeedsByCategory(pullConf);
+    }
+
+    private void readFeedsByCategory(List<ClassConfiguration> pullConf) {
+        for (ClassConfiguration classConf : pullConf) {
+            if (classConf.isEnabled()) {
                 readFeedByCategory(classConf.getCategory(), atomFeedClient, configurationService, WS_ATOMFEED);
             }
         }

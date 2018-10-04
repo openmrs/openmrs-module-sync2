@@ -10,4 +10,6 @@ public interface SyncPushService {
 
     AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String action,
                                          String clientName);
+
+    void manuallyPushToParent(String category);
 }
