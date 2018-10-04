@@ -21,21 +21,22 @@ public class Sync2PageController {
 
 	/**
 	 *
-	 * Method using when page is refreshing.
+	 * Sets the UI model attribute used to check if the parent instance URI is valid.
+	 * Notifies the user if mentioned URI is not valid.
 	 *
 	 * @param model injected the page model object
 	 * @param session injected the HTTP session object
 	 * @param ui injected the UiUtils object
 	 */
 	public void controller(PageModel model, HttpSession session, UiUtils ui) {
-		boolean isValidParentInstanceUrl = parentInstanceUriIsEmpty();
+		boolean isValidParentInstanceUrl = parentInstanceUriIsNotEmpty();
 		model.addAttribute(VALID_PARENT_INSTANCE_URI, isValidParentInstanceUrl);
 		if (!isValidParentInstanceUrl) {
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_URI_ERROR));
 		}
 	}
 
-	private boolean parentInstanceUriIsEmpty() {
+	private boolean parentInstanceUriIsNotEmpty() {
 		return StringUtils.isNotBlank(SyncUtils.getParentBaseUrl());
 	}
 }
