@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class Sync2PageController {
 
-	private static final String VALID_PARENT_INSTANCE_URI = "validParentInstanceUri";
+	private static final String ATTRIBUTE_EMPTY_URI = "emptyURI";
 
 	private static final String PARENT_URI_ERROR = "sync2.configuration.parentUrl.empty";
 
@@ -29,14 +29,14 @@ public class Sync2PageController {
 	 * @param ui injected the UiUtils object
 	 */
 	public void controller(PageModel model, HttpSession session, UiUtils ui) {
-		boolean isValidParentInstanceUrl = parentInstanceUriIsNotEmpty();
-		model.addAttribute(VALID_PARENT_INSTANCE_URI, isValidParentInstanceUrl);
-		if (!isValidParentInstanceUrl) {
+		boolean emptyURI = parentInstanceUriIsEmpty();
+		model.addAttribute(ATTRIBUTE_EMPTY_URI, emptyURI);
+		if (emptyURI) {
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_URI_ERROR));
 		}
 	}
 
-	private boolean parentInstanceUriIsNotEmpty() {
-		return StringUtils.isNotBlank(SyncUtils.getParentBaseUrl());
+	private boolean parentInstanceUriIsEmpty() {
+		return StringUtils.isBlank(SyncUtils.getParentBaseUrl());
 	}
 }
