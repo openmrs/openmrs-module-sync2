@@ -6,10 +6,10 @@ import java.util.Map;
 
 public interface SyncPushService {
 
-    AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String action);
+    AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks, String action);
 
-    AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks, String action,
+    AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks, String action,
                                          String clientName);
 
-    void manuallyPushToParent(String category);
+    void readAndPushFeedsToParent(String category);
 }

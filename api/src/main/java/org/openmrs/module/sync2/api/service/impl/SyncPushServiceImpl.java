@@ -10,7 +10,6 @@ import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
-import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncClient syncClient = new SyncClient();
 
     @Override
-    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks,
                                                 String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
@@ -88,15 +87,15 @@ public class SyncPushServiceImpl implements SyncPushService {
     }
 
     @Override
-    public void manuallyPushToParent(String category) throws SyncException {
-        localFeedReader.readFeedsForPush(category);
+    public void readAndPushFeedsToParent(String category) throws SyncException {
+        localFeedReader.readAndPushAllFeeds(category);
     }
 
     @Override
-    public AuditMessage readDataAndPushToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks,
                                                 String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return readDataAndPushToParent(category, resourceLinks, action, clientName);
+        return readAndPushFeedsToParent(category, resourceLinks, action, clientName);
     }
 
     /**

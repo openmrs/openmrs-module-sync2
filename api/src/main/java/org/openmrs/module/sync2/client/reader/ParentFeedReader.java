@@ -4,7 +4,7 @@ import org.openmrs.module.sync2.api.exceptions.SyncException;
 
 public interface ParentFeedReader {
 
-    void readAllFeedsForPull();
+	void pullAndProcessAllFeeds();
 
-    void readFeedsForPull(String category) throws SyncException;
+	void pullAndProcessFeeds(String category) throws SyncException;
 }

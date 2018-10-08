@@ -44,7 +44,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     private AuditMessage retryPush(AuditMessage message) {
         AuditMessage newMessage =
-                syncPushService.readDataAndPushToParent(
+                syncPushService.readAndPushFeedsToParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
@@ -57,7 +57,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     private AuditMessage retryPull(AuditMessage message) {
         AuditMessage newMessage =
-                syncPullService.pullDataFromParentAndSave(
+                syncPullService.pullAndSaveFeedsFromParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),

@@ -30,7 +30,7 @@ public class ManualSyncPageController {
                              HttpSession session, UiUtils ui) {
         try {
             LOGGER.info("Start Parent Feed Reader...");
-            parentFeedReader.readAllFeedsForPull();
+            parentFeedReader.pullAndProcessAllFeeds();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
         } catch (SyncValidationException e) {
             LOGGER.error("Error during reading feeds: ", e);

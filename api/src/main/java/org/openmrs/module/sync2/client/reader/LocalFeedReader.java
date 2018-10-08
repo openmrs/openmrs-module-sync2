@@ -4,7 +4,7 @@ import org.openmrs.module.sync2.api.exceptions.SyncException;
 
 public interface LocalFeedReader {
 
-    void readAllFeedsForPush();
+	void readAndPushAllFeeds();
 
-    void readFeedsForPush(String category) throws SyncException;
+	void readAndPushAllFeeds(String category) throws SyncException;
 }

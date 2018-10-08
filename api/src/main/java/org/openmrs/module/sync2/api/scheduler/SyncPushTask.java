@@ -24,7 +24,7 @@ public class SyncPushTask extends AbstractTask {
 
             startExecuting();
             try {
-                localFeedReader.readAllFeedsForPush();
+                localFeedReader.readAndPushAllFeeds();
             }
             catch (Exception e) {
                 LOGGER.error("Error while Sync 2.0 Pushing to the parent:", e);

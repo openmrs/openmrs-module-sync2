@@ -5,11 +5,9 @@ import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
-import org.openmrs.module.atomfeed.client.AtomFeedClient;
 import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
 import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
-import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -20,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,19 +143,6 @@ public class SyncUtils {
 		return null;
 	}
 
-	public static void readFeedByCategory(String category, AtomFeedClient atomFeedClient,
-			SyncConfigurationService configurationService, String ws) {
-		try {
-			URI uri = new URI(getResourceUrlWithCategory(category, configurationService, ws));
-			atomFeedClient.setUri(uri);
-			atomFeedClient.process();
-		} catch (URISyntaxException e) {
-			throw new SyncException("Atomfeed URI is not correct. ", e);
-		} catch (Exception e) {
-			throw new SyncException(String.format("Error during processing atomfeeds for category %s: ", category), e);
-		}
-	}
-
 	public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
 		boolean result = false;
 		if (null != dest && null != from) {
@@ -262,14 +245,6 @@ public class SyncUtils {
 			return false;
 		}
 		return true;
-	}
-
-	private static String getParentUri(SyncConfigurationService configurationService) {
-		return configurationService.getSyncConfiguration().getGeneral().getParentFeedLocation();
-	}
-
-	private static String getResourceUrlWithCategory(String category, SyncConfigurationService cs, String ws) {
-		return getParentUri(cs) + ws + category + "/" + SyncConstants.RECENT_FEED;
 	}
 
 	public static SyncConfigurationService getSyncConfigurationService() {

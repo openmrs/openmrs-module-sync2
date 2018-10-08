@@ -46,7 +46,7 @@ public class SyncPullServiceImpl implements SyncPullService {
     private SyncClient syncClient = new SyncClient();
 
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveFeedsFromParent(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
@@ -92,15 +92,15 @@ public class SyncPullServiceImpl implements SyncPullService {
     }
 
     @Override
-    public void manuallyPullFromParent(String category) throws SyncException {
-        parentFeedReader.readFeedsForPull(category);
+    public void pullAndSaveFeedsFromParent(String category) throws SyncException {
+        parentFeedReader.pullAndProcessFeeds(category);
     }
 
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveFeedsFromParent(String category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return pullDataFromParentAndSave(category, resourceLinks, action, clientName);
+        return pullAndSaveFeedsFromParent(category, resourceLinks, action, clientName);
     }
 
     /**
@@ -115,7 +115,6 @@ public class SyncPullServiceImpl implements SyncPullService {
      */
     private boolean shouldPullObject(Object pulledObject, String category, String clientName, String url) {
         Object localPulledObject = syncClient.pullData(category, clientName, url, CHILD);
-        return  pulledObject != null ? !compareLocalAndPulled(clientName, category, pulledObject, localPulledObject) : false;
+        return pulledObject != null && !compareLocalAndPulled(clientName, category, pulledObject, localPulledObject);
     }
-
 }

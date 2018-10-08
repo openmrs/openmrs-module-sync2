@@ -30,7 +30,7 @@ public class ManualSyncPushPageController {
                              HttpSession session, UiUtils ui) {
         try {
             LOGGER.info("Start Local Feed Reader...");
-            localFeedReader.readAllFeedsForPush();
+            localFeedReader.readAndPushAllFeeds();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
         } catch (SyncValidationException e) {
             LOGGER.error("Error during pushing objects: ", e);
