@@ -23,7 +23,7 @@ public class ParentFeedWorker implements FeedEventWorker {
 		pullService = Context.getRegisteredComponent("sync2.syncPullService", SyncPullService.class);
 		List tags = event.getCategories();
 
-		pullService.pullAndSaveFeedsFromParent(
+		pullService.pullAndSaveObjectFromParent(
 				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
 				SyncUtils.getLinks(event.getContent()),
 				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)

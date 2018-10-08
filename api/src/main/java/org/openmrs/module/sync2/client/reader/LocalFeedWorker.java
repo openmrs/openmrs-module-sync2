@@ -21,7 +21,7 @@ public class LocalFeedWorker implements FeedEventWorker {
 		SyncPushService pushService = Context.getRegisteredComponent("sync2.syncPushService", SyncPushService.class);
 		List tags = event.getCategories();
 
-		pushService.readAndPushFeedsToParent(
+		pushService.readAndPushObjectToParent(
 				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
 				SyncUtils.getLinks(event.getContent()),
 				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)

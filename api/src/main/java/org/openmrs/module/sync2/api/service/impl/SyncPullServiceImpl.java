@@ -46,7 +46,7 @@ public class SyncPullServiceImpl implements SyncPullService {
     private SyncClient syncClient = new SyncClient();
 
     @Override
-    public AuditMessage pullAndSaveFeedsFromParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
@@ -92,15 +92,15 @@ public class SyncPullServiceImpl implements SyncPullService {
     }
 
     @Override
-    public void pullAndSaveFeedsFromParent(String category) throws SyncException {
+    public void pullAndSaveObjectsFromParent(String category) throws SyncException {
         parentFeedReader.pullAndProcessFeeds(category);
     }
 
     @Override
-    public AuditMessage pullAndSaveFeedsFromParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return pullAndSaveFeedsFromParent(category, resourceLinks, action, clientName);
+        return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName);
     }
 
     /**

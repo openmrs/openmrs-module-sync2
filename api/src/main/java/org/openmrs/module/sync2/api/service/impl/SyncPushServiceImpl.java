@@ -44,7 +44,7 @@ public class SyncPushServiceImpl implements SyncPushService {
     private SyncClient syncClient = new SyncClient();
 
     @Override
-    public AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(String category, Map<String, String> resourceLinks,
                                                 String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
@@ -87,15 +87,15 @@ public class SyncPushServiceImpl implements SyncPushService {
     }
 
     @Override
-    public void readAndPushFeedsToParent(String category) throws SyncException {
+    public void readAndPushObjectsToParent(String category) throws SyncException {
         localFeedReader.readAndPushAllFeeds(category);
     }
 
     @Override
-    public AuditMessage readAndPushFeedsToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(String category, Map<String, String> resourceLinks,
                                                 String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return readAndPushFeedsToParent(category, resourceLinks, action, clientName);
+        return readAndPushObjectToParent(category, resourceLinks, action, clientName);
     }
 
     /**
