@@ -11,10 +11,12 @@ import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.WhitelistConfiguration;
 import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
 import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,6 +67,10 @@ public class SyncConfigurationServiceImplTest {
         SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
         expectedSyncConfiguration.setPull(pull);
 
+        List<String> instanceIds = new ArrayList<>();
+        instanceIds.add("childInstanceId");
+        WhitelistConfiguration whitelist = new WhitelistConfiguration(true, instanceIds);
+        expectedSyncConfiguration.setWhitelist(whitelist);
 
         SyncConfiguration syncConfiguration = parseJsonFileToSyncConfiguration(SAMPLE_FEED_CONFIGURATION_PATH, RELATIVE);
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
@@ -95,6 +101,9 @@ public class SyncConfigurationServiceImplTest {
 
         String json = readResourceFile(SAMPLE_FEED_CONFIGURATION_PATH2);
         sync2ConfigurationService.saveConfiguration(json);
+
+        WhitelistConfiguration whitelist = new WhitelistConfiguration(false, new ArrayList<>());
+        expectedSyncConfiguration.setWhitelist(whitelist);
 
         Assert.assertEquals(expectedSyncConfiguration, sync2ConfigurationService.getSyncConfiguration());
     }
