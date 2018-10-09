@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.model.configuration;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class SyncConfiguration {
@@ -9,7 +10,9 @@ public class SyncConfiguration {
     private SyncMethodConfiguration pull;
     private WhitelistConfiguration whitelist;
 
-    public SyncConfiguration() { }
+    public SyncConfiguration() {
+        whitelist = getDefaultWhitelistConfiguration();
+    }
 
     public SyncConfiguration(GeneralConfiguration general, SyncMethodConfiguration push, SyncMethodConfiguration pull,
                              WhitelistConfiguration whitelist) {
@@ -69,5 +72,9 @@ public class SyncConfiguration {
     @Override
     public int hashCode() {
         return Objects.hash(general, push, pull, whitelist);
+    }
+
+    private WhitelistConfiguration getDefaultWhitelistConfiguration() {
+        return new WhitelistConfiguration(false, new ArrayList<>());
     }
 }
