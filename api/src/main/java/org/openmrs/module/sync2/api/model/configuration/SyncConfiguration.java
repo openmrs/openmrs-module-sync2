@@ -7,13 +7,16 @@ public class SyncConfiguration {
     private GeneralConfiguration general;
     private SyncMethodConfiguration push;
     private SyncMethodConfiguration pull;
+    private WhitelistConfiguration whitelist;
 
     public SyncConfiguration() { }
 
-    public SyncConfiguration(GeneralConfiguration general, SyncMethodConfiguration push, SyncMethodConfiguration pull) {
+    public SyncConfiguration(GeneralConfiguration general, SyncMethodConfiguration push, SyncMethodConfiguration pull,
+                             WhitelistConfiguration whitelist) {
         this.general = general;
         this.push = push;
         this.pull = pull;
+        this.whitelist = whitelist;
     }
 
     public GeneralConfiguration getGeneral() {
@@ -40,6 +43,14 @@ public class SyncConfiguration {
         this.pull = pull;
     }
 
+    public WhitelistConfiguration getWhitelist() {
+        return whitelist;
+    }
+
+    public void setWhitelist(WhitelistConfiguration whitelist) {
+        this.whitelist = whitelist;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,11 +62,12 @@ public class SyncConfiguration {
         SyncConfiguration that = (SyncConfiguration) o;
         return Objects.equals(general, that.general)
                 && Objects.equals(push, that.push)
-                && Objects.equals(pull, that.pull);
+                && Objects.equals(pull, that.pull)
+                && Objects.equals(whitelist, that.whitelist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(general, push, pull);
+        return Objects.hash(general, push, pull, whitelist);
     }
 }
