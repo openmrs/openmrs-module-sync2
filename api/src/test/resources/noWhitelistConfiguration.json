@@ -33,9 +33,5 @@
       "openMrsClass" : "org.openmrs.Visit",
       "enabled" : false
     } ]
-  },
-  "whitelist" : {
-    "enabled" : false,
-    "instanceIds" : []
   }
 }
