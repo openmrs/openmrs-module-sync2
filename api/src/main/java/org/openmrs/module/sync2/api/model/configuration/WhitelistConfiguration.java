@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.model.configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,7 +9,10 @@ public class WhitelistConfiguration {
     private boolean enabled;
     private List<String> instanceIds;
 
-    public WhitelistConfiguration() {}
+    public WhitelistConfiguration() {
+        enabled = false;
+        instanceIds = new ArrayList<>();
+    }
 
     public WhitelistConfiguration(boolean enabled, List<String> instanceIds) {
         this.enabled = enabled;
