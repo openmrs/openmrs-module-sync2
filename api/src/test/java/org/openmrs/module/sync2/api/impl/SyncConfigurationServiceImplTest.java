@@ -110,7 +110,7 @@ public class SyncConfigurationServiceImplTest {
     }
 
     @Test
-    public void saveConfiguration_shouldcRE() throws SyncException {
+    public void saveConfiguration_shouldSavedConfigurationWithDefaultWhitelist() throws SyncException {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2",

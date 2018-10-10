@@ -9,7 +9,9 @@ public class SyncConfiguration {
     private SyncMethodConfiguration pull;
     private WhitelistConfiguration whitelist;
 
-    public SyncConfiguration() {}
+    public SyncConfiguration() {
+        whitelist = new WhitelistConfiguration();
+    }
 
     public SyncConfiguration(GeneralConfiguration general, SyncMethodConfiguration push, SyncMethodConfiguration pull,
                              WhitelistConfiguration whitelist) {
