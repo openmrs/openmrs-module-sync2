@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SyncUtilsTest {
@@ -21,7 +22,7 @@ public class SyncUtilsTest {
     @Before
     public void setUp() {
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
-                SAMPLE_LOCAL_INSTANCE_ID, false, false);
+                SAMPLE_LOCAL_INSTANCE_ID, false, false, Collections.singletonList("test"));
         EXPECTED_CONFIGURATION.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",

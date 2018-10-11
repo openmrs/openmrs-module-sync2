@@ -4,7 +4,8 @@
     "localFeedLocation" : "http://localhost:8080/openmrs",
     "localInstanceId" : null,
     "persistSuccessAudit" : true,
-    "persistFailureAudit" : true
+    "persistFailureAudit" : true,
+    "filterBeans": []
   },
   "push" : {
     "enabled" : false,

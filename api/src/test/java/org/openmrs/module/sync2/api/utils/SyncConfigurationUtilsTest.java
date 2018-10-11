@@ -14,6 +14,7 @@ import org.openmrs.util.OpenmrsUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class SyncConfigurationUtilsTest {
     @Before
     public void setUp() {
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
-                SAMPLE_LOCAL_INSTANCE_ID, false, false);
+                SAMPLE_LOCAL_INSTANCE_ID, false, false, Collections.singletonList("test"));
         EXPECTED_CONFIGURATION.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
@@ -120,6 +121,7 @@ public class SyncConfigurationUtilsTest {
     @Test
     public void shouldWriteSyncConfigurationToJsonString() throws SyncException {
         String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION);
+        result += "\n";
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
 
         Assert.assertEquals(expected, result);
@@ -134,6 +136,7 @@ public class SyncConfigurationUtilsTest {
 
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
         String result = readResourceFileAbsolutePath(path);
+        result += "\n";
 
         Assert.assertEquals(expected, result);
     }
