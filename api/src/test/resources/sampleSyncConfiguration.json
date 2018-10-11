@@ -35,5 +35,9 @@
       "openMrsClass" : "org.openmrs.Obs",
       "enabled" : true
     } ]
+  },
+  "whitelist" : {
+    "enabled" : true,
+    "instanceIds" : [ "childInstanceId" ]
   }
 }

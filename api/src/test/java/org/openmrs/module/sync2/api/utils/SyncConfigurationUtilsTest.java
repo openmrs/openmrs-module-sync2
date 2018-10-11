@@ -8,9 +8,11 @@ import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.WhitelistConfiguration;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +60,11 @@ public class SyncConfigurationUtilsTest {
 
         SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
         EXPECTED_CONFIGURATION.setPull(pull);
+
+        List<String> instanceIds = new ArrayList<>();
+        instanceIds.add("childInstanceId");
+        WhitelistConfiguration whitelist = new WhitelistConfiguration(true, instanceIds);
+        EXPECTED_CONFIGURATION.setWhitelist(whitelist);
     }
 
     @Test
