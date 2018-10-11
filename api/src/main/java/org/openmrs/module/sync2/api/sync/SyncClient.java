@@ -51,14 +51,6 @@ public class SyncClient {
                 throw new SyncException("Error during reading local object: ", e);
             }
         }
-//        if(result != null && result.getClass().toString().contains("Encounter")) {
-//            ((Encounter) result).setClass_(new Coding("Inpatient", "Inpatient", "Inpatient"));
-//            List<Encounter.EncounterParticipantComponent> list = new ArrayList<Encounter.EncounterParticipantComponent>();
-//            Encounter.EncounterParticipantComponent component = new Encounter.EncounterParticipantComponent();
-//            component.setIndividual(((Encounter) result).getSubject());
-//            list.add(component);
-//            ((Encounter) result).setParticipant(list);
-//        }
         return result;
     }
 
