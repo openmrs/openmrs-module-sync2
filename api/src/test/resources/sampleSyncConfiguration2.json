@@ -2,7 +2,8 @@
   "general" : {
     "parentFeedLocation" : "",
     "localFeedLocation" : "defaultAddress2",
-    "localInstanceId" : "localInstanceId2"
+    "localInstanceId" : "localInstanceId2",
+    "filterBeans" : [ "test" ]
   },
   "push" : {
     "enabled" : false,

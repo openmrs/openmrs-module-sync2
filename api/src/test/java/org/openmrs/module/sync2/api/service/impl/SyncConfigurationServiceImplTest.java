@@ -18,6 +18,7 @@ import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -53,7 +54,7 @@ public class SyncConfigurationServiceImplTest {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
-                SAMPLE_LOCAL_INSTANCE_ID, false, false);
+                SAMPLE_LOCAL_INSTANCE_ID, false, false, Collections.singletonList("test"));
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
@@ -84,7 +85,7 @@ public class SyncConfigurationServiceImplTest {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2",
-                SAMPLE_LOCAL_INSTANCE_ID_2, false, false);
+                SAMPLE_LOCAL_INSTANCE_ID_2, false, false, Collections.singletonList("test"));
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration encounterClass = new ClassConfiguration("Encounter",
@@ -114,7 +115,7 @@ public class SyncConfigurationServiceImplTest {
         final SyncConfiguration expectedSyncConfiguration = new SyncConfiguration();
 
         GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress2",
-                SAMPLE_LOCAL_INSTANCE_ID_2, false, false);
+                SAMPLE_LOCAL_INSTANCE_ID_2, false, false, Collections.singletonList("test"));
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration encounterClass = new ClassConfiguration("Encounter",

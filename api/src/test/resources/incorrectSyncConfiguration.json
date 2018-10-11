@@ -1,7 +1,8 @@
 {
   "general" : {
     "parentFeedLocation" : "",
-    "localFeedLocation" : "defaultAddress"
+    "localFeedLocation" : "defaultAddress",
+    "filterBeans" : [ "test" ]
   },
   "push" : {
     "enabled" : true,
