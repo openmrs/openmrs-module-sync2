@@ -36,7 +36,7 @@
             <ref bean="transactionManager" />
         </property>
         <property name="target">
-            <bean class="org.openmrs.module.sync2.api.impl.SyncAuditServiceImpl">
+            <bean class="org.openmrs.module.sync2.api.service.impl.SyncAuditServiceImpl">
                 <property name="dao" ref="sync2.SyncAuditDao" />
             </bean>
         </property>
@@ -53,7 +53,7 @@
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.sync2.api.SyncModuleService</value>
+                <value>org.openmrs.module.sync2.api.service.SyncModuleService</value>
                 <ref bean="sync2.SyncModuleService" />
             </list>
         </property>
@@ -62,7 +62,7 @@
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.openmrs.module.sync2.api.SyncConfigurationService</value>
+                <value>org.openmrs.module.sync2.api.service.SyncConfigurationService</value>
                 <ref bean="sync2.syncConfigurationService" />
             </list>
         </property>

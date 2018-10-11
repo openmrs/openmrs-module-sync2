@@ -2,10 +2,9 @@ package org.openmrs.module.sync2.page.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.openmrs.messagesource.MessageSourceService;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.uicommons.UiCommonsConstants;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.SimpleObject;

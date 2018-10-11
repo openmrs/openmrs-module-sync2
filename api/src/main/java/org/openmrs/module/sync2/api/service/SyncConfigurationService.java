@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.api;
+package org.openmrs.module.sync2.api.service;
 
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.validator.Errors;

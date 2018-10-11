@@ -1,13 +1,15 @@
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2.api.service.impl;
 
-import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncPullService;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +40,13 @@ public class SyncPullServiceImpl implements SyncPullService {
     @Autowired
     private SyncAuditService syncAuditService;
 
+    @Autowired
+    private ParentFeedReader parentFeedReader;
+
     private SyncClient syncClient = new SyncClient();
 
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
@@ -87,10 +92,15 @@ public class SyncPullServiceImpl implements SyncPullService {
     }
 
     @Override
-    public AuditMessage pullDataFromParentAndSave(String category, Map<String, String> resourceLinks,
+    public void pullAndSaveObjectsFromParent(String category) throws SyncException {
+        parentFeedReader.pullAndProcessFeeds(category);
+    }
+
+    @Override
+    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return pullDataFromParentAndSave(category, resourceLinks, action, clientName);
+        return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName);
     }
 
     /**
@@ -105,7 +115,6 @@ public class SyncPullServiceImpl implements SyncPullService {
      */
     private boolean shouldPullObject(Object pulledObject, String category, String clientName, String url) {
         Object localPulledObject = syncClient.pullData(category, clientName, url, CHILD);
-        return  pulledObject != null ? !compareLocalAndPulled(clientName, category, pulledObject, localPulledObject) : false;
+        return pulledObject != null && !compareLocalAndPulled(clientName, category, pulledObject, localPulledObject);
     }
-
 }

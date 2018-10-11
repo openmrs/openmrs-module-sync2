@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
@@ -30,7 +30,7 @@ public class ManualSyncPageController {
                              HttpSession session, UiUtils ui) {
         try {
             LOGGER.info("Start Parent Feed Reader...");
-            parentFeedReader.readAllFeedsForPull();
+            parentFeedReader.pullAndProcessAllFeeds();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
         } catch (SyncValidationException e) {
             LOGGER.error("Error during reading feeds: ", e);

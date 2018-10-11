@@ -1,11 +1,11 @@
-package org.openmrs.module.sync2.api.impl;
+package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
-import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncPullService;
-import org.openmrs.module.sync2.api.SyncPushService;
-import org.openmrs.module.sync2.api.SyncRetryService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncPullService;
+import org.openmrs.module.sync2.api.service.SyncPushService;
+import org.openmrs.module.sync2.api.service.SyncRetryService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
@@ -44,7 +44,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     private AuditMessage retryPush(AuditMessage message) {
         AuditMessage newMessage =
-                syncPushService.readDataAndPushToParent(
+                syncPushService.readAndPushObjectToParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
@@ -57,7 +57,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
     private AuditMessage retryPull(AuditMessage message) {
         AuditMessage newMessage =
-                syncPullService.pullDataFromParentAndSave(
+                syncPullService.pullAndSaveObjectFromParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),

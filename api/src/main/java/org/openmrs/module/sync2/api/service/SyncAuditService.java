@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.api;
+package org.openmrs.module.sync2.api.service;
 
 import com.google.gson.JsonParseException;
 import org.openmrs.annotation.Authorized;

@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.fragment.controller;
 
-import org.openmrs.module.sync2.api.SyncAuditService;
-import org.openmrs.module.sync2.api.SyncRetryService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncRetryService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
@@ -10,7 +10,6 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
-import org.openmrs.ui.framework.fragment.FragmentRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 

@@ -24,7 +24,7 @@ public class SyncPullTask extends AbstractTask {
 
             startExecuting();
             try {
-                parentFeedReader.readAllFeedsForPull();
+                parentFeedReader.pullAndProcessAllFeeds();
             }
             catch (Exception e) {
                 LOGGER.error("Error while Sync 2.0 Pulling from parent:", e);

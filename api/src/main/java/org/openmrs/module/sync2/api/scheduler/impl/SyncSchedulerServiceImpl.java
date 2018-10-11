@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.api.scheduler.impl;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
-import org.openmrs.module.sync2.api.SyncConfigurationService;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
 import org.openmrs.scheduler.SchedulerException;

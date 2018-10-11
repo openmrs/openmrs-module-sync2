@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.page.controller;
 
-import org.openmrs.module.sync2.api.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.api.validator.Errors;

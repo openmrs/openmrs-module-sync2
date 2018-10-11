@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncModuleConfig;
-import org.openmrs.module.sync2.api.SyncAuditService;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.InstanceId;
