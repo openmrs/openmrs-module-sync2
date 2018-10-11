@@ -2,6 +2,9 @@ package org.openmrs.module.sync2.client.reader;
 
 import org.ict4h.atomfeed.client.domain.Event;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.atomfeed.api.filter.FeedFilter;
+import org.openmrs.module.atomfeed.api.filter.GenericFeedFilter;
+import org.openmrs.module.atomfeed.api.service.TagService;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
 import org.openmrs.module.sync2.api.SyncPullService;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -9,28 +12,44 @@ import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ParentFeedWorker implements FeedEventWorker {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParentFeedWorker.class);
 
-    SyncPullService pullService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParentFeedWorker.class);
 
-    @Override
-    public void process(Event event) {
-        LOGGER.info("Started feed event processing (id: {})", event.getId());
-        pullService = Context.getRegisteredComponent("sync2.syncPullService", SyncPullService.class);
-        List tags = event.getCategories();
-        
-        pullService.pullDataFromParentAndSave(
-                SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
-                SyncUtils.getLinks(event.getContent()),
-                SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)
-        );
-    }
+	private SyncPullService pullService;
 
-    @Override
-    public void cleanUp(Event event) {
-        LOGGER.info("Started feed cleanUp processing (id: {})", event.getId());
-    }
+	@Override
+	public void process(Event event) {
+		LOGGER.info("Started feed event processing (id: {})", event.getId());
+		pullService = Context.getRegisteredComponent("sync2.syncPullService", SyncPullService.class);
+		List tags = event.getCategories();
+
+		//TODO: restore: TagService tagService = Context.getRegisteredComponent("atomfeed.tagService", TagService.class);
+		//TODO: replace new ArrayList<>() with tagService.getFeedFiltersFromTags(tags)
+		List<FeedFilter> feedFilters = new ArrayList<>();
+
+		boolean shouldBeSynced = true;
+		for (FeedFilter feedFilter : feedFilters) {
+			GenericFeedFilter bean = Context.getRegisteredComponent(feedFilter.getBeanName(), GenericFeedFilter.class);
+			if (!bean.isFilterTagValid(feedFilter.getFilter())) {
+				shouldBeSynced = false;
+				break;
+			}
+		}
+
+		if (shouldBeSynced) {
+			pullService.pullDataFromParentAndSave(
+					SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
+					SyncUtils.getLinks(event.getContent()),
+					SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION));
+		}
+	}
+
+	@Override
+	public void cleanUp(Event event) {
+		LOGGER.info("Started feed cleanUp processing (id: {})", event.getId());
+	}
 }
