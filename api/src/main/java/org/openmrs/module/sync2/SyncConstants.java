@@ -54,5 +54,7 @@ public class SyncConstants {
 
     public static final int ZERO = 0;
 
+    public static final String SYNC2_REST_ENDPOINT = "/ws/rest/sync2";
+
     private SyncConstants() {}
 }
