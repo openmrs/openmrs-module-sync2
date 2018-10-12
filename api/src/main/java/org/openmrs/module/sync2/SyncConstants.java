@@ -56,5 +56,7 @@ public class SyncConstants {
 
     public static final String SYNC2_REST_ENDPOINT = "/ws/rest/sync2";
 
+    public static final String TAG_SERVICE_BEAN = "atomfeed.tagService";
+
     private SyncConstants() {}
 }
