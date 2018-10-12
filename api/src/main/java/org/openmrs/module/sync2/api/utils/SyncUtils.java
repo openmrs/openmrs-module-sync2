@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.utils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
@@ -151,19 +152,19 @@ public class SyncUtils {
 				switch (clientName) {
 					case REST_CLIENT:
 
+						BaseOpenmrsObject obj1 = ((RestResource) from).getOpenMrsObject();
+						BaseOpenmrsObject obj2 = ((RestResource) dest).getOpenMrsObject();
 						//TODO: Work around for deleting patient through REST API. Should be refactored.
-						if (from instanceof org.openmrs.Patient && dest instanceof org.openmrs.Patient) {
-							boolean fromIsVoided = ((org.openmrs.Patient) from).getVoided();
-							boolean destIsVoided = ((org.openmrs.Patient) dest).getVoided();
+						if (obj1 instanceof org.openmrs.Patient && obj2 instanceof org.openmrs.Patient) {
+							boolean fromIsVoided = ((org.openmrs.Patient) obj1).getVoided();
+							boolean destIsVoided = ((org.openmrs.Patient) obj2).getVoided();
 
 							if (fromIsVoided && destIsVoided) {
 								return true;
 							}
 						}
 
-						RestResource obj1 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) dest);
-						RestResource obj2 = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) from);
-						result = obj1.equals(obj2);
+						result = from.equals(dest);
 						break;
 					case FHIR_CLIENT:
 						switch (category) {

@@ -1,99 +1,149 @@
 package org.openmrs.module.sync2.api.sync;
 
-import org.hl7.fhir.dstu3.model.Coding;
-import org.hl7.fhir.dstu3.model.Encounter;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.api.client.Client;
+import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
-import org.openmrs.module.sync2.client.ClientFactory;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
+import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URISyntaxException;
 
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
-import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
-import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
+import static org.openmrs.module.sync2.SyncConstants.SYNC2_REST_ENDPOINT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
 
 public class SyncClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncClient.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(SyncClient.class);
 
-    private String username;
-    private String password;
+	private String username;
 
-    public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
-        Object result;
-        setUpCredentials(instance);
+	private String password;
 
-        ClientFactory clientFactory = new ClientFactory();
-        Client client = clientFactory.createClient(clientName);
+	private RestTemplate restTemplate = new RestTemplate();
 
-        try {
-            result = client.retrieveObject(category, resourceUrl, username, password);
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                result = null;
-            } else {
-                throw new SyncException("Error during reading local object: ", e);
-            }
-        }
-//        if(result != null && result.getClass().toString().contains("Encounter")) {
-//            ((Encounter) result).setClass_(new Coding("Inpatient", "Inpatient", "Inpatient"));
-//            List<Encounter.EncounterParticipantComponent> list = new ArrayList<Encounter.EncounterParticipantComponent>();
-//            Encounter.EncounterParticipantComponent component = new Encounter.EncounterParticipantComponent();
-//            component.setIndividual(((Encounter) result).getSubject());
-//            list.add(component);
-//            ((Encounter) result).setParticipant(list);
-//        }
-        return result;
-    }
+	@Autowired
+	private SyncConfigurationService syncConfigurationService;
 
-    public ResponseEntity<String> pushData(Object object, String clientName,
-                                           String resourceUrl, String action, OpenMRSSyncInstance instance) {
-        setUpCredentials(instance);
+	public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
+		Object result = null;
+		setUpCredentials(instance);
 
-        Client client = new ClientFactory().createClient(clientName);
+		ClientHelper clientHelper = new ClientHelperFactory().createClient(clientName);
+		prepareRestTemplate(clientHelper);
 
-        try {
-            switch (action) {
-                case ACTION_CREATED:
-                    return client.createObject(resourceUrl, username, password, object);
-                case ACTION_UPDATED:
-                    return client.updateObject(resourceUrl, username, password, object);
-                case ACTION_VOIDED:
-                    return client.deleteObject(resourceUrl, username, password, (String) object);
-                default:
-                    LOGGER.warn(String.format("Sync push exception. Unrecognized action: %s", action));
-                    break;
-            }
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
-                    e.getStatusCode().value(), e.getResponseBodyAsString()), e);
-        }
-        return null;
-    }
+		try {
+			result = retrieveObject(category, resourceUrl, clientHelper);
+		}
+		catch (HttpClientErrorException e) {
+			if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				throw new SyncException("Error during reading local object: ", e);
+			}
+		}
+		catch (URISyntaxException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return result;
+	}
 
-    private void setUpCredentials(OpenMRSSyncInstance instance) {
-        AdministrationService adminService = Context.getAdministrationService();
+	public ResponseEntity<String> pushData(Object object, String clientName,
+			String resourceUrl, String action, OpenMRSSyncInstance instance) {
+		ResponseEntity<String> result = null;
+		setUpCredentials(instance);
 
-        this.username = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_USERNAME_PROPERTY) :
-                adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
+		ClientHelper clientHelper = new ClientHelperFactory().createClient(clientName);
+		prepareRestTemplate(clientHelper);
 
-        this.password = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_PASSWORD_PROPERTY) :
-                adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
-    }
+		try {
+			switch (action) {
+				case ACTION_CREATED:
+					result = createObject(resourceUrl, object, clientHelper);
+					break;
+				case ACTION_UPDATED:
+					result = updateObject(resourceUrl, object, clientHelper);
+					break;
+				case ACTION_VOIDED:
+					result = deleteObject(resourceUrl, (String) object, clientHelper);
+					break;
+				default:
+					LOGGER.warn(String.format("Sync push exception. Unrecognized action: %s", action));
+					break;
+			}
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
+					e.getStatusCode().value(), e.getResponseBodyAsString()), e);
+		} catch (URISyntaxException e) {
+			LOGGER.error(e.getMessage());
+		}
+		return result;
+	}
+
+	private void setUpCredentials(OpenMRSSyncInstance instance) {
+		AdministrationService adminService = Context.getAdministrationService();
+
+		this.username = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_USERNAME_PROPERTY) :
+				adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
+
+		this.password = instance.equals(PARENT) ? adminService.getGlobalProperty(PARENT_PASSWORD_PROPERTY) :
+				adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
+	}
+
+	private void prepareRestTemplate(ClientHelper clientHelper) {
+		restTemplate.setInterceptors(clientHelper.getCustomInterceptors(this.username, this.password));
+		restTemplate.setMessageConverters(clientHelper.getCustomFHIRMessageConverter());
+	}
+
+	private Object retrieveObject(String category, String url, ClientHelper clientHelper)
+			throws RestClientException, URISyntaxException {
+		return restTemplate.exchange(clientHelper.retrieveRequest(url), clientHelper.resolveCategoryByCategory(category))
+				.getBody();
+	}
+
+	private ResponseEntity<String> createObject(String url, Object object, ClientHelper clientHelper)
+			throws RestClientException, URISyntaxException {
+		return restTemplate.exchange(clientHelper.createRequest(url, object), String.class);
+	}
+
+	private ResponseEntity<String> deleteObject(String url, String uuid, ClientHelper clientHelper)
+			throws URISyntaxException {
+		return restTemplate.exchange(clientHelper.deleteRequest(url, uuid), String.class);
+	}
+
+	private ResponseEntity<String> updateObject(String url, Object object, ClientHelper clientHelper)
+			throws URISyntaxException {
+		return restTemplate.exchange(clientHelper.updateRequest(url, object), String.class);
+	}
+
+	private String getParentUri() {
+		String uri = getParentBaseUrl();
+		return uri + SYNC2_REST_ENDPOINT;
+	}
+
+	private RequestWrapper createWrappedRequest(RequestEntity requestEntity) {
+		String instanceId = syncConfigurationService.getSyncConfiguration().getGeneral().getLocalInstanceId();
+		RequestWrapper requestWrapper = new RequestWrapper();
+		requestWrapper.setInstanceId(instanceId);
+		requestWrapper.setRequestEntity(requestEntity);
+		return requestWrapper;
+	}
 }
