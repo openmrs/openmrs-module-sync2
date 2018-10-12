@@ -7,9 +7,10 @@ import org.mockito.BDDMockito;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.api.client.FHIRClient;
-import org.openmrs.module.sync2.client.ClientFactory;
-import org.openmrs.module.sync2.client.rest.RestClient;
+import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
+import org.openmrs.module.sync2.client.ClientHelperFactory;
+import org.openmrs.module.sync2.client.rest.RESTClientHelper;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -78,19 +79,24 @@ public class SyncClientTest {
         links.put(FHIR_CLIENT_KEY, FHIR_RESOURCE_LINK + PATIENT_UUID);
         links.put(REST_CLIENT_KEY, REST_RESOURCE_LINK + PATIENT_UUID);
 
+        RESTClientHelper restClientHelper = new RESTClientHelper();
+        FHIRClientHelper fhirClientHelper = new FHIRClientHelper();
 
-        RestClient restClientMock = mock(RestClient.class);
-        doReturn(createPatient()).when(restClientMock).retrieveObject(PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
-        doReturn(createVisit()).when(restClientMock).retrieveObject(VISIT_CATEGORY, REST_FULL_RESOURCE_URL, USERNAME, PASSWORD);
+        ClientHelperFactory clientHelperFactory = mock(ClientHelperFactory.class);
+        doReturn(restClientHelper).when(clientHelperFactory).createClient(REST_CLIENT_KEY);
+        doReturn(fhirClientHelper).when(clientHelperFactory).createClient(FHIR_CLIENT_KEY);
+        whenNew(ClientHelperFactory.class).withNoArguments().thenReturn(clientHelperFactory);
 
-        FHIRClient fhirClientMock = mock(FHIRClient.class);
-        doReturn(createPatient()).when(fhirClientMock).retrieveObject(PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
-        doReturn(createVisit()).when(restClientMock).retrieveObject(VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, USERNAME, PASSWORD);
-
-        ClientFactory clientFactory = mock(ClientFactory.class);
-        doReturn(restClientMock).when(clientFactory).createClient(REST_CLIENT_KEY);
-        doReturn(fhirClientMock).when(clientFactory).createClient(FHIR_CLIENT_KEY);
-        whenNew(ClientFactory.class).withNoArguments().thenReturn(clientFactory);
+        SyncClient syncClient =  PowerMockito.spy(new SyncClient());
+        PowerMockito.doReturn(createPatient())
+                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, restClientHelper);
+        PowerMockito.doReturn(createVisit())
+                .when(syncClient, "retrieveObject", VISIT_CATEGORY, REST_FULL_RESOURCE_URL, restClientHelper);
+        PowerMockito.doReturn(createPatient())
+                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, fhirClientHelper);
+        PowerMockito.doReturn(createVisit())
+                .when(syncClient, "retrieveObject", VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, fhirClientHelper);
+        whenNew(SyncClient.class).withNoArguments().thenReturn(syncClient);
     }
     
     @Test
