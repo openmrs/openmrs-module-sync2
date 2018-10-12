@@ -11,6 +11,7 @@ import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
@@ -31,6 +33,7 @@ import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.SYNC2_REST_ENDPOINT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getSyncConfigurationService;
 
 public class SyncClient {
 
@@ -41,9 +44,6 @@ public class SyncClient {
 	private String password;
 
 	private RestTemplate restTemplate = new RestTemplate();
-
-	@Autowired
-	private SyncConfigurationService syncConfigurationService;
 
 	public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
 		Object result = null;
@@ -115,32 +115,39 @@ public class SyncClient {
 
 	private Object retrieveObject(String category, String url, ClientHelper clientHelper)
 			throws RestClientException, URISyntaxException {
-		return restTemplate.exchange(clientHelper.retrieveRequest(url), clientHelper.resolveCategoryByCategory(category))
-				.getBody();
+		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.retrieveRequest(url));
+		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.GET, getParentUri());
+		return restTemplate.exchange(request, clientHelper.resolveCategoryByCategory(category)).getBody();
 	}
 
 	private ResponseEntity<String> createObject(String url, Object object, ClientHelper clientHelper)
 			throws RestClientException, URISyntaxException {
-		return restTemplate.exchange(clientHelper.createRequest(url, object), String.class);
+		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.createRequest(url, object));
+		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.POST, getParentUri());
+		return restTemplate.exchange(request, String.class);
 	}
 
 	private ResponseEntity<String> deleteObject(String url, String uuid, ClientHelper clientHelper)
 			throws URISyntaxException {
-		return restTemplate.exchange(clientHelper.deleteRequest(url, uuid), String.class);
+		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.deleteRequest(url, uuid));
+		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.DELETE, getParentUri());
+		return restTemplate.exchange(request, String.class);
 	}
 
 	private ResponseEntity<String> updateObject(String url, Object object, ClientHelper clientHelper)
 			throws URISyntaxException {
-		return restTemplate.exchange(clientHelper.updateRequest(url, object), String.class);
+		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.updateRequest(url, object));
+		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.PUT, getParentUri());
+		return restTemplate.exchange(request, String.class);
 	}
 
-	private String getParentUri() {
+	private URI getParentUri() throws URISyntaxException {
 		String uri = getParentBaseUrl();
-		return uri + SYNC2_REST_ENDPOINT;
+		return new URI(uri + SYNC2_REST_ENDPOINT);
 	}
 
 	private RequestWrapper createWrappedRequest(RequestEntity requestEntity) {
-		String instanceId = syncConfigurationService.getSyncConfiguration().getGeneral().getLocalInstanceId();
+		String instanceId = getSyncConfigurationService().getSyncConfiguration().getGeneral().getLocalInstanceId();
 		RequestWrapper requestWrapper = new RequestWrapper();
 		requestWrapper.setInstanceId(instanceId);
 		requestWrapper.setRequestEntity(requestEntity);
