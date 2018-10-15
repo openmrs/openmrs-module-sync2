@@ -93,13 +93,6 @@
 		<description>Preferred client for pulling resources.</description>
 	</globalProperty>
 
-	<!--Global Properties for Feed Filters-->
-	<globalProperty>
-		<property>${project.parent.artifactId}.filter.location</property>
-		<defaultValue>*%*%*%*%*</defaultValue>
-		<description>Value of this property is used to filter objects pulled from parent.</description>
-	</globalProperty>
-
 	<privilege>
 		<name>Load Sync2 config</name>
 		<description>Ability to load Sync 2 configuration from file.</description>
