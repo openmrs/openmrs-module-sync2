@@ -90,7 +90,7 @@ public class SyncUtils {
 		throw new SyncException(String.format("'%s' enum not found in tag list", atomfeedTagContent.name()));
 	}
 
-	private static String getFullUrl(String baseAddress, String path) {
+	public static String getFullUrl(String baseAddress, String path) {
 		return baseAddress + path;
 	}
 

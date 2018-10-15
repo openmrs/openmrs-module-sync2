@@ -17,7 +17,7 @@
         ${ ui.message("sync2.configuration.label") }
     </a>
     <a class="button app big ${emptyURI ? 'disabled' : ''}"
-        href="${emptyURI ? '#' : ui.pageLink("sync2", "ManualSync")}"
+        href="${emptyURI ? '#' : ui.pageLink("sync2", "ManualSyncPull")}"
         title = "${emptyURI ? ui.message("sync2.configuration.parentUrl.empty") : ''}"
         id="sync.pull">
         <i class="icon-random"></i>

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class ManualSyncPageController {
+public class ManualSyncPullPageController {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);
     

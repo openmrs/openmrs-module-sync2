@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 
 @Component("sync2.SyncRetryService")
 public class SyncRetryServiceImpl implements SyncRetryService {
@@ -43,12 +44,15 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     }
 
     private AuditMessage retryPush(AuditMessage message) {
+        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap());
+
         AuditMessage newMessage =
                 syncPushService.readAndPushObjectToParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
-                        message.getLinkType()
+                        message.getLinkType(),
+                        uuid
                 );
 
         syncAuditService.setNextAudit(message, newMessage);
