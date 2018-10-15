@@ -23,8 +23,6 @@ import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE
 
 public class SyncConfigurationUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SyncConfigurationUtils.class);
-
     public static void checkIfConfigurationIsValid() {
         Errors errors = SyncUtils.getSyncConfigurationService().validateConfiguration();
         if (errors.hasErrors()) {
