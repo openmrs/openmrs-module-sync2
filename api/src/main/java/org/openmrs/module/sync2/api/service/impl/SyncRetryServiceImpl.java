@@ -60,12 +60,15 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     }
 
     private AuditMessage retryPull(AuditMessage message) {
+        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap());
+
         AuditMessage newMessage =
                 syncPullService.pullAndSaveObjectFromParent(
                         message.getResourceName(),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
-                        message.getLinkType()
+                        message.getLinkType(),
+                        uuid
                 );
 
         syncAuditService.setNextAudit(message, newMessage);

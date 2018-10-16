@@ -1,5 +1,8 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.openmrs.BaseOpenmrsData;
+import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
+import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
@@ -15,11 +18,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
+import static org.openmrs.module.sync2.SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME;
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.SyncConstants.PULL_SUCCESS_MESSAGE;
+import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
+import static org.openmrs.module.sync2.SyncConstants.REST_URL_FORMAT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncAuditUtils.prepareBaseAuditMessage;
@@ -43,11 +54,14 @@ public class SyncPullServiceImpl implements SyncPullService {
     @Autowired
     private ParentFeedReader parentFeedReader;
 
+    @Autowired
+    private FeedConfigurationService feedConfigurationService;
+
     private SyncClient syncClient = new SyncClient();
 
     @Override
     public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
-                                                  String action, String clientName) {
+                                                  String action, String clientName, String uuid) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
         String parentPull = getPullUrl(resourceLinks, clientName, PARENT);
@@ -56,7 +70,6 @@ public class SyncPullServiceImpl implements SyncPullService {
 
         boolean pullToTheLocal = true;
         LOGGER.info(String.format("Pull category: %s, address: %s, action: %s", category, parentPull, action));
-        String uuid = extractUUIDFromResourceLinks(resourceLinks);
 
 
         AuditMessage auditMessage = prepareBaseAuditMessage(PULL_OPERATION);
@@ -92,6 +105,54 @@ public class SyncPullServiceImpl implements SyncPullService {
     }
 
     @Override
+    public List<AuditMessage> pullAndSaveObjectFromParent(String category, String uuid) {
+        SyncConfigurationUtils.checkIfConfigurationIsValid();
+
+        FeedConfiguration configuration = feedConfigurationService.getFeedConfigurationByCategory(category);
+
+        Map<String, String> resourceLinks = configuration.getLinkTemplates();
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
+        List<String> actions = determineActions(category, uuid);
+
+        Map<String, String> mappedResourceLinks = includeUuidInResourceLinks(resourceLinks, uuid);
+        List<AuditMessage> result = new ArrayList<>();
+        for (String action : actions) {
+            result.add(pullAndSaveObjectFromParent(category, mappedResourceLinks, action, clientName, uuid));
+        }
+
+        return result;
+    }
+
+    private Map<String, String> includeUuidInResourceLinks(Map<String, String> resourceLinks, String uuid) {
+        Map<String, String> mappedResourceLinks = new HashMap<>();
+        for (Map.Entry<String, String> pair : resourceLinks.entrySet()) {
+            mappedResourceLinks.put(pair.getKey(), pair.getValue().replace("{" + AUDIT_MESSAGE_UUID_FIELD_NAME + "}", uuid));
+        }
+        return mappedResourceLinks;
+    }
+
+    private List<String> determineActions(String category, String uuid) {
+        String restUrl = String.format(REST_URL_FORMAT, uuid);
+        String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
+        String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(), restUrl);
+
+        Object localObj = syncClient.pullData(category, REST_CLIENT, localPullUrl, CHILD);
+        Object parentObj = syncClient.pullData(category, REST_CLIENT, parentPullUrl, PARENT);
+
+        List<String> result = new ArrayList<>();
+        if (localObj == null) {
+            result.add(ACTION_CREATED);
+            if (parentObj instanceof BaseOpenmrsData && ((BaseOpenmrsData)parentObj).isVoided()) {
+                result.add(ACTION_VOIDED);
+            }
+        } else {
+            result.add(ACTION_UPDATED);
+        }
+
+        return result;
+    }
+
+    @Override
     public void pullAndSaveObjectsFromParent(String category) throws SyncException {
         parentFeedReader.pullAndProcessFeeds(category);
     }
@@ -100,7 +161,8 @@ public class SyncPullServiceImpl implements SyncPullService {
     public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName);
+        String uuid = extractUUIDFromResourceLinks(resourceLinks);
+        return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }
 
     /**
