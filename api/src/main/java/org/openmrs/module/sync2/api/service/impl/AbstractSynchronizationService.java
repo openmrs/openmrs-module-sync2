@@ -92,7 +92,7 @@ public abstract class AbstractSynchronizationService {
         List<String> result = new ArrayList<>();
         if (objToUpdate == null) {
             result.add(ACTION_CREATED);
-            if (baseObj instanceof BaseOpenmrsData && ((BaseOpenmrsData)baseObj).isVoided()) {
+            if (baseObj instanceof BaseOpenmrsData && ((BaseOpenmrsData) baseObj).isVoided()) {
                 result.add(ACTION_VOIDED);
             }
         } else {
