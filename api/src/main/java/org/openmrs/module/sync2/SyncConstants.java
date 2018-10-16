@@ -22,9 +22,7 @@ public class SyncConstants {
 
     public static final String AUDIT_MESSAGE_ID_FIELD_NAME = "id";
 
-    public static final String PULL_SUCCESS_MESSAGE = "Success";
-
-    public static final String PUSH_SUCCESS_MESSAGE = "Success";
+    public static final String SUCCESS_MESSAGE = "Success";
 
     public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
   
