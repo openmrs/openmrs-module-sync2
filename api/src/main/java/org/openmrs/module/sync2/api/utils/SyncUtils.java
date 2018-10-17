@@ -6,6 +6,9 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
+import org.openmrs.module.atomfeed.api.filter.FeedFilter;
+import org.openmrs.module.atomfeed.api.service.XMLParseService;
+import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
 import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
@@ -18,6 +21,7 @@ import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +83,9 @@ public class SyncUtils {
 	public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
 		for (Object tag : tags) {
 			String tagValue = getTagValue(tag);
+			if (checkIfParamIsFeedFilter(tagValue)) {
+				continue;
+			}
 			boolean isTagEventAction = checkIfParamIsEventAction(tagValue);
 			if (atomfeedTagContent == AtomfeedTagContent.EVENT_ACTION && isTagEventAction) {
 				return tagValue;
@@ -236,6 +243,17 @@ public class SyncUtils {
 			return new ObjectMapper().readValue(json, new TypeReference<Map<String, String>>() {});
 		} catch (IOException ex) {
 			throw new SyncException("Cannot deserialize map", ex);
+		}
+	}
+
+	public static boolean checkIfParamIsFeedFilter(String feedFilterXML) {
+		XMLParseService xmlParseService = new XMLParseServiceImpl();
+		try {
+			FeedFilter feedFilter = xmlParseService.createFeedFilterFromXMLString(feedFilterXML);
+			return feedFilter.getFilter() != null && feedFilter.getBeanName() != null;
+		}
+		catch (JAXBException e) {
+			return false;
 		}
 	}
 
