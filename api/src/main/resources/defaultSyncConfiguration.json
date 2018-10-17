@@ -8,7 +8,7 @@
   },
   "push" : {
     "enabled" : false,
-    "schedule" : 12,
+    "schedule" : 43200,
     "classes" : [
       {
         "classTitle" : "Location",
@@ -128,7 +128,7 @@
   },
   "pull" : {
     "enabled" : false,
-    "schedule" : 12,
+    "schedule" : 43200,
     "classes" : [
       {
         "classTitle" : "Location",
