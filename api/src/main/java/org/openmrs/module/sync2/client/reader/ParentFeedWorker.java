@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.client.reader;
 
 import org.ict4h.atomfeed.client.domain.Event;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.filter.FeedFilter;
 import org.openmrs.module.atomfeed.api.filter.GenericFeedFilterStrategy;
@@ -32,7 +33,14 @@ public class ParentFeedWorker implements FeedEventWorker {
 
 		boolean shouldBeSynced = true;
 		for (FeedFilter feedFilter : feedFilters) {
-			GenericFeedFilterStrategy bean = Context.getRegisteredComponent(feedFilter.getBeanName(), GenericFeedFilterStrategy.class);
+			GenericFeedFilterStrategy bean;
+			try {
+				bean = Context.getRegisteredComponent(feedFilter.getBeanName(), GenericFeedFilterStrategy.class);
+			} catch (APIException e) {
+				LOGGER.warn("Bean not found: {}", feedFilter.getBeanName());
+				shouldBeSynced = true;
+				break;
+			}
 			if (!bean.isFilterTagValid(feedFilter.getFilter())) {
 				shouldBeSynced = false;
 				break;
