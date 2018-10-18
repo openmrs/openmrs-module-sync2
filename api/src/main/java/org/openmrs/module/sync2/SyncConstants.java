@@ -2,7 +2,7 @@ package org.openmrs.module.sync2;
 
 public class SyncConstants {
 
-    public static final String REST_URL_FORMAT = "/ws/rest/v1/obs/%s?v=full";
+    public static final String REST_URL_FORMAT = "/ws/rest/v1/%s/%s?v=full";
 
     public static final String PARENT_USERNAME_PROPERTY = "sync2.parent.user.login";
 

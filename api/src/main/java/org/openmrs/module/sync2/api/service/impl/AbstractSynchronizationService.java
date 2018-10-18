@@ -127,7 +127,7 @@ public abstract class AbstractSynchronizationService {
     }
 
     private List<String> determineActions(String category, String uuid) {
-        String restUrl = String.format(REST_URL_FORMAT, uuid);
+        String restUrl = String.format(REST_URL_FORMAT, category, uuid);
         String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
         String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(), restUrl);
 
