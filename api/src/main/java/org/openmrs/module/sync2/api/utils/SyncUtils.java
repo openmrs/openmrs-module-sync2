@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
+import com.sun.syndication.feed.atom.Category;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.BaseOpenmrsObject;
@@ -82,10 +83,10 @@ public class SyncUtils {
 
 	public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
 		for (Object tag : tags) {
-			String tagValue = getTagValue(tag);
-			if (checkIfParamIsFeedFilter(tagValue)) {
+			if (checkIfParamIsFeedFilter(tag)) {
 				continue;
 			}
+			String tagValue = getTagValue(tag);
 			boolean isTagEventAction = checkIfParamIsEventAction(tagValue);
 			if (atomfeedTagContent == AtomfeedTagContent.EVENT_ACTION && isTagEventAction) {
 				return tagValue;
@@ -246,15 +247,19 @@ public class SyncUtils {
 		}
 	}
 
-	public static boolean checkIfParamIsFeedFilter(String feedFilterXML) {
-		XMLParseService xmlParseService = new XMLParseServiceImpl();
-		try {
-			FeedFilter feedFilter = xmlParseService.createFeedFilterFromXMLString(feedFilterXML);
-			return feedFilter.getFilter() != null && feedFilter.getBeanName() != null;
+	public static boolean checkIfParamIsFeedFilter(Object tag) {
+		if (tag instanceof Category) {
+			XMLParseService xmlParseService = new XMLParseServiceImpl();
+			try {
+				String feedFilterXML = ((Category) tag).getTerm();
+				FeedFilter feedFilter = xmlParseService.createFeedFilterFromXMLString(feedFilterXML);
+				return feedFilter.getFilter() != null && feedFilter.getBeanName() != null;
+			}
+			catch (JAXBException e) {
+				return false;
+			}
 		}
-		catch (JAXBException e) {
-			return false;
-		}
+		return false;
 	}
 
 	public static boolean checkIfParamIsEventAction(String actionName) {
