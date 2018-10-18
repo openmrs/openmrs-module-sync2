@@ -90,13 +90,13 @@ public abstract class AbstractSynchronizationService {
 
     protected List<String> determineActions(Object objToUpdate, Object baseObj) {
         List<String> result = new ArrayList<>();
+        if (baseObj instanceof BaseOpenmrsData && ((BaseOpenmrsData) baseObj).isVoided()) {
+            result.add(ACTION_VOIDED);
+        }
         if (objToUpdate == null) {
-            result.add(ACTION_CREATED);
-            if (baseObj instanceof BaseOpenmrsData && ((BaseOpenmrsData) baseObj).isVoided()) {
-                result.add(ACTION_VOIDED);
-            }
+            result.add(0, ACTION_CREATED);
         } else {
-            result.add(ACTION_UPDATED);
+            result.add(0, ACTION_UPDATED);
         }
 
         return result;
