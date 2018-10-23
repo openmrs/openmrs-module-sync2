@@ -21,7 +21,6 @@ import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.REST_URL_FORMAT;
 import static org.openmrs.module.sync2.SyncConstants.SUCCESS_MESSAGE;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
@@ -77,9 +76,11 @@ public abstract class AbstractSynchronizationService {
 
         Map<String, String> resourceLinks = configuration.getLinkTemplates();
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
-        List<String> actions = determineActions(category, uuid);
-
         Map<String, String> mappedResourceLinks = includeUuidInResourceLinks(resourceLinks, uuid);
+
+        String restUrl = mappedResourceLinks.get(REST_CLIENT);
+        List<String> actions = determineActions(category, restUrl);
+
         List<AuditMessage> result = new ArrayList<>();
         for (String action : actions) {
             result.add(synchronizeObject(category, mappedResourceLinks, action, clientName, uuid));
@@ -126,8 +127,7 @@ public abstract class AbstractSynchronizationService {
         return mappedResourceLinks;
     }
 
-    private List<String> determineActions(String category, String uuid) {
-        String restUrl = String.format(REST_URL_FORMAT, category, uuid);
+    private List<String> determineActions(String category, String restUrl) {
         String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
         String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(), restUrl);
 
