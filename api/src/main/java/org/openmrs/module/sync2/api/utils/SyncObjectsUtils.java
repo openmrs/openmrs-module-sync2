@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
+import org.openmrs.Allergy;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.rest.resource.Encounter;
@@ -9,6 +10,7 @@ import org.openmrs.module.sync2.client.rest.resource.Patient;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.Visit;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ALLERGY;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
@@ -34,6 +36,8 @@ public class SyncObjectsUtils {
 				return Privilege.class;
 			case CATEGORY_AUDIT_MESSAGE:
 				return AuditMessage.class;
+			case CATEGORY_ALLERGY:
+				return Allergy.class;
 			default:
 				throw new SyncException(String.format("Cannot resolve '%s' REST resources category", category));
 		}

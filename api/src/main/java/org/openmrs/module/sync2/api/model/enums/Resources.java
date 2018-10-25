@@ -9,7 +9,8 @@ public enum Resources {
     OB("ob"),
     LOCATION("location"),
     PRIVILEGE("privilege"),
-    AUDIT_MESSAGE("audit_message");
+    AUDIT_MESSAGE("audit_message"),
+    ALLERGY("allergy");
 
     private final String name;
 

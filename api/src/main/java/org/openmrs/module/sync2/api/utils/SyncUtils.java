@@ -10,6 +10,7 @@ import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.api.filter.FeedFilter;
 import org.openmrs.module.atomfeed.api.service.XMLParseService;
 import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
+import org.openmrs.module.fhir.api.util.FHIRAllergyIntoleranceUtil;
 import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
 import org.openmrs.module.fhir.api.util.FHIRObsUtil;
 import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ALLERGY;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
@@ -187,6 +189,9 @@ public class SyncUtils {
 								break;
 							case CATEGORY_OB:
 								result = FHIRObsUtil.compareCurrentObs(dest, from);
+								break;
+							case CATEGORY_ALLERGY:
+								result = FHIRAllergyIntoleranceUtil.areAllergiesEquals(dest, from);
 								break;
 							default:
 								result = dest.equals(from);
