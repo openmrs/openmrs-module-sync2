@@ -1,5 +1,8 @@
 package org.openmrs.module.sync2.api.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.sun.syndication.feed.atom.Category;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -14,11 +17,13 @@ import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,6 +238,31 @@ public class SyncUtils {
 
 	public static SyncConfigurationService getSyncConfigurationService() {
 		return Context.getService(SyncConfigurationService.class);
+	}
+
+	/**
+	 * This method configures Gson.
+	 * We need to use workaround for null dates.
+	 * @return definitive null safe Gson instance
+	 */
+	public static Gson createDefaultGson() {
+		// Trick to get the DefaultDateTypeAdatpter instance
+		// Create a first Gson instance
+		Gson gson = new GsonBuilder()
+				.setDateFormat(ConversionUtil.DATE_FORMAT)
+				.create();
+
+		// Get the date adapter
+		TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
+
+		// Ensure the DateTypeAdapter is null safe
+		TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
+
+		// Build the definitive safe Gson instance
+		return new GsonBuilder()
+				.setDateFormat(ConversionUtil.DATE_FORMAT)
+				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
+				.create();
 	}
 
 }

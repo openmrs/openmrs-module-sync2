@@ -59,8 +59,6 @@ public class SyncClientTest {
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
     private static final String PATIENT_CATEGORY = "patient";
     private static final String VISIT_CATEGORY = "visit";
-    private static final String ENCOUNTER_CATEGORY = "encounter";
-    private static final String OB_CATEGORY = "observation";
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";

@@ -1,11 +1,8 @@
 package org.openmrs.module.sync2.client;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 import org.apache.commons.io.IOUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -15,7 +12,8 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Date;
+
+import static org.openmrs.module.sync2.api.utils.SyncUtils.createDefaultGson;
 
 public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<SimpleObject> {
 
@@ -61,16 +59,4 @@ public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<S
 		}
 	}
 
-	/**
-	 * This method configures Gson. We need to use workaround for null dates.
-	 *
-	 * @return definitive null safe Gson instance
-	 */
-	private Gson createDefaultGson() {
-		Gson gson = new GsonBuilder().setDateFormat(ConversionUtil.DATE_FORMAT).create();
-		TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-		TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-		return new GsonBuilder().setDateFormat(ConversionUtil.DATE_FORMAT)
-				.registerTypeAdapter(Date.class, safeDateTypeAdapter).create();
-	}
 }
