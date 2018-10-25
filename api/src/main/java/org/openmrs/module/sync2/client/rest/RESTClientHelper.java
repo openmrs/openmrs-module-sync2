@@ -1,14 +1,14 @@
 package org.openmrs.module.sync2.client.rest;
 
-import org.openmrs.OpenmrsObject;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
 import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
-import org.openmrs.module.sync2.api.utils.SyncObjectsUtils;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.client.RequestWrapperConverter;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
-import org.openmrs.module.sync2.client.RestResourceCreationUtil;
-import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -20,7 +20,11 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
+
 public class RESTClientHelper implements ClientHelper {
+
+	public static final String VOIDED = "voided";
 
 	private static final String ACCEPT_HEADER = "Accept";
 
@@ -33,13 +37,9 @@ public class RESTClientHelper implements ClientHelper {
 
 	@Override
 	public RequestEntity createRequest(String url, Object object) throws URISyntaxException {
-
-		//TODO: Hack - we couldn't use response from GET as the POST request
-		if (object instanceof RestResource) {
-			object = ((RestResource) object).getOpenMrsObject();
+		if (object instanceof SimpleObject) {
+			getRestResourceConverter().convertObject(url, object);
 		}
-		object = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
-
 		return new RequestEntity(object, HttpMethod.POST, new URI(url));
 	}
 
@@ -51,18 +51,21 @@ public class RESTClientHelper implements ClientHelper {
 
 	@Override
 	public RequestEntity updateRequest(String url, Object object) throws URISyntaxException {
-		//TODO: Hack - we couldn't use response from GET as the POST request
-		if (object instanceof RestResource) {
-			object = ((RestResource) object).getOpenMrsObject();
+		if (object instanceof AuditMessage) {
+			url += "/" + ((AuditMessage) object).getUuid();
+		} else {
+			getRestResourceConverter().convertObject(url, object);
+			url += "/" + ((SimpleObject) object).get("uuid");
 		}
-		url += "/" + ((OpenmrsObject) object).getUuid();
-		object = RestResourceCreationUtil.createRestResourceFromOpenMRSData((OpenmrsObject) object);
 		return new RequestEntity(object, HttpMethod.POST, new URI(url));
 	}
 
 	@Override
 	public Class resolveCategoryByCategory(String category) {
-		return SyncObjectsUtils.getRestClass(category);
+		if (category.equalsIgnoreCase(CATEGORY_AUDIT_MESSAGE)) {
+			return AuditMessage.class;
+		}
+		return SimpleObject.class;
 	}
 
 	@Override
@@ -74,6 +77,36 @@ public class RESTClientHelper implements ClientHelper {
 	@Override
 	public List<HttpMessageConverter<?>> getCustomFHIRMessageConverter() {
 		return Arrays.asList(new HttpMessageConverter<?>[]
-				{ new RestHttpMessageConverter(), new StringHttpMessageConverter(), new RequestWrapperConverter() });
+				{ new RestHttpMessageConverter(), new StringHttpMessageConverter(), new RequestWrapperConverter(),
+				new SimpleObjectMessageConverter()});
 	}
+
+	@Override
+	public boolean compareResourceObjects(String category, Object from, Object dest) {
+		boolean result;
+		if(category.equals(CATEGORY_AUDIT_MESSAGE)) {
+			result = ((AuditMessage) from).getUuid().equals(((AuditMessage) dest).getUuid());
+		} else {
+			//TODO: Work around for deleting patient through REST API. Should be refactored.
+			if (voidedObject((SimpleObject) from) && voidedObject((SimpleObject) dest)) {
+				result = true;
+			} else {
+				result = getRestResourceConverter().deepCompareSimpleObject((SimpleObject) from, (SimpleObject) dest);
+			}
+		}
+		return result;
+	}
+
+	private RestResourceConverter getRestResourceConverter() {
+		return Context.getRegisteredComponent("sync2.RestResourceConverter", RestResourceConverter.class);
+	}
+
+	private boolean voidedObject(SimpleObject simpleObject) {
+		boolean result = false;
+		if (simpleObject.containsKey(VOIDED) && ((boolean) simpleObject.get(VOIDED))) {
+			result = true;
+		}
+		return result;
+	}
+
 }
