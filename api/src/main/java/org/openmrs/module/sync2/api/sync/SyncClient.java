@@ -47,7 +47,7 @@ public class SyncClient {
 		Object result = null;
 		setUpCredentials(instance);
 
-		ClientHelper clientHelper = new ClientHelperFactory().createClient(clientName);
+		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		prepareRestTemplate(clientHelper);
 
 		try {
@@ -69,7 +69,7 @@ public class SyncClient {
 		ResponseEntity<String> result = null;
 		setUpCredentials(instance);
 
-		ClientHelper clientHelper = new ClientHelperFactory().createClient(clientName);
+		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		prepareRestTemplate(clientHelper);
 
 		try {
