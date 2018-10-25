@@ -12,6 +12,8 @@ public class SyncCategoryConstants {
 
     public static final String CATEGORY_LOCATION = "location";
 
+    public static final String CATEGORY_PERSON = "person";
+
     public static final String CATEGORY_PRIVILEGE = "privilege";
 
     public static final String CATEGORY_AUDIT_MESSAGE = "audit_message";

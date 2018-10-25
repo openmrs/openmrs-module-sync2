@@ -31,6 +31,7 @@ import java.util.Map;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
@@ -188,6 +189,8 @@ public class SyncUtils {
 							case CATEGORY_OB:
 								result = FHIRObsUtil.compareCurrentObs(dest, from);
 								break;
+							case CATEGORY_PERSON:
+								//TODO: Implement method for comparing Persons
 							default:
 								result = dest.equals(from);
 						}

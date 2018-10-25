@@ -68,7 +68,7 @@
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Patient",
@@ -188,7 +188,7 @@
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Patient",

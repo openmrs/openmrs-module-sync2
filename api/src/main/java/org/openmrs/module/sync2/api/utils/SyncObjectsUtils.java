@@ -6,6 +6,7 @@ import org.openmrs.module.sync2.client.rest.resource.Encounter;
 import org.openmrs.module.sync2.client.rest.resource.Location;
 import org.openmrs.module.sync2.client.rest.resource.Observation;
 import org.openmrs.module.sync2.client.rest.resource.Patient;
+import org.openmrs.module.sync2.client.rest.resource.Person;
 import org.openmrs.module.sync2.client.rest.resource.Privilege;
 import org.openmrs.module.sync2.client.rest.resource.Visit;
 
@@ -13,6 +14,7 @@ import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESS
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
@@ -30,6 +32,8 @@ public class SyncObjectsUtils {
 				return Observation.class;
 			case CATEGORY_LOCATION:
 				return Location.class;
+			case CATEGORY_PERSON:
+				return Person.class;
 			case CATEGORY_PRIVILEGE:
 				return Privilege.class;
 			case CATEGORY_AUDIT_MESSAGE:

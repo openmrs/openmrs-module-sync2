@@ -38,7 +38,8 @@
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
         { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
         { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
-        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" }
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" },
+        { id: "person", name: "${ ui.message('sync2.log.resource.person') }" }
     ];
 
     var syncStatus = [
