@@ -46,7 +46,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SyncClient.class, Context.class })
+@PrepareForTest({ SyncClient.class, Context.class, ClientHelperFactory.class})
 public class SyncClientTest {
 
     private static final String PATIENT_UUID = "patientUuid";
@@ -59,8 +59,6 @@ public class SyncClientTest {
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
     private static final String PATIENT_CATEGORY = "patient";
     private static final String VISIT_CATEGORY = "visit";
-    private static final String ENCOUNTER_CATEGORY = "encounter";
-    private static final String OB_CATEGORY = "ob";
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
@@ -107,10 +105,9 @@ public class SyncClientTest {
         RESTClientHelper restClientHelper = new RESTClientHelper();
         FHIRClientHelper fhirClientHelper = new FHIRClientHelper();
 
-        ClientHelperFactory clientHelperFactory = mock(ClientHelperFactory.class);
-        doReturn(restClientHelper).when(clientHelperFactory).createClient(REST_CLIENT_KEY);
-        doReturn(fhirClientHelper).when(clientHelperFactory).createClient(FHIR_CLIENT_KEY);
-        whenNew(ClientHelperFactory.class).withNoArguments().thenReturn(clientHelperFactory);
+        mockStatic(ClientHelperFactory.class);
+        BDDMockito.given(ClientHelperFactory.createClient(REST_CLIENT_KEY)).willReturn(restClientHelper);
+        BDDMockito.given(ClientHelperFactory.createClient(FHIR_CLIENT_KEY)).willReturn(fhirClientHelper);
 
         SyncClient syncClient =  PowerMockito.spy(new SyncClient());
         PowerMockito.doReturn(createPatient())

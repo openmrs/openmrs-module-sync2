@@ -1,56 +1,50 @@
 package org.openmrs.module.sync2.api.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.sun.syndication.feed.atom.Category;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.api.filter.FeedFilter;
 import org.openmrs.module.atomfeed.api.service.XMLParseService;
 import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
-import org.openmrs.module.fhir.api.util.FHIRAllergyIntoleranceUtil;
-import org.openmrs.module.fhir.api.util.FHIREncounterUtil;
-import org.openmrs.module.fhir.api.util.FHIRObsUtil;
-import org.openmrs.module.fhir.api.util.FHIRPatientUtil;
+import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
-import org.openmrs.module.sync2.client.RestResourceCreationUtil;
-import org.openmrs.module.sync2.client.rest.resource.RestResource;
+import org.openmrs.module.sync2.client.ClientHelperFactory;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ALLERGY;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OB;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
 import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 
 public class SyncUtils {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SyncUtils.class);
 
 	private static final String ATOMFEED_TAG_VALUE_FIELD_NAME = "Category.term";
 
 	public static Map<String, String> getLinks(String json) {
 		ObjectMapper mapper = new ObjectMapper();
-		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {};
+		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() { };
 
 		try {
 			HashMap<String, String> result = mapper.readValue(json, typeRef);
-
 			return result;
 		} catch (IOException e) {
 			throw new SyncException(String.format("Invalid resource links JSON Object: %s  ", json), e);
@@ -159,46 +153,12 @@ public class SyncUtils {
 		if (null != dest && null != from) {
 			//If 'from' is  instance of String it represent uuid and should be used to delete object action.
 			if (!(from instanceof String)) {
-				switch (clientName) {
-					case REST_CLIENT:
+				ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 
-						BaseOpenmrsObject obj1 = ((RestResource) from).getOpenMrsObject();
-						BaseOpenmrsObject obj2 = ((RestResource) dest).getOpenMrsObject();
-						//TODO: Work around for deleting patient through REST API. Should be refactored.
-						if (obj1 instanceof org.openmrs.Patient && obj2 instanceof org.openmrs.Patient) {
-							boolean fromIsVoided = ((org.openmrs.Patient) obj1).getVoided();
-							boolean destIsVoided = ((org.openmrs.Patient) obj2).getVoided();
-
-							if (fromIsVoided && destIsVoided) {
-								return true;
-							}
-						}
-
-						result = from.equals(dest);
-						break;
-					case FHIR_CLIENT:
-						switch (category) {
-							case CATEGORY_PATIENT:
-								result = FHIRPatientUtil.compareCurrentPatients(dest, from);
-								break;
-							case CATEGORY_ENCOUNTER:
-								result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
-								break;
-							case CATEGORY_VISIT:
-								result = FHIREncounterUtil.compareCurrentEncounters(dest, from);
-								break;
-							case CATEGORY_OB:
-								result = FHIRObsUtil.compareCurrentObs(dest, from);
-								break;
-							case CATEGORY_ALLERGY:
-								result = FHIRAllergyIntoleranceUtil.areAllergiesEquals(dest, from);
-								break;
-							default:
-								result = dest.equals(from);
-						}
-						break;
-					default:
-						result = dest.equals(from);
+				if (clientHelper != null) {
+					result = clientHelper.compareResourceObjects(category, from, dest);
+				} else {
+					result = dest.equals(from);
 				}
 			}
 		}
@@ -279,4 +239,30 @@ public class SyncUtils {
 	public static SyncConfigurationService getSyncConfigurationService() {
 		return Context.getService(SyncConfigurationService.class);
 	}
+
+	/**
+	 * This method configures Gson.
+	 * We need to use workaround for null dates.
+	 * @return definitive null safe Gson instance
+	 */
+	public static Gson createDefaultGson() {
+		// Trick to get the DefaultDateTypeAdatpter instance
+		// Create a first Gson instance
+		Gson gson = new GsonBuilder()
+				.setDateFormat(ConversionUtil.DATE_FORMAT)
+				.create();
+
+		// Get the date adapter
+		TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
+
+		// Ensure the DateTypeAdapter is null safe
+		TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
+
+		// Build the definitive safe Gson instance
+		return new GsonBuilder()
+				.setDateFormat(ConversionUtil.DATE_FORMAT)
+				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
+				.create();
+	}
+
 }

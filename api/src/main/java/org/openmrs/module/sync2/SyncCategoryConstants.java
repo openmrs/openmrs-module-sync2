@@ -8,7 +8,7 @@ public class SyncCategoryConstants {
 
     public static final String CATEGORY_ENCOUNTER = "encounter";
 
-    public static final String CATEGORY_OB = "ob";
+    public static final String CATEGORY_OBSERVATION = "observation";
 
     public static final String CATEGORY_LOCATION = "location";
 
