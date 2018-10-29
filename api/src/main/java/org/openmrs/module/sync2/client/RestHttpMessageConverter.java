@@ -39,7 +39,8 @@ public class RestHttpMessageConverter extends AbstractHttpMessageConverter<RestR
     }
 
     @Override
-    protected RestResource readInternal(Class<? extends RestResource> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    protected RestResource readInternal(Class<? extends RestResource> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
         try {
             String json = IOUtils.toString(inputMessage.getBody());
             return convertJsonToGivenClass(json, clazz);
@@ -49,16 +50,17 @@ public class RestHttpMessageConverter extends AbstractHttpMessageConverter<RestR
     }
 
     @Override
-    protected void writeInternal(RestResource restResource, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(RestResource restResource, HttpOutputMessage outputMessage)
+            throws IOException, HttpMessageNotWritableException {
         try {
-            String json = convertRestResourceToJson(restResource);
+            String json = convertToJson(restResource);
             outputMessage.getBody().write(json.getBytes());
         } catch (IOException e) {
             throw new HttpMessageNotWritableException("Could not serialize object. Msg: " + e.getMessage(), e);
         }
     }
 
-    private RestResource convertJsonToGivenClass(String json, Class<? extends RestResource> clazz) {
+    public RestResource convertJsonToGivenClass(String json, Class<? extends RestResource> clazz) {
         if (conversionService.canConvert(String.class, clazz)) {
             return conversionService.convert(json, clazz);
         } else {
@@ -66,12 +68,11 @@ public class RestHttpMessageConverter extends AbstractHttpMessageConverter<RestR
         }
     }
 
-    private String convertRestResourceToJson(RestResource restResource) {
+    public String convertToJson(RestResource restResource) {
         if (conversionService.canConvert(restResource.getClass(), String.class)) {
             return conversionService.convert(restResource, String.class);
         } else {
             return defaultJsonParser.toJson(restResource);
         }
     }
-
 }

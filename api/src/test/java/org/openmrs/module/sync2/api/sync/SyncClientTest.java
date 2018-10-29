@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -14,20 +15,18 @@ import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
-import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.sync2.client.rest.RESTClientHelper;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
+import org.springframework.core.convert.support.DefaultConversionService;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,17 +35,17 @@ import java.util.TreeSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_PASSWORD_PROPERTY;
 import static org.openmrs.module.sync2.SyncConstants.PARENT_USERNAME_PROPERTY;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ SyncClient.class, Context.class, ClientHelperFactory.class})
+@PrepareForTest({ SyncClient.class, Context.class, ClientHelperFactory.class, ContextUtils.class, SyncUtils.class })
 public class SyncClientTest {
 
     private static final String PATIENT_UUID = "patientUuid";
@@ -60,12 +59,17 @@ public class SyncClientTest {
     private static final String PATIENT_CATEGORY = "patient";
     private static final String VISIT_CATEGORY = "visit";
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
+    private static final String CHILD_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
-    
+    private static final String SYNC_ENDPOINT = "openmrs/ws/rest/sync2";
+
     private static final String REST_FULL_RESOURCE_URL = PARENT_ADDRESS + REST_RESOURCE_LINK + PATIENT_UUID;
     private static final String FHIR_FULL_RESOURCE_URL = PARENT_ADDRESS + FHIR_RESOURCE_LINK + PATIENT_UUID;
+
+    private static final String LOCAL_DESTINATION_URL = CHILD_ADDRESS + SYNC_ENDPOINT;
+    private static final String PARENT_DESTINATION_URL = PARENT_ADDRESS + SYNC_ENDPOINT;
 
     public static final String LOCAL_INSTANCE_ID = "LocalId";
 
@@ -76,9 +80,18 @@ public class SyncClientTest {
     private Encounter expectedEncounter;
     private Obs expectedOb;
     private Map<String, String> links;
+    private RESTClientHelper restHelper;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {
+        mockStatic(ContextUtils.class);
+        when(ContextUtils.getConversionService()).thenReturn(new DefaultConversionService());
+
+        mockStatic(SyncUtils.class);
+        when(SyncUtils.getLocalBaseUrl()).thenReturn(LOCAL_DESTINATION_URL);
+        when(SyncUtils.getParentBaseUrl()).thenReturn(PARENT_FEED_LOCATION);
+
         expectedPatient = createPatient();
         expectedVisit = createVisit();
         administrationServiceMock = mock(AdministrationService.class);
@@ -111,13 +124,17 @@ public class SyncClientTest {
 
         SyncClient syncClient =  PowerMockito.spy(new SyncClient());
         PowerMockito.doReturn(createPatient())
-                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, restClientHelper);
+                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
+                        REST_CLIENT_KEY);
         PowerMockito.doReturn(createVisit())
-                .when(syncClient, "retrieveObject", VISIT_CATEGORY, REST_FULL_RESOURCE_URL, restClientHelper);
+                .when(syncClient, "retrieveObject", VISIT_CATEGORY, REST_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
+                        REST_CLIENT_KEY);
         PowerMockito.doReturn(createPatient())
-                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, fhirClientHelper);
+                .when(syncClient, "retrieveObject", PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
+                        FHIR_CLIENT_KEY);
         PowerMockito.doReturn(createVisit())
-                .when(syncClient, "retrieveObject", VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, fhirClientHelper);
+                .when(syncClient, "retrieveObject", VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
+                        FHIR_CLIENT_KEY);
         whenNew(SyncClient.class).withNoArguments().thenReturn(syncClient);
     }
     
@@ -139,15 +156,6 @@ public class SyncClientTest {
                 FHIR_FULL_RESOURCE_URL, PARENT);
 
         assertThat(pulledObject, is(expectedPatient));
-    }
-
-    @Test
-    public void createWrappedRequest_shouldCreateCorrectRequest() throws Exception {
-        RequestEntity childRequest = new RequestEntity(HttpMethod.GET, URI.create(PARENT_ADDRESS));
-        RequestWrapper expected = new RequestWrapper(LOCAL_INSTANCE_ID, childRequest);
-
-        RequestWrapper result = Whitebox.invokeMethod(new SyncClient(), "createWrappedRequest", childRequest);
-        assertEquals(expected, result);
     }
 
     private Patient createPatient() {

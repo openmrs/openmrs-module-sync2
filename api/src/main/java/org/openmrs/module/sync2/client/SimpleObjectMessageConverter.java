@@ -48,10 +48,10 @@ public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<S
 	}
 
 	@Override
-	protected void writeInternal(SimpleObject restResource, HttpOutputMessage outputMessage)
+	protected void writeInternal(SimpleObject simpleObject, HttpOutputMessage outputMessage)
 			throws HttpMessageNotWritableException {
 		try {
-			String json = defaultJsonParser.toJson(restResource);
+			String json = defaultJsonParser.toJson(simpleObject);
 			outputMessage.getBody().write(json.getBytes());
 		}
 		catch (IOException e) {
@@ -59,4 +59,11 @@ public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<S
 		}
 	}
 
+	public SimpleObject convertJsonToGivenClass(String json, Class<? extends SimpleObject> clazz) {
+		return defaultJsonParser.fromJson(json, clazz);
+	}
+
+	public String convertToJson(SimpleObject simpleObject) {
+		return defaultJsonParser.toJson(simpleObject);
+	}
 }
