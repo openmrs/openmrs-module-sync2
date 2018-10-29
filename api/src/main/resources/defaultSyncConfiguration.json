@@ -56,7 +56,7 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",
@@ -182,7 +182,7 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",
