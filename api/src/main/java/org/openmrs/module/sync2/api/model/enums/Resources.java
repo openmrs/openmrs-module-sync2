@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.model.enums;
 
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
@@ -17,7 +18,8 @@ public enum Resources {
     OBSERVATION(CATEGORY_OBSERVATION),
     LOCATION(CATEGORY_LOCATION),
     PRIVILEGE(CATEGORY_PRIVILEGE),
-    AUDIT_MESSAGE(CATEGORY_AUDIT_MESSAGE);
+    AUDIT_MESSAGE(CATEGORY_AUDIT_MESSAGE),
+    FORM(CATEGORY_FORM);
 
     private final String name;
 
