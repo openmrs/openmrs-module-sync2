@@ -17,6 +17,12 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
@@ -50,7 +56,7 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",
@@ -137,6 +143,12 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
@@ -170,7 +182,7 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",

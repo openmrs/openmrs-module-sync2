@@ -41,7 +41,9 @@
         { id: "visit", name: "${ ui.message('Encounter.visit') }" },
         { id: "observation", name: "${ ui.message('Obs.title') }" },
         { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
-        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" }
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" },
+        { id: "allergy", name: "${ ui.message('sync2.log.resource.allergy') }" },
+        { id: "form", name: "${ ui.message('sync2.log.resource.form') }" }
     ];
 
     var syncStatus = [
