@@ -20,5 +20,7 @@ public class SyncCategoryConstants {
 
     public static final String CATEGORY_FORM = "form";
 
+    public static final String CATEGORY_COHORT = "cohort";
+
     private SyncCategoryConstants() {}
 }
