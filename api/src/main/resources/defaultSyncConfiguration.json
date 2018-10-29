@@ -17,6 +17,12 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
@@ -134,6 +140,12 @@
         "classTitle" : "Location",
         "category" : "location",
         "openMrsClass" : "org.openmrs.Location",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
         "enabled" : true
       },
       {

@@ -13,7 +13,7 @@ public class ClientHelperFactory {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientHelperFactory.class);
 
-	public ClientHelper createClient(final String clientType) {
+	public static ClientHelper createClient(final String clientType) {
 		switch (clientType) {
 			case REST_CLIENT:
 				return new RESTClientHelper();

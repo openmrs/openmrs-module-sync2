@@ -30,5 +30,11 @@
 			<scope>provided</scope>
 			<version>${atomfeedVersion}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-common</artifactId>
+			<scope>provided</scope>
+			<version>${webservices.restVersion}</version>
+		</dependency>
 	</dependencies>
 </project>
