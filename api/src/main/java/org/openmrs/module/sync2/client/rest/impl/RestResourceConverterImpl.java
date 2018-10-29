@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
@@ -42,6 +43,8 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 					break;
 				case CATEGORY_VISIT:
 					convertVisit(simpleObject);
+				case CATEGORY_FORM:
+					convertForm(simpleObject);
 					break;
 			}
 		}
@@ -139,5 +142,12 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 
 	private void convertVisit(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
+	}
+
+	private void convertForm(SimpleObject simpleObject) {
+		simpleObject.remove("uuid");
+		simpleObject.remove("xslt");
+		simpleObject.remove("resources");
+		simpleObject.remove("template");
 	}
 }
