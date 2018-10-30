@@ -47,11 +47,7 @@ public class SyncClient {
 
 	private String password;
 
-	private RestTemplate restTemplate;
-
-	public SyncClient() {
-        restTemplate = new RestTemplate();
-    }
+	private RestTemplate restTemplate = new RestTemplate();
 
 	public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
 		Object result = null;
@@ -101,10 +97,12 @@ public class SyncClient {
 					LOGGER.warn(String.format("Sync push exception. Unrecognized action: %s", action));
 					break;
 			}
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
+		}
+		catch (HttpClientErrorException | HttpServerErrorException e) {
 			throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
 					e.getStatusCode().value(), e.getResponseBodyAsString()), e);
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e) {
 			LOGGER.error(e.getMessage());
 		}
 		return result;
@@ -134,12 +132,12 @@ public class SyncClient {
 		Class<?> clazz = helper.resolveClassByCategory(category);
 
 		return restTemplate.exchange(sendRequest(category, destinationUrl, clientName,
-					new InnerRequest(helper.retrieveRequest(resourceUrl))),
+				new InnerRequest(helper.retrieveRequest(resourceUrl))),
 				clazz).getBody();
 	}
 
 	private ResponseEntity<String> createObject(String category, String resourceUrl, String destinationUrl, Object object,
-                                                String clientName) throws RestClientException, URISyntaxException {
+			String clientName) throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 		InnerRequest request = new InnerRequest(helper.createRequest(resourceUrl, object));
 
@@ -147,7 +145,7 @@ public class SyncClient {
 	}
 
 	private ResponseEntity<String> deleteObject(String category, String resourceUrl, String destinationUrl, String uuid,
-                                                String clientName) throws URISyntaxException {
+			String clientName) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 		InnerRequest request = new InnerRequest(helper.deleteRequest(resourceUrl, uuid));
 
@@ -155,7 +153,7 @@ public class SyncClient {
 	}
 
 	private ResponseEntity<String> updateObject(String category, String resourceUrl, String destinationUrl, Object object,
-                                                String clientName) throws URISyntaxException {
+			String clientName) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 		InnerRequest request = new InnerRequest(helper.updateRequest(resourceUrl, object));
 
@@ -163,7 +161,7 @@ public class SyncClient {
 	}
 
 	private RequestEntity<RequestWrapper> sendRequest(String category, String destinationUrl, String clientName,
-                                                      InnerRequest request) throws URISyntaxException {
+			InnerRequest request) throws URISyntaxException {
 		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		Class<?> clazz = clientHelper.resolveClassByCategory(category);
 		String instanceId = getSyncConfigurationService().getSyncConfiguration().getGeneral().getLocalInstanceId();

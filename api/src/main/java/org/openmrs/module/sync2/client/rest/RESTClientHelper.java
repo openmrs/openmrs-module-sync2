@@ -1,7 +1,5 @@
 package org.openmrs.module.sync2.client.rest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
 import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
@@ -30,14 +28,9 @@ public class RESTClientHelper implements ClientHelper {
 
 	public static final String VOIDED = "voided";
 
-	private final RestHttpMessageConverter restConverter;
+	private final RestHttpMessageConverter restConverter = new RestHttpMessageConverter();
 
-	private final SimpleObjectMessageConverter simpleConverter;
-
-	public RESTClientHelper() {
-        restConverter = new RestHttpMessageConverter();
-        simpleConverter = new SimpleObjectMessageConverter();
-    }
+	private final SimpleObjectMessageConverter simpleConverter = new SimpleObjectMessageConverter();
 
 	@Override
 	public RequestEntity retrieveRequest(String url) throws URISyntaxException {
@@ -50,7 +43,7 @@ public class RESTClientHelper implements ClientHelper {
 			getRestResourceConverter().convertObject(url, object);
 		}
 
-        return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+		return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 	}
 
 	@Override
@@ -63,12 +56,12 @@ public class RESTClientHelper implements ClientHelper {
 	public RequestEntity updateRequest(String url, Object object) throws URISyntaxException {
 		if (object instanceof AuditMessage) {
 			url += "/" + ((AuditMessage) object).getUuid();
-            return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+			return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 		} else {
 			getRestResourceConverter().convertObject(url, object);
 			url += "/" + ((SimpleObject) object).get("uuid");
 		}
-        return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+		return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 	}
 
 	@Override
@@ -89,13 +82,13 @@ public class RESTClientHelper implements ClientHelper {
 	public List<HttpMessageConverter<?>> getCustomMessageConverter() {
 		return Arrays.asList(new HttpMessageConverter<?>[]
 				{ new RestHttpMessageConverter(), new StringHttpMessageConverter(),
-				new SimpleObjectMessageConverter()});
+						new SimpleObjectMessageConverter() });
 	}
 
 	@Override
 	public boolean compareResourceObjects(String category, Object from, Object dest) {
 		boolean result;
-		if(category.equals(CATEGORY_AUDIT_MESSAGE)) {
+		if (category.equals(CATEGORY_AUDIT_MESSAGE)) {
 			result = ((AuditMessage) from).getUuid().equals(((AuditMessage) dest).getUuid());
 		} else {
 			//TODO: Work around for deleting patient through REST API. Should be refactored.
@@ -108,30 +101,29 @@ public class RESTClientHelper implements ClientHelper {
 		return result;
 	}
 
-    @Override
-    public Object convertToObject(String formattedData, Class<?> clazz) {
-        if (RestResource.class.isAssignableFrom(clazz)) {
-            Class<? extends RestResource> restClass = (Class<? extends RestResource>) clazz;
-            return restConverter.convertJsonToGivenClass(formattedData, restClass);
-        } else if (SimpleObject.class.isAssignableFrom(clazz)) {
-            Class<? extends SimpleObject> simpleClass = (Class<? extends SimpleObject>) clazz;
-            return simpleConverter.convertJsonToGivenClass(formattedData, simpleClass);
-        } else {
-            throw new UnsupportedClassVersionError(String.format("Class %s is not supported", clazz.getCanonicalName()));
-        }
-    }
+	@Override
+	public Object convertToObject(String formattedData, Class<?> clazz) {
+		if (RestResource.class.isAssignableFrom(clazz)) {
+			Class<? extends RestResource> restClass = (Class<? extends RestResource>) clazz;
+			return restConverter.convertJsonToGivenClass(formattedData, restClass);
+		} else if (SimpleObject.class.isAssignableFrom(clazz)) {
+			Class<? extends SimpleObject> simpleClass = (Class<? extends SimpleObject>) clazz;
+			return simpleConverter.convertJsonToGivenClass(formattedData, simpleClass);
+		} else {
+			throw new UnsupportedOperationException(getNotSupportedClassMsg(clazz.getCanonicalName()));
+		}
+	}
 
-    @Override
-    public String convertToFormattedData(Object object) {
-        if (RestResource.class.isAssignableFrom(object.getClass())) {
-            return restConverter.convertToJson((RestResource) object);
-        } else if (SimpleObject.class.isAssignableFrom(object.getClass())) {
-            return simpleConverter.convertToJson((SimpleObject) object);
-        } else {
-            throw new UnsupportedClassVersionError(String.format("Class %s is not supported",
-                    object.getClass().getCanonicalName()));
-        }
-    }
+	@Override
+	public String convertToFormattedData(Object object) {
+		if (RestResource.class.isAssignableFrom(object.getClass())) {
+			return restConverter.convertToJson((RestResource) object);
+		} else if (SimpleObject.class.isAssignableFrom(object.getClass())) {
+			return simpleConverter.convertToJson((SimpleObject) object);
+		} else {
+			throw new UnsupportedOperationException(getNotSupportedClassMsg(object.getClass().getCanonicalName()));
+		}
+	}
 
 	private RestResourceConverter getRestResourceConverter() {
 		return Context.getRegisteredComponent("sync2.RestResourceConverter", RestResourceConverter.class);
@@ -143,5 +135,9 @@ public class RESTClientHelper implements ClientHelper {
 			result = true;
 		}
 		return result;
+	}
+
+	private String getNotSupportedClassMsg(String className) {
+		return String.format("Class %s is not supported", className);
 	}
 }

@@ -22,48 +22,49 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/rest/sync2", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncRestController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(SyncRestController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(SyncRestController.class);
 
-    @Autowired
-    private StringToRequestWrapperConverter stringToRequestWrapperConverter;
+	@Autowired
+	private StringToRequestWrapperConverter stringToRequestWrapperConverter;
 
-    @Autowired
-    private SyncRequestWrapperService syncRequestWrapperService;
+	@Autowired
+	private SyncRequestWrapperService syncRequestWrapperService;
 
-    @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> sync(@RequestBody String wrapperJson) {
-        RequestWrapper wrapper;
-        try {
-            wrapper = stringToRequestWrapperConverter.convert(wrapperJson);
-        } catch (Exception ex) {
-            return new ResponseEntity<>("Incorrect AuditMessage JSON given\n"
-                    + ExceptionUtils.getFullStackTrace(ex), HttpStatus.BAD_REQUEST);
-        }
-        LOGGER.debug("Fetched " + wrapper.getRequest().getMethod().toString() + " wrapped request: {}", wrapper);
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> sync(@RequestBody String wrapperJson) {
+		RequestWrapper wrapper;
+		try {
+			wrapper = stringToRequestWrapperConverter.convert(wrapperJson);
+		}
+		catch (Exception ex) {
+			return new ResponseEntity<>("Incorrect AuditMessage JSON given\n"
+					+ ExceptionUtils.getFullStackTrace(ex), HttpStatus.BAD_REQUEST);
+		}
+		LOGGER.debug("Fetched " + wrapper.getRequest().getMethod().toString() + " wrapped request: {}", wrapper);
 
-        if (!syncRequestWrapperService.isRequestAuthenticated(wrapper)) {
-            return new ResponseEntity<>(
-                    String.format("Tried to post %s without '%s' privilege",
-                            wrapper.getClassName(),
-                            SyncModuleConfig.MODULE_PRIVILEGE),
-                    HttpStatus.UNAUTHORIZED);
-        }
+		if (!syncRequestWrapperService.isRequestAuthenticated(wrapper)) {
+			return new ResponseEntity<>(
+					String.format("Tried to post %s without '%s' privilege",
+							wrapper.getClassName(),
+							SyncModuleConfig.MODULE_PRIVILEGE),
+					HttpStatus.UNAUTHORIZED);
+		}
 
-        return resolveRequest(wrapper);
-    }
+		return resolveRequest(wrapper);
+	}
 
-    private ResponseEntity<String> resolveRequest(RequestWrapper wrapper) {
-        HttpMethod method = wrapper.getRequest().getMethod();
+	private ResponseEntity<String> resolveRequest(RequestWrapper wrapper) {
+		HttpMethod method = wrapper.getRequest().getMethod();
 
-        if (method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)) {
-            return syncRequestWrapperService.sendObject(wrapper);
-        } else if (method.equals(HttpMethod.GET)) {
-            return syncRequestWrapperService.getObject(wrapper);
-        } else if (method.equals(HttpMethod.DELETE)) {
-            return syncRequestWrapperService.deleteObject(wrapper);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
+		if (method.equals(HttpMethod.POST) || method.equals(HttpMethod.PUT)) {
+			return syncRequestWrapperService.sendObject(wrapper);
+		} else if (method.equals(HttpMethod.GET)) {
+			return syncRequestWrapperService.getObject(wrapper);
+		} else if (method.equals(HttpMethod.DELETE)) {
+			return syncRequestWrapperService.deleteObject(wrapper);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
 }

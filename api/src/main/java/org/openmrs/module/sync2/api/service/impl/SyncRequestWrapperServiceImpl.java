@@ -24,89 +24,94 @@ import static org.openmrs.module.sync2.SyncConstants.LOCAL_USERNAME_PROPERTY;
 @Component("sync2.syncRequestWrapperService")
 public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService {
 
-    @Autowired
-    private SyncConfigurationService configuration;
+	@Autowired
+	private SyncConfigurationService configuration;
 
-    private RestTemplate restTemplate = new RestTemplate();
+	@Override
+	public ResponseEntity<String> getObject(RequestWrapper wrapper) {
+		RestTemplate restTemplate = prepareRestTemplate(wrapper.getClientName());
+		try {
+			RequestEntity<String> req = new RequestEntity<>(wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
+			return copyResponseWithContentType(restTemplate.exchange(req, String.class));
+		}
+		catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+		}
+	}
 
-    @Override
-    public ResponseEntity<String> getObject(RequestWrapper wrapper) {
-        prepareRestTemplate(wrapper.getClientName());
-        try {
-            RequestEntity<String> req = new RequestEntity<>(wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
-            return copyResponseWithContentType(restTemplate.exchange(req, String.class));
-        }
-        catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
-        }
-    }
+	@Override
+	public ResponseEntity<String> sendObject(RequestWrapper wrapper) {
+		RestTemplate restTemplate = prepareRestTemplate(wrapper.getClientName());
+		try {
+			ClientHelper helper = ClientHelperFactory.createClient(wrapper.getClientName());
+			Object object = helper.convertToObject(wrapper.getRequest().getBody(), wrapper.getClazz());
 
-    @Override
-    public ResponseEntity<String> sendObject(RequestWrapper wrapper) {
-        prepareRestTemplate(wrapper.getClientName());
-        try {
-            ClientHelper helper = ClientHelperFactory.createClient(wrapper.getClientName());
-            Object object = helper.convertToObject(wrapper.getRequest().getBody(), wrapper.getClazz());
+			RequestEntity req = new RequestEntity<>(object, wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
+			ResponseEntity<String> res = restTemplate.exchange(req, String.class);
 
-            RequestEntity req = new RequestEntity<>(object, wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
-            ResponseEntity<String> res = restTemplate.exchange(req, String.class);
+			return new ResponseEntity<>(res.getBody(), res.getStatusCode());
+		}
+		catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+		}
+		catch (ClassNotFoundException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 
-            return new ResponseEntity<>(res.getBody(), res.getStatusCode());
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
-        } catch (ClassNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+	@Override
+	public ResponseEntity<String> deleteObject(RequestWrapper wrapper) {
+		RestTemplate restTemplate = prepareRestTemplate(wrapper.getClientName());
+		try {
+			return restTemplate.exchange(
+					wrapper.getRequest().getUrl(),
+					wrapper.getRequest().getMethod(),
+					new HttpEntity<Object>(wrapper.getRequest().getBody()),
+					String.class);
+		}
+		catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+		}
+	}
 
-    @Override
-    public ResponseEntity<String> deleteObject(RequestWrapper wrapper) {
-        prepareRestTemplate(wrapper.getClientName());
-        try {
-            return restTemplate.exchange(
-                    wrapper.getRequest().getUrl(),
-                    wrapper.getRequest().getMethod(),
-                    new HttpEntity<Object>(wrapper.getRequest().getBody()),
-                    String.class);
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
-        }
-    }
+	@Override
+	public boolean isRequestAuthenticated(RequestWrapper requestWrapper) {
+		User user = Context.getAuthenticatedUser();
+		if (user == null)
+			return false;
 
-    @Override
-    public boolean isRequestAuthenticated(RequestWrapper requestWrapper) {
-        User user = Context.getAuthenticatedUser();
-        if (user == null) return false;
+		return isInstanceIdValid(requestWrapper.getInstanceId());
+	}
 
-        return isInstanceIdValid(requestWrapper.getInstanceId());
-    }
+	private boolean isInstanceIdValid(String instanceId) {
+		return isWhitelistDisabled() || isInstanceIdOnWhitelist(instanceId);
+	}
 
-    private boolean isInstanceIdValid(String instanceId) {
-        return isWhitelistDisabled() || isInstanceIdOnWhitelist(instanceId);
-    }
+	private boolean isInstanceIdOnWhitelist(String instanceId) {
+		return configuration.getSyncConfiguration().getWhitelist().getInstanceIds().contains(instanceId) &&
+				configuration.getSyncConfiguration().getWhitelist().isEnabled();
+	}
 
-    private boolean isInstanceIdOnWhitelist(String instanceId) {
-        return configuration.getSyncConfiguration().getWhitelist().getInstanceIds().contains(instanceId) &&
-                configuration.getSyncConfiguration().getWhitelist().isEnabled();
-    }
+	private boolean isWhitelistDisabled() {
+		return !configuration.getSyncConfiguration().getWhitelist().isEnabled();
+	}
 
-    private boolean isWhitelistDisabled() {
-        return !configuration.getSyncConfiguration().getWhitelist().isEnabled();
-    }
+	private RestTemplate prepareRestTemplate(String client) {
+		RestTemplate restTemplate = new RestTemplate();
+		AdministrationService adminService = Context.getAdministrationService();
+		String username = adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
+		String password = adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
 
-    private void prepareRestTemplate(String client) {
-        AdministrationService adminService = Context.getAdministrationService();
-        String username = adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
-        String password = adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
+		ClientHelper helper = ClientHelperFactory.createClient(client);
+		restTemplate.setInterceptors(helper.getCustomInterceptors(username, password));
+		restTemplate.setMessageConverters(helper.getCustomMessageConverter());
 
-        ClientHelper helper = ClientHelperFactory.createClient(client);
-        restTemplate.setInterceptors(helper.getCustomInterceptors(username, password));
-        restTemplate.setMessageConverters(helper.getCustomMessageConverter());
-    }
+		return restTemplate;
+	}
 
-    private ResponseEntity<String> copyResponseWithContentType(ResponseEntity<?> response){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(response.getHeaders().getContentType());
-        return new ResponseEntity<>(response.getBody().toString(), headers, response.getStatusCode());
-    }
+	private ResponseEntity<String> copyResponseWithContentType(ResponseEntity<?> response) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(response.getHeaders().getContentType());
+		return new ResponseEntity<>(response.getBody().toString(), headers, response.getStatusCode());
+	}
 }

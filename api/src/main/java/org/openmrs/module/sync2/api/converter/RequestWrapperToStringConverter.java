@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RequestWrapperToStringConverter implements Converter<RequestWrapper, String> {
 
-    @Override
-    public String convert(RequestWrapper wrapper) {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(RequestWrapper.class, new RequestWrapper.RequestWrapperSerializer())
-                .create();
-        return gson.toJson(wrapper);
-    }
+	@Override
+	public String convert(RequestWrapper wrapper) {
+		Gson gson = new GsonBuilder()
+				.registerTypeAdapter(RequestWrapper.class, new RequestWrapper.RequestWrapperSerializer())
+				.create();
+		return gson.toJson(wrapper);
+	}
 }

@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -59,7 +58,6 @@ public class SyncClientTest {
     private static final String PATIENT_CATEGORY = "patient";
     private static final String VISIT_CATEGORY = "visit";
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
-    private static final String CHILD_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
@@ -68,7 +66,6 @@ public class SyncClientTest {
     private static final String REST_FULL_RESOURCE_URL = PARENT_ADDRESS + REST_RESOURCE_LINK + PATIENT_UUID;
     private static final String FHIR_FULL_RESOURCE_URL = PARENT_ADDRESS + FHIR_RESOURCE_LINK + PATIENT_UUID;
 
-    private static final String LOCAL_DESTINATION_URL = CHILD_ADDRESS + SYNC_ENDPOINT;
     private static final String PARENT_DESTINATION_URL = PARENT_ADDRESS + SYNC_ENDPOINT;
 
     public static final String LOCAL_INSTANCE_ID = "LocalId";
@@ -89,7 +86,6 @@ public class SyncClientTest {
         when(ContextUtils.getConversionService()).thenReturn(new DefaultConversionService());
 
         mockStatic(SyncUtils.class);
-        when(SyncUtils.getLocalBaseUrl()).thenReturn(LOCAL_DESTINATION_URL);
         when(SyncUtils.getParentBaseUrl()).thenReturn(PARENT_FEED_LOCATION);
 
         expectedPatient = createPatient();
