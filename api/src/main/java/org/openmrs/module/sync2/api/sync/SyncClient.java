@@ -113,42 +113,30 @@ public class SyncClient {
 
 	private Object retrieveObject(String category, String url, ClientHelper clientHelper)
 			throws RestClientException, URISyntaxException {
-		/** TODO: Restore wrapping, when the code for receiving wrapped request will be finished
 		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.retrieveRequest(url));
 		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.GET, getParentUri());
 		return restTemplate.exchange(request, clientHelper.resolveCategoryByCategory(category)).getBody();
-		 */
-		return restTemplate.exchange(clientHelper.retrieveRequest(url), clientHelper.resolveCategoryByCategory(category)).getBody();
 	}
 
 	private ResponseEntity<String> createObject(String url, Object object, ClientHelper clientHelper)
 			throws RestClientException, URISyntaxException {
-		/** TODO: Restore wrapping, when the code for receiving wrapped request will be finished
 		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.createRequest(url, object));
 		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.POST, getParentUri());
 		return restTemplate.exchange(request, String.class);
-		 */
-		return restTemplate.exchange(clientHelper.createRequest(url, object), String.class);
 	}
 
 	private ResponseEntity<String> deleteObject(String url, String uuid, ClientHelper clientHelper)
 			throws URISyntaxException {
-		/** TODO: Restore wrapping, when the code for receiving wrapped request will be finished
 		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.deleteRequest(url, uuid));
 		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.DELETE, getParentUri());
 		return restTemplate.exchange(request, String.class);
-		 */
-		return restTemplate.exchange(clientHelper.deleteRequest(url, uuid), String.class);
 	}
 
 	private ResponseEntity<String> updateObject(String url, Object object, ClientHelper clientHelper)
 			throws URISyntaxException {
-		/** TODO: Restore wrapping, when the code for receiving wrapped request will be finished
 		RequestWrapper requestWrapper = createWrappedRequest(clientHelper.updateRequest(url, object));
 		RequestEntity request = new RequestEntity(requestWrapper, HttpMethod.PUT, getParentUri());
 		return restTemplate.exchange(request, String.class);
-		 */
-		return restTemplate.exchange(clientHelper.updateRequest(url, object), String.class);
 	}
 
 	private URI getParentUri() throws URISyntaxException {
