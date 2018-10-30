@@ -92,7 +92,7 @@
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Visit Type",
@@ -218,7 +218,7 @@
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Visit Type",
