@@ -42,7 +42,9 @@
         { id: "observation", name: "${ ui.message('Obs.title') }" },
         { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
         { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" },
-        { id: "person", name: "${ ui.message('sync2.log.resource.person') }" }
+        { id: "person", name: "${ ui.message('sync2.log.resource.person') }" },
+        { id: "allergy", name: "${ ui.message('sync2.log.resource.allergy') }" },
+        { id: "form", name: "${ ui.message('sync2.log.resource.form') }" }
     ];
 
     var syncStatus = [
