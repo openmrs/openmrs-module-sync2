@@ -156,7 +156,7 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		simpleObject.remove("template");
 	}
 
-	private void convertCohort(SimpleObject simpleObject) {
+	private void convertCohort(Map<String, Object> simpleObject) {
 		simpleObject.remove("uuid");
 	}
 }
