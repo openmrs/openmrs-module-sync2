@@ -115,32 +115,32 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		return category;
 	}
 
-	private void convertPatient(SimpleObject simpleObject) {
-		convertPersonResource(simpleObject.get("person"));
+	private void convertPatient(Map<String, Object> simpleObject) {
+		convertPersonResource((Map<String, Object>) simpleObject.get("person"));
 	}
 
-	private void convertPersonResource(SimpleObject simpleObject) {
+	private void convertPersonResource(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
 		simpleObject.remove("preferredAddress");
 	}
 
-	private void convertPrivilege(SimpleObject simpleObject) {
+	private void convertPrivilege(Map<String, Object> simpleObject) {
 		simpleObject.remove("uuid");
 	}
 
-	private void convertLocation(SimpleObject simpleObject) {
+	private void convertLocation(Map<String, Object> simpleObject) {
 		simpleObject.remove("uuid");
 	}
 
-	private void convertObservation(SimpleObject simpleObject) {
+	private void convertObservation(Map<String, Object> simpleObject) {
 		simpleObject.remove("uuid");
 
-		Map concept = simpleObject.get("concept");
+		Map concept = (Map<String, Object>) simpleObject.get("concept");
 		simpleObject.remove("concept");
 		simpleObject.put("concept", concept.get("uuid"));
 	}
 
-	private void convertVisit(SimpleObject simpleObject) {
+	private void convertVisit(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
 	}
 

@@ -2,7 +2,6 @@ package org.openmrs.module.sync2.api.model.audit;
 
 
 import java.lang.reflect.Type;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

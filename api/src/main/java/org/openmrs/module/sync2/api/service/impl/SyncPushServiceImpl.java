@@ -56,7 +56,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
                     && shouldPushObject(localObj, category, clientName, parentPull);
 
             if (shouldSynchronize) {
-                syncClient.pushData(localObj, clientName, parentPush, action, PARENT);
+                syncClient.pushData(category, localObj, clientName, parentPush, action, PARENT);
             }
 
             auditMessage = successfulMessage(auditMessage);
