@@ -8,6 +8,7 @@ import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 
@@ -21,6 +22,7 @@ public enum Resources {
     LOCATION(CATEGORY_LOCATION),
     PRIVILEGE(CATEGORY_PRIVILEGE),
     AUDIT_MESSAGE(CATEGORY_AUDIT_MESSAGE),
+    PERSON(CATEGORY_PERSON),
     ALLERGY(CATEGORY_ALLERGY),
     FORM(CATEGORY_FORM),
     COHORT(CATEGORY_COHORT);

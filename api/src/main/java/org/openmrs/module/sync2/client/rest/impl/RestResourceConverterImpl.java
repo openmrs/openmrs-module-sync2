@@ -14,6 +14,7 @@ import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 
@@ -50,6 +51,9 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 					break;
 				case CATEGORY_COHORT:
 					convertCohort(simpleObject);
+					break;
+				case CATEGORY_PERSON:
+					convertPersonResource(simpleObject);
 					break;
 			}
 		}
