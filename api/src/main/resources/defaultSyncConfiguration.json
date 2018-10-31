@@ -191,6 +191,18 @@
         "enabled" : false
       },
       {
+        "classTitle" : "DrugOrder",
+        "category" : "drug_order",
+        "openMrsClass" : "org.openmrs.DrugOrder",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "TestOrder",
+        "category" : "test_order",
+        "openMrsClass" : "org.openmrs.TestOrder",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Program Enrollment",
         "category" : "programenrollment",
         "openMrsClass" : "org.openmrs.PatientProgram",
