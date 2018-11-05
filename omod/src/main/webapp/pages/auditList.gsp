@@ -45,7 +45,9 @@
         { id: "person", name: "${ ui.message('sync2.log.resource.person') }" },
         { id: "allergy", name: "${ ui.message('sync2.log.resource.allergy') }" },
         { id: "form", name: "${ ui.message('sync2.log.resource.form') }" },
-        { id: "cohort", name: "${ ui.message('sync2.log.resource.cohort') }" }
+        { id: "cohort", name: "${ ui.message('sync2.log.resource.cohort') }" },
+        { id: "drug_order", name: "${ ui.message('sync2.log.resource.drug_order') }" },
+        { id: "test_order", name: "${ ui.message('sync2.log.resource.test_order') }" }
     ];
 
     var syncStatus = [
