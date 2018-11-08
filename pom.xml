@@ -206,7 +206,7 @@
 		<fhirVersion>1.15.0-SNAPSHOT</fhirVersion>
 		<atomfeedVersion>1.0.7-SNAPSHOT</atomfeedVersion>
 		<gsonVersion>2.8.1</gsonVersion>
-		<webservices.restVersion>2.21.0</webservices.restVersion>
+		<webservices.restVersion>2.23.0-SNAPSHOT</webservices.restVersion>
 	</properties>
 
     <distributionManagement>
