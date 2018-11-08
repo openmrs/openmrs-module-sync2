@@ -162,10 +162,8 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 	}
 
 	private void convertForm(SimpleObject simpleObject) {
-		simpleObject.remove("uuid");
-		simpleObject.remove("xslt");
+		simpleObject.remove("formFields");
 		simpleObject.remove("resources");
-		simpleObject.remove("template");
 	}
 
 	private void convertCohort(Map<String, Object> simpleObject) {
