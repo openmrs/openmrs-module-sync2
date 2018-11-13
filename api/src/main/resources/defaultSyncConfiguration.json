@@ -17,6 +17,12 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
@@ -50,7 +56,7 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",
@@ -68,7 +74,7 @@
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Patient",
@@ -86,7 +92,7 @@
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Visit Type",
@@ -137,6 +143,12 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Allergy",
+        "category" : "allergy",
+        "openMrsClass" : "org.openmrs.Allergy",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Observation",
         "category" : "observation",
         "openMrsClass" : "org.openmrs.Obs",
@@ -170,13 +182,25 @@
         "classTitle" : "Form",
         "category" : "form",
         "openMrsClass" : "org.openmrs.Form",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Order",
         "category" : "order",
         "openMrsClass" : "org.openmrs.Order",
         "enabled" : false
+      },
+      {
+        "classTitle" : "DrugOrder",
+        "category" : "drug_order",
+        "openMrsClass" : "org.openmrs.DrugOrder",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "TestOrder",
+        "category" : "test_order",
+        "openMrsClass" : "org.openmrs.TestOrder",
+        "enabled" : true
       },
       {
         "classTitle" : "Program Enrollment",
@@ -188,7 +212,7 @@
         "classTitle" : "Person",
         "category" : "person",
         "openMrsClass" : "org.openmrs.Person",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Patient",
@@ -206,7 +230,7 @@
         "classTitle" : "Cohort",
         "category" : "cohort",
         "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : false
+        "enabled" : true
       },
       {
         "classTitle" : "Visit Type",

@@ -1,8 +1,6 @@
 package org.openmrs.module.sync2.client;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 import org.apache.commons.io.IOUtils;
 import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
@@ -16,14 +14,14 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Date;
+
+import static org.openmrs.module.sync2.api.utils.SyncUtils.createDefaultGson;
 
 public class RequestWrapperConverter extends AbstractHttpMessageConverter<RequestWrapper> {
 
 	private static final String CHARSET = "UTF-8";
 	private static final String TYPE = "application";
 	private static final String SUBTYPE = "json";
-	private static final String ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
 	private final Gson defaultJsonParser;
 
@@ -32,7 +30,7 @@ public class RequestWrapperConverter extends AbstractHttpMessageConverter<Reques
 	public RequestWrapperConverter() {
 		super(new MediaType(TYPE, SUBTYPE, Charset.forName(CHARSET)));
 		this.defaultJsonParser = createDefaultGson();
-		this.conversionService = ContextUtils.getConversionService();;
+		this.conversionService = ContextUtils.getConversionService();
 	}
 
 	@Override
@@ -76,30 +74,5 @@ public class RequestWrapperConverter extends AbstractHttpMessageConverter<Reques
 		} else {
 			return defaultJsonParser.toJson(requestWrapper);
 		}
-	}
-
-	/**
-	 * This method configures Gson.
-	 * We need to use workaround for null dates.
-	 * @return definitive null safe Gson instance
-	 */
-	private Gson createDefaultGson() {
-		// Trick to get the DefaultDateTypeAdatpter instance
-		// Create a first Gson instance
-		Gson gson = new GsonBuilder()
-				.setDateFormat(ISO_8601)
-				.create();
-
-		// Get the date adapter
-		TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-
-		// Ensure the DateTypeAdapter is null safe
-		TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-
-		// Build the definitive safe Gson instance
-		return new GsonBuilder()
-				.setDateFormat(ISO_8601)
-				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
-				.create();
 	}
 }

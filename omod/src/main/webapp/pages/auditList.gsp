@@ -37,8 +37,17 @@
         { id: "ALL", name: "${ ui.message('sync2.log.resource.all') }" },
         { id: "patient", name: "${ ui.message('sync2.log.resource.patient') }" },
         { id: "location", name: "${ ui.message('sync2.log.resource.location') }" },
+        { id: "encounter", name: "${ ui.message('Encounter.title') }" },
+        { id: "visit", name: "${ ui.message('Encounter.visit') }" },
+        { id: "observation", name: "${ ui.message('Obs.title') }" },
         { id: "privilege", name: "${ ui.message('sync2.log.resource.privilege') }" },
-        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" }
+        { id: "audit_message", name: "${ ui.message('sync2.log.resource.auditMessage') }" },
+        { id: "person", name: "${ ui.message('sync2.log.resource.person') }" },
+        { id: "allergy", name: "${ ui.message('sync2.log.resource.allergy') }" },
+        { id: "form", name: "${ ui.message('sync2.log.resource.form') }" },
+        { id: "cohort", name: "${ ui.message('sync2.log.resource.cohort') }" },
+        { id: "drug_order", name: "${ ui.message('sync2.log.resource.drug_order') }" },
+        { id: "test_order", name: "${ ui.message('sync2.log.resource.test_order') }" }
     ];
 
     var syncStatus = [
