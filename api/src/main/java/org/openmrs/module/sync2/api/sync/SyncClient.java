@@ -120,6 +120,7 @@ public class SyncClient {
 
 	private void prepareRestTemplate(ClientHelper clientHelper) {
 		restTemplate.setInterceptors(clientHelper.getCustomInterceptors(this.username, this.password));
+
 		List<HttpMessageConverter<?>> converters = new ArrayList<>(clientHelper.getCustomMessageConverter());
 		converters.add(new RequestWrapperConverter());
 		restTemplate.setMessageConverters(converters);
