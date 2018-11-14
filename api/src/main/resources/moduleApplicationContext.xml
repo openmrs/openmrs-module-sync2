@@ -27,7 +27,6 @@
 
     <bean id="sync2.SyncAuditDao" class="org.openmrs.module.sync2.api.dao.impl.SyncAuditDaoImpl" />
 
-
     <!-- Wraps SyncAuditService methods in DB transactions and OpenMRS interceptors,
     which set audit info like dateCreated, changedBy, etc.-->
     <bean id="syncAuditService"
@@ -64,6 +63,15 @@
             <list>
                 <value>org.openmrs.module.sync2.api.service.SyncConfigurationService</value>
                 <ref bean="sync2.syncConfigurationService" />
+            </list>
+        </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.openmrs.module.sync2.api.service.ParentObjectHashcodeService</value>
+                <ref bean="sync2.parentObjectHashcodeService" />
             </list>
         </property>
     </bean>
