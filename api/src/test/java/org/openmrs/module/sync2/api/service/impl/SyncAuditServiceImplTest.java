@@ -50,6 +50,7 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_NEXT_MESSAGE_UUID = "next_message_uuid";
     private static final String AUDIT_UUID = "9f3dccc9-6bc3-4a2b-862d-af4ce41caa28";
     private static final String AUDIT_CREATOR_INSTANCE = "sampleCreatorInstance1";
+    private static final String AUDIT_CONFLICT_ID = "";
 
     private static final Integer PAGINATED_PAGE = 1;
     private static final Integer PAGINATED_PAGE_SIZE = 100;
@@ -260,6 +261,7 @@ public class SyncAuditServiceImplTest {
         newMessage.setNextMessageUuid(AUDIT_NEXT_MESSAGE_UUID);
         newMessage.setCreatorInstanceId(AUDIT_CREATOR_INSTANCE);
         newMessage.setUuid(AUDIT_UUID);
+        newMessage.setConflictId(AUDIT_CONFLICT_ID);
         newMessage.setSuccess(success);
     
         String createDate = "2017-12-07 00:00:00";

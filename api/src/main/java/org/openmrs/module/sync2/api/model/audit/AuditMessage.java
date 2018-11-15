@@ -57,6 +57,8 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
     private String nextMessageUuid;
     
     private String creatorInstanceId;
+
+    private String conflictId = "";
     
     public AuditMessage() {
     }
@@ -178,6 +180,10 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
     public void setCreatorInstanceId(String creatorInstanceId) {
         this.creatorInstanceId = creatorInstanceId;
     }
+
+    public String getConflictId() { return conflictId; }
+
+    public void setConflictId(String conflictUrl) { this.conflictId = conflictUrl; }
     
     @Override
     public boolean equals(Object o) {
@@ -234,6 +240,7 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
                 ", nextMessageUuid='" + nextMessageUuid + '\'' +
                 ", creatorInstanceId='" + creatorInstanceId + '\'' +
                 ", voided='" + getVoided() + '\'' +
+                ", conflictId='" + conflictId + '\'' +
                 '}';
     }
 
@@ -265,6 +272,7 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
             object.addProperty("nextMessageUuid", src.nextMessageUuid);
             object.addProperty("creatorInstanceId", src.creatorInstanceId);
             object.addProperty("voided", src.getVoided());
+            object.addProperty("conflictId", src.conflictId);
 
             return object;
         }
