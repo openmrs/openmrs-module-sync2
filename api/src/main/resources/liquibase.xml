@@ -62,7 +62,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="sync2-2018-11-13-20:00" author="Arkadiusz Lalo">
+    <changeSet id="sync2-2018-11-13-20:30" author="Arkadiusz Lalo">
         <preConditions>
             <not>
                 <tableExists tableName="sync_parent_object_hashcode" />
@@ -76,6 +76,9 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="object_uuid" type="char(38)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hashcode" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="uuid" type="char(38)">

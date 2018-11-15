@@ -58,7 +58,7 @@ public class ParentObjectHashcodeServiceImplTest {
 	}
 
 	@Test
-	public void getByObjetUuid_shouldFetchCorrectObject() {
+	public void getByObjectUuid_shouldFetchCorrectObject() {
 		ParentObjectHashcode expected = ParentObjectHashcodeMother.createInstance(OBJECT_ID);
 		ParentObjectHashcode actual = parentObjectHashcodeService.getByObjectUuid(ParentObjectHashcodeMother.OBJECT_UUID);
 		Assert.assertEquals(expected, actual);

@@ -8,6 +8,7 @@
             </generator>
         </id>
         <property column="object_uuid" name="objectUuid"/>
+        <property column="hashcode" name="hashcode"/>
         <property column="uuid" name="uuid"/>
         <many-to-one column="changed_by" name="changedBy" class="org.openmrs.User" />
         <many-to-one column="creator" name="creator" class="org.openmrs.User" />
