@@ -62,5 +62,9 @@ public class SyncConstants {
 
     public static final String TAG_SERVICE_BEAN = "atomfeed.tagsService";
 
+    public static final String MERGE_CONFLICT_ID_FIELD_NAME = "id";
+
+    public static final String MERGE_CONFLICT_UUID_FIELD_NAME = "uuid";
+
     private SyncConstants() {}
 }

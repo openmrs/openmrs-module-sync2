@@ -108,7 +108,7 @@
 
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-		SyncAuditMessage.hbm.xml ParentObjectHashcode.hbm.xml
+		SyncAuditMessage.hbm.xml ParentObjectHashcode.hbm.xml MergeConflict.hbm.xml
 	</mappingFiles>
 
 </module>
