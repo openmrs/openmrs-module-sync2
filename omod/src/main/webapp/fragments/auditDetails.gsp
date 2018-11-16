@@ -2,6 +2,7 @@
     def messagesPrefix = "sync2.log.header"
     def detailViewProvider = "sync2"
     ui.includeJavascript("sync2", "sync2.audit.retry.js")
+    ui.includeJavascript("sync2", "sync2.audit.conflict.js")
 %>
 
 <style>
@@ -90,3 +91,7 @@
         </a>
     <% } %>
 <% } %>
+<a class="button confirm right" onClick="conflictResolution();">
+    <i class="icon-stethoscope"></i>
+    ${ ui.message('sync2.conflict.resolution.title') }
+</a>

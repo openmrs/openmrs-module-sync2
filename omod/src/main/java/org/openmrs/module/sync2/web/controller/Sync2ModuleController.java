@@ -26,5 +26,10 @@ public class Sync2ModuleController {
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 	}
-	
+
+	@RequestMapping(value = "/module/sync2/conflictedObject", method = RequestMethod.GET)
+	public void manage2(ModelMap model){model.addAttribute("test","udany");}
+
+	@RequestMapping(value = "/module/sync2/conflictResolution", method = RequestMethod.GET)
+	public void initConflictResolution(ModelMap model){model.addAttribute("test","udany");}
 }

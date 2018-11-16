@@ -211,6 +211,7 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
                 && Objects.equals(this.linkType, auditMessage.linkType)
                 && Objects.equals(this.nextMessageUuid, auditMessage.nextMessageUuid)
                 && Objects.equals(this.creatorInstanceId, auditMessage.creatorInstanceId)
+                && Objects.equals(this.conflictId, auditMessage.conflictId)
                 && Objects.equals(this.getVoided(), auditMessage.getVoided());
     }
     
@@ -218,7 +219,7 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
     public int hashCode() {
 
         return Objects.hash(success, timestamp, resourceName, usedResourceUrl, availableResourceUrls, parentUrl,
-                localUrl, action, details, action, linkType, nextMessageUuid, creatorInstanceId);
+                localUrl, action, details, action, linkType, nextMessageUuid, creatorInstanceId, conflictId);
     }
     
     @Override
