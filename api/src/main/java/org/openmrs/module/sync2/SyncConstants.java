@@ -46,6 +46,10 @@ public class SyncConstants {
 
     public static final String ACTION_VOIDED = "VOIDED";
 
+    public static final String ACTION_DELETED = "DELETED";
+
+    public static final String ACTION_RETIRED = "RETIRED";
+
     public static final String ACTION_UPDATED = "UPDATED";
 
     public static final String ACTION_CREATED = "CREATED";

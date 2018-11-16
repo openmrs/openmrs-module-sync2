@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncConstants.ACTION_DELETED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_RETIRED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
@@ -51,8 +53,13 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
             String localPull = getPullUrl(resourceLinks, clientName, CHILD);
             String localPush = getPushUrl(resourceLinks, clientName, CHILD);
 
-            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category,
-                    clientName, parentPull, PARENT);
+            Object pulledObject;
+            if (action.equalsIgnoreCase(ACTION_VOIDED) || action.equalsIgnoreCase(ACTION_DELETED)
+                    || action.equalsIgnoreCase(ACTION_RETIRED)) {
+                pulledObject = uuid;
+            } else {
+                pulledObject = syncClient.pullData(category, clientName, parentPull, PARENT);
+            }
             shouldSynchronize = pullFilterService.shouldBeSynced(category, pulledObject, action)
                     && shouldPullObject(pulledObject, category,clientName, localPull);
 
