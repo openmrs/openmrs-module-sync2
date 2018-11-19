@@ -2,7 +2,7 @@
     def messagesPrefix = "sync2.log.header"
     def detailViewProvider = "sync2"
     ui.includeJavascript("sync2", "sync2.audit.retry.js")
-    ui.includeJavascript("sync2", "sync2.audit.conflict.js")
+    ui.includeJavascript("sync2", "sync2.conflict.js")
 %>
 
 <style>
