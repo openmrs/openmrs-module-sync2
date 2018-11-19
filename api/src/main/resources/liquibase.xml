@@ -62,6 +62,43 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="sync2-2018-11-13-20:30" author="Arkadiusz Lalo">
+        <preConditions>
+            <not>
+                <tableExists tableName="sync_parent_object_hashcode" />
+            </not>
+        </preConditions>
+        <comment>
+            Creating the table for hashes of synchronized objects.
+        </comment>
+        <createTable tableName="sync_parent_object_hashcode">
+            <column name="parent_object_hashcode_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="object_uuid" type="char(38)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hashcode" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uuid" type="char(38)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="changed_by" type="varchar(255)" />
+            <column name="creator" type="int"/>
+            <column name="date_changed" type="datetime" />
+            <column name="date_created" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_voided" type="datetime" />
+            <column name="void_reason" type="varchar(255)" />
+            <column name="voided" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
     <changeSet id="sync2-2018-11-14-17:36" author="Arkadiusz Lalo">
         <preConditions>
             <not>

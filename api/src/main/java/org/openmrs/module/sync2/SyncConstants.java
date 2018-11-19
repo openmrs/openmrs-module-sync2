@@ -20,6 +20,12 @@ public class SyncConstants {
 
     public static final String AUDIT_MESSAGE_ID_FIELD_NAME = "id";
 
+    public static final String PARENT_OBJECT_HASHCODE_ID_FIELD_NAME = "id";
+
+    public static final String PARENT_OBJECT_HASHCODE_UUID_FIELD_NAME = "uuid";
+
+    public static final String PARENT_OBJECT_HASHCODE_OBJECT_UUID_FIELD_NAME = "objectUuid";
+
     public static final String SUCCESS_MESSAGE = "Success";
 
     public static final String RESOURCE_PREFERRED_CLIENT = "sync2.resource.preferred.client";
