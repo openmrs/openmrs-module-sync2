@@ -2,8 +2,7 @@ package org.openmrs.module.sync2.api.service;
 
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.sync2.api.model.ParentObjectHashcode;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface ParentObjectHashcodeService extends OpenmrsService {
 
