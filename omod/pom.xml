@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>sync2</artifactId>
-		<version>1.3.0</version>
+		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sync2-omod</artifactId>
@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>sync2-api</artifactId>
-			<version>1.3.0</version>
+			<version>1.4.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
