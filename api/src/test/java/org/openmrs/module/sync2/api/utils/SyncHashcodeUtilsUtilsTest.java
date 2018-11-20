@@ -67,19 +67,6 @@ public class SyncHashcodeUtilsUtilsTest {
 	}
 
 	@Test
-	public void hashCodesEqualWhenUpdatedDateChanged() throws IOException {
-		Visit visit = createVisit();
-		// get a hashcode before the change
-		UUID hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
-		visit.setDateChanged(new Date(1540000000000L));
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
-
-		Assert.assertNotNull(hashcode);
-		Assert.assertNotNull(hashcode2);
-		Assert.assertEquals(hashcode, hashcode2);
-	}
-
-	@Test
 	public void hashCodesEqualWhenVoided() throws IOException {
 		Visit visit = createVisit();
 		// get a hashcode before the change
@@ -182,8 +169,6 @@ public class SyncHashcodeUtilsUtilsTest {
 		return privilege;
 	}
 
-
-	// TODO convert using DelegatingResourceDescription getRepresentationDescription for auditInfo
 	/**
 	 * Parse object in order to simulate objects pulled by SyncServices
 	 *
@@ -191,8 +176,23 @@ public class SyncHashcodeUtilsUtilsTest {
 	 * @return returns an object which extends SimpleObject
 	 */
 	private SimpleObject getSimpleObject(Object object) throws IOException {
-		String json = getJson(object);
-		return SimpleObject.parseJson(json);
+		return moveAuditToAuditInfo(getJson(object));
+	}
+
+	private SimpleObject moveAuditToAuditInfo(String json) throws IOException {
+		SimpleObject so = SimpleObject.parseJson(json);
+		SimpleObject auditInfo = new SimpleObject();
+		auditInfo.add("creator", so.get("creator"));
+		so.removeProperty("creator");
+		auditInfo.add("dateCreated", so.get("dateCreated"));
+		so.removeProperty("dateCreated");
+		auditInfo.add("changedBy", so.get("changedBy"));
+		so.removeProperty("changedBy");
+		auditInfo.add("dateChanged", so.get("dateChanged"));
+		so.removeProperty("dateChanged");
+		so.add("auditInfo", auditInfo);
+
+		return so;
 	}
 
 	private String getJson(Object object) {

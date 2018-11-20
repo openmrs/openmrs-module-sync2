@@ -30,7 +30,6 @@ public class SyncHashcodeUtils {
 
 	private static SimpleObject removeFields(SimpleObject simpleObject, Class<?> clazz) {
 		SimpleObject result = SerializationUtils.clone(simpleObject);
-		result.remove("dateChanged");
 		removeVoided(result, clazz);
 		removeId(result, clazz);
 		return result;
