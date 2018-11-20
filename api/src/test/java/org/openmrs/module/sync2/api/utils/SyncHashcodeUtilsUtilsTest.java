@@ -182,6 +182,8 @@ public class SyncHashcodeUtilsUtilsTest {
 		return privilege;
 	}
 
+
+	// TODO convert using DelegatingResourceDescription getRepresentationDescription for auditInfo
 	/**
 	 * Parse object in order to simulate objects pulled by SyncServices
 	 *
