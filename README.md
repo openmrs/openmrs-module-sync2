@@ -27,7 +27,7 @@ Test servers
 - https://sync3.openmrs.org/
 - https://sync4.openmrs.org/
 
-These servers can be redeployed through the https://ci.openmrs.org/browse/REFAPP-DS plan. Please e-mail helpdesk for a bamboo account.
+These servers can be redeployed through the https://ci.openmrs.org/browse/OENV-DS plan. Please e-mail helpdesk for a bamboo account.
 
 Each time servers are redeployed, data is preserved. If you want to wipe out data before redeploy change the `destroy.data` variable at https://ci.openmrs.org/chain/admin/config/configureChainVariables.action?buildKey=REFAPP-DS
 

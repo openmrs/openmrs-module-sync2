@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
@@ -22,7 +23,8 @@ public class UnifyServiceImpl implements UnifyService {
 			CategoryEnum cat = CategoryEnum.getByCategory(category);
 
 			if (SyncConstants.FHIR_CLIENT.equals(clientName)) {
-				// TODO
+				FHIRClientHelper helper = new FHIRClientHelper();
+				result = helper.convertToOpenMrsObject(new Object(), category);
 				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
 			} else if (AuditMessage.class.isAssignableFrom(cat.getClazz())) {
 				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);

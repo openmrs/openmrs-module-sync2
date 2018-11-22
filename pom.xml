@@ -10,7 +10,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>sync2</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Sync2 Module</name>
 	<description>Module for Sync 2</description>
@@ -204,8 +204,8 @@
 		<uiframeworkVersion>3.11.0</uiframeworkVersion>
 		<uicommonsVersion>2.3.0</uicommonsVersion>
 		<javaCompilerVersion>1.8</javaCompilerVersion>
-		<fhirVersion>1.15.0-SNAPSHOT</fhirVersion>
-		<atomfeedVersion>1.0.7-SNAPSHOT</atomfeedVersion>
+		<fhirVersion>1.16.0-SNAPSHOT</fhirVersion>
+		<atomfeedVersion>1.0.8-SNAPSHOT</atomfeedVersion>
 		<gsonVersion>2.8.1</gsonVersion>
 		<webservices.restVersion>2.23.0-SNAPSHOT</webservices.restVersion>
 	</properties>
