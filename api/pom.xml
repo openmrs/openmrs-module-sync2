@@ -32,9 +32,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>webservices.rest-omod-common</artifactId>
-			<scope>provided</scope>
+			<artifactId>webservices.rest-omod</artifactId>
 			<version>${webservices.restVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>webservices.rest-omod-common</artifactId>
+			<version>${webservices.restVersion}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
