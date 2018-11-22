@@ -1,6 +1,9 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="template/localHeader.jsp" %>
+<openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.css"/>
+<openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.js"/>
+<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
 <p>Resolution of conflict id: ${conflictId}</p>
 <p>Conflicted objects of class: ${className}</p>
@@ -14,7 +17,7 @@
 	<tr>
 		<td>URI</td>
 		<td><input id="url" type="text"
-		           value="${pageContext.request.contextPath}/ws/fhir/Patient/dda12af7-1691-11df-97a5-7038c432aabf"
+		           value="${pageContext.request.contextPath}/ws/fhir/Person/971b278d-b75d-492f-82dc-8a0d7725bd8f"
 		           size="45"/></td>
 	</tr>
 	<tr>
@@ -26,8 +29,22 @@
 <input type="button" name="button" value="send" onclick="sendToServer()"/>
 <br/><br/>
 
-<div id="output" style="margin-left: 20px;"></div>
-<br/><br/>
+<table id="objectComparison">
+    <tr>
+        <th>Local object</th>
+        <th>Foreign object</th>
+    </tr>
+    <tr>
+        <td>
+            <div id="localObjJson"></div>
+        </td>
+        <td>
+            <div id="foreignObjJson"></div>
+        </td>
+    </tr>
+</table>
+
+<form id="objectMergeForm"></form>
 
 <div id="prettyprint"></div>
 
@@ -65,7 +82,7 @@
     }
 
     function onSuccess(obj, msg, req) {
-        var tbl = prettyPrint(obj);
+        var tbl = prettyPrint(obj, obj);
         jQuery("#prettyprint").html("Pretty Printed Response" + "!<br/>");
         jQuery("#prettyprint").append(tbl);
     }
@@ -78,6 +95,74 @@
      CONTRIBUTORS
      David Waller
      */
+
+    var localObjJson = ${localObjJson};
+    var foreignObjJson = ${foreignObjJson};
+    console.log(localObjJson);
+    console.log(foreignObjJson);
+
+    jQuery("#localObjJson").jsonViewer(localObjJson);
+    jQuery("#foreignObjJson").jsonViewer(foreignObjJson);
+
+    function dotNotate(obj, current, dotNotatedObj) {
+        for(var key in obj) {
+            var value = obj[key];
+            var newKey = (current ? current + "." + key : key);
+            if(value && typeof value === "object") {
+                dotNotate(value, newKey, dotNotatedObj);
+            } else {
+                dotNotatedObj[newKey] = value;
+            }
+        }
+        return dotNotatedObj;
+    }
+
+    var localObj = dotNotate(localObjJson, null, {});
+    var foreignObj = dotNotate(foreignObjJson, null, {});
+
+    console.log(localObj);
+    console.log(foreignObj);
+
+    var compareObj = function(obj1, obj2) {
+        var ret = {}, rett;
+        for(var i in obj2) {
+            rett = {};
+            if(typeof obj2[i] === 'object') {
+                rett = compareObj (obj1[i], obj2[i]);
+                ret[i] = rett;
+            } else {
+                if(obj2[i] !== obj1[i]) {
+                    appendFieldChoice(i, obj1[i], obj2[i]);
+                }
+            }
+        }
+        return ret;
+    };
+
+    function appendFieldChoice(key, value1, value2) {
+        console.log(key);
+        console.log(value1);
+        console.log(value2);
+        var fieldChoice =
+            `<fieldset id=${key}>
+                <input type='radio' value=\${value1} name=\${key}>\${value1}<br/>
+                <input type='radio' value=\${value2} name=\${key}>\${value2}<br/>
+            </fieldset>`;
+
+        jQuery("#objectMergeForm").append(fieldChoice);
+    }
+
+    compareObj(localObjJson, foreignObjJson);
+
+    // now compare their keys and values
+    for(var i=0; i<biggestKey; i++) {
+        if(keyObj1[i] == keyObj2[i] && valueObj1[i] == valueObj2[i]) {
+            console.log(valueObj2[i]);
+        } else {
+            // it prints keys have different values
+            console.log('obj1 value: '+ valueObj1[i] + '\nobj2 value: '+ valueObj2[i] +'\n');
+        }
+    }
 
     var prettyPrint = (function () {
 
@@ -461,7 +546,7 @@
         };
 
         // Main..
-        var prettyPrintThis = function (obj, options) {
+        var prettyPrintThis = function (objLocal, objForeign, options) {
 
             /*
              *      obj :: Object to be printed
