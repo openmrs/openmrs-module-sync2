@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
                 var d = $.Deferred();
 
                 jQuery.ajax({
-                    url: "/openmrs/ws/rest/sync2/messages",
+                    url: openmrsContextPath+"/ws/rest/sync2/messages",
                     type: "GET",
                     dataType: "json",
                     data: filter
