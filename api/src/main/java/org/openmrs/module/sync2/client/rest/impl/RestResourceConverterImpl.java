@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.rest.impl;
 
+import org.openmrs.module.sync2.SyncCategoryConstants;
 import org.openmrs.module.sync2.client.rest.RestResourceConverter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.stereotype.Component;
@@ -127,7 +128,13 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		String category = "";
 		if (url.contains(URL_DELIMITER)) {
 			String[] tokens = url.split(URL_DELIMITER);
-			category = tokens[tokens.length-1];
+            category = tokens[tokens.length - 1];
+            //The rest url for observations is /ws/rest/v1/obs therefore the value of category from
+            //the line above would be obs but we don't want that since this module uses
+            //'observation' for the category
+            if (category.equals("obs")) {
+                category = SyncCategoryConstants.CATEGORY_OBSERVATION;
+            }
 		}
 		return category;
 	}
@@ -150,8 +157,6 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 	}
 
 	private void convertObservation(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
-
 		Map concept = (Map<String, Object>) simpleObject.get("concept");
 		simpleObject.remove("concept");
 		simpleObject.put("concept", concept.get("uuid"));
