@@ -9,15 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_COHORT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_DRUG_ORDER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_TEST_ORDER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 
 @Component("sync2.RestResourceConverter")
@@ -36,12 +31,6 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 				case CATEGORY_PATIENT:
 					convertPatient(simpleObject);
 					break;
-				case CATEGORY_PRIVILEGE:
-					convertPrivilege(simpleObject);
-					break;
-				case CATEGORY_LOCATION:
-					convertLocation(simpleObject);
-					break;
 				case CATEGORY_OBSERVATION:
 					convertObservation(simpleObject);
 					break;
@@ -51,17 +40,8 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 				case CATEGORY_FORM:
 					convertForm(simpleObject);
 					break;
-				case CATEGORY_COHORT:
-					convertCohort(simpleObject);
-					break;
 				case CATEGORY_PERSON:
 					convertPersonResource(simpleObject);
-					break;
-				case CATEGORY_DRUG_ORDER:
-					convertDrugOrder(simpleObject);
-					break;
-				case CATEGORY_TEST_ORDER:
-					convertTestOrder(simpleObject);
 					break;
 			}
 		}
@@ -141,14 +121,6 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		simpleObject.remove("preferredAddress");
 	}
 
-	private void convertPrivilege(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
-	}
-
-	private void convertLocation(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
-	}
-
 	private void convertObservation(Map<String, Object> simpleObject) {
 		simpleObject.remove("uuid");
 
@@ -164,17 +136,5 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 	private void convertForm(SimpleObject simpleObject) {
 		simpleObject.remove("formFields");
 		simpleObject.remove("resources");
-	}
-
-	private void convertCohort(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
-	}
-
-	private void convertDrugOrder(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
-	}
-
-	private void convertTestOrder(Map<String, Object> simpleObject) {
-		simpleObject.remove("uuid");
 	}
 }
