@@ -1,14 +1,19 @@
 package org.openmrs.module.sync2.client.rest;
 
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
 import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -17,10 +22,12 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
+import javax.transaction.NotSupportedException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
 
@@ -125,6 +132,24 @@ public class RESTClientHelper implements ClientHelper {
 		}
 	}
 
+	@Override
+	public Object convertToOpenMrsObject(Object o, String category) throws NotSupportedException {
+		Optional<CategoryEnum> opt2 = Optional.ofNullable(CategoryEnum.getByCategory(category));
+		CategoryEnum cat = opt2.orElseThrow(() -> getNotSupportedCategory(category));
+
+		// This case should be removed as soon as
+		// @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8#getPerson()
+		// will be implemented.
+		// Please check also PatientResource1_9 or any other @Resource class which supports current platform version.
+		if (cat.getClazz().equals(Patient.class) && o instanceof SimpleObject) {
+			PatientResource1_9 resource = (PatientResource1_9 ) Context.getService(RestService.class)
+					.getResourceBySupportedClass(Patient.class);
+			return resource.getPatient((SimpleObject) o);
+		} else {
+			return ConversionUtil.convert(o, cat.getClazz());
+		}
+	}
+
 	private RestResourceConverter getRestResourceConverter() {
 		return Context.getRegisteredComponent("sync2.RestResourceConverter", RestResourceConverter.class);
 	}
@@ -139,5 +164,9 @@ public class RESTClientHelper implements ClientHelper {
 
 	private String getNotSupportedClassMsg(String className) {
 		return String.format("Class %s is not supported", className);
+	}
+
+	private NotSupportedException getNotSupportedCategory(String category) {
+		return new NotSupportedException(String.format("Category %s is not supported", category));
 	}
 }
