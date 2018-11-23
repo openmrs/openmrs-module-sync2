@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.rest;
 
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
 import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
@@ -11,6 +12,8 @@ import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -132,8 +135,19 @@ public class RESTClientHelper implements ClientHelper {
 	@Override
 	public Object convertToOpenMrsObject(Object o, String category) throws NotSupportedException {
 		Optional<CategoryEnum> opt2 = Optional.ofNullable(CategoryEnum.getByCategory(category));
-		CategoryEnum clazz = opt2.orElseThrow(() -> getNotSupportedCategory(category));
-		return ConversionUtil.convert(o, clazz.getClazz());
+		CategoryEnum cat = opt2.orElseThrow(() -> getNotSupportedCategory(category));
+
+		// This case should be removed as soon as
+		// @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8#getPerson()
+		// will be implemented.
+		// Please check also PatientResource1_9 or any other @Resource class which supports current platform version.
+		if (cat.getClazz().equals(Patient.class) && o instanceof SimpleObject) {
+			PatientResource1_9 resource = (PatientResource1_9 ) Context.getService(RestService.class)
+					.getResourceBySupportedClass(Patient.class);
+			return resource.getPatient((SimpleObject) o);
+		} else {
+			return ConversionUtil.convert(o, cat.getClazz());
+		}
 	}
 
 	private RestResourceConverter getRestResourceConverter() {

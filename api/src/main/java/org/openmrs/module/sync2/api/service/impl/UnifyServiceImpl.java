@@ -17,17 +17,19 @@ public class UnifyServiceImpl implements UnifyService {
 
 	@Override
 	public Object unifyObject(Object object, String category, String clientName) throws NotSupportedException {
-		Object result = object;
+		Object result = null;
 
-		if (!isObjectAlreadyUnified(result)) {
+		if (isObjectAlreadyUnified(object)) {
+			result = object;
+		} else {
 			CategoryEnum cat = CategoryEnum.getByCategory(category);
 
 			if (SyncConstants.FHIR_CLIENT.equals(clientName)) {
 				FHIRClientHelper helper = new FHIRClientHelper();
-				result = helper.convertToOpenMrsObject(new Object(), category);
+				result = helper.convertToOpenMrsObject(object, category);
 				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
 			} else if (AuditMessage.class.isAssignableFrom(cat.getClazz())) {
-				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
+				result = ConversionUtil.convertToRepresentation(object, Representation.FULL);
 			} else {
 				throw new NotSupportedException(String.format("Category %s not supported.", category));
 			}
