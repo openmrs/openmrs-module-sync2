@@ -12,6 +12,8 @@ import org.openmrs.module.atomfeed.api.filter.FeedFilter;
 import org.openmrs.module.atomfeed.api.service.XMLParseService;
 import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
+import org.openmrs.module.fhir.api.merge.MergeBehaviour;
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -263,6 +265,14 @@ public class SyncUtils {
 				.setDateFormat(ConversionUtil.DATE_FORMAT)
 				.registerTypeAdapter(Date.class, safeDateTypeAdapter)
 				.create();
+	}
+
+	public static MergeBehaviour getMergeBehaviour() {
+		String behavior = Context.getAdministrationService().getGlobalProperty(SyncConstants.SYNC_2_MERGE_BEHAVIOR);
+		if (behavior == null) {
+			behavior = SyncConstants.SYNC_2_DEFAULT_MERGE_BEHAVIOR;
+		}
+		return Context.getRegisteredComponent(behavior, MergeBehaviour.class);
 	}
 
 }

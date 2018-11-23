@@ -13,6 +13,7 @@ import org.openmrs.Visit;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,9 +31,13 @@ public class SyncHashcodeUtilsUtilsTest {
 
 	private static final String PRIVILEGE = "test_privilege";
 
-	private static final int ID = 1;
+	public static final String LINKS_KEY = "links";
 
-	private static final int UPDATED_ID = 2;
+	public static final String TEST_LINK_1 = "testLink1";
+
+	public static final String TEST_LINK_2 = "testLink1";
+
+	public static final String NESTED_OBJECT_KEY = "NESTED_OBJECT";
 
 	private SimpleObject simpleVisit;
 
@@ -48,8 +53,8 @@ public class SyncHashcodeUtilsUtilsTest {
 
 	@Test
 	public void hashCodesNotEqual() {
-		UUID hashcode = SyncHashcodeUtils.getHashcode(simpleVisit, Visit.class);
-		UUID updatedHashcode = SyncHashcodeUtils.getHashcode(updatedSimpleVisit, Visit.class);
+		String hashcode = SyncHashcodeUtils.getHashcode(simpleVisit);
+		String updatedHashcode = SyncHashcodeUtils.getHashcode(updatedSimpleVisit);
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(updatedHashcode);
@@ -58,8 +63,8 @@ public class SyncHashcodeUtilsUtilsTest {
 
 	@Test
 	public void hashCodesEqual() {
-		UUID hashcode = SyncHashcodeUtils.getHashcode(simpleVisit, Visit.class);
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(simpleVisit, Visit.class);
+		String hashcode = SyncHashcodeUtils.getHashcode(simpleVisit);
+		String hashcode2 = SyncHashcodeUtils.getHashcode(simpleVisit);
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(hashcode2);
@@ -70,13 +75,13 @@ public class SyncHashcodeUtilsUtilsTest {
 	public void hashCodesEqualWhenVoided() throws IOException {
 		Visit visit = createVisit();
 		// get a hashcode before the change
-		UUID hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
+		String hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(visit));
 
 		visit.setDateVoided(new Date(1540000000000L));
 		visit.setVoided(true);
 		visit.setVoidedBy(new User());
 		visit.setVoidReason("Voided Reason");
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
+		String hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(visit));
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(hashcode2);
@@ -87,13 +92,13 @@ public class SyncHashcodeUtilsUtilsTest {
 	public void hashCodesEqualWhenRetired() throws IOException {
 		Provider provider = createProvider();
 		// get a hashcode before the change
-		UUID hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(provider), Provider.class);
+		String hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(provider));
 
 		provider.setDateRetired(new Date(1540000000000L));
 		provider.setRetired(true);
 		provider.setRetiredBy(new User());
 		provider.setRetireReason("Retired Reason");
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(provider), Provider.class);
+		String hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(provider));
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(hashcode2);
@@ -101,12 +106,21 @@ public class SyncHashcodeUtilsUtilsTest {
 	}
 
 	@Test
-	public void visitHashCodesEqualsWhenDatabaseIdChanged() throws IOException {
-		Visit visit = createVisit();
-		// get a hashcode before the change
-		UUID hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
-		visit.setId(UPDATED_ID);
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(visit), Visit.class);
+	public void getHashcode_shouldDeleteLinksAndReturnTheSame() throws IOException {
+		SimpleObject visitSimpleObject = getSimpleObject(createVisit());
+
+		visitSimpleObject.add(LINKS_KEY, TEST_LINK_1);
+		SimpleObject nestedObject = new SimpleObject();
+		nestedObject.add(LINKS_KEY, TEST_LINK_1);
+		visitSimpleObject.add(NESTED_OBJECT_KEY, nestedObject);
+
+		String hashcode = SyncHashcodeUtils.getHashcode(visitSimpleObject);
+
+		visitSimpleObject.add(LINKS_KEY, TEST_LINK_2);
+		nestedObject.add(LINKS_KEY, Arrays.asList(TEST_LINK_2));
+		visitSimpleObject.add(NESTED_OBJECT_KEY, nestedObject);
+
+		String hashcode2 = SyncHashcodeUtils.getHashcode(visitSimpleObject);
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(hashcode2);
@@ -117,8 +131,8 @@ public class SyncHashcodeUtilsUtilsTest {
 	public void doNotThrowAnErrorWhileObjectDoNoHaveDatabaseId() throws IOException {
 		Privilege privilege = createPrivilege();
 		// get a hashcode before the change
-		UUID hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(privilege), Privilege.class);
-		UUID hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(privilege), Privilege.class);
+		String hashcode = SyncHashcodeUtils.getHashcode(getSimpleObject(privilege));
+		String hashcode2 = SyncHashcodeUtils.getHashcode(getSimpleObject(privilege));
 
 		Assert.assertNotNull(hashcode);
 		Assert.assertNotNull(hashcode2);
@@ -127,7 +141,6 @@ public class SyncHashcodeUtilsUtilsTest {
 
 	private Visit createVisit() {
 		Visit visit = new Visit();
-		visit.setVisitId(ID);
 		visit.setUuid(VISIT_UUID);
 		visit.setDateChanged(new Date());
 		visit.setChangedBy(new User());
@@ -152,7 +165,6 @@ public class SyncHashcodeUtilsUtilsTest {
 		provider.setPerson(new Person());
 		provider.setIdentifier(PROVIDER_IDENTIFIER);
 		provider.setRetired(false);
-		provider.setId(ID);
 		return provider;
 	}
 
@@ -191,7 +203,6 @@ public class SyncHashcodeUtilsUtilsTest {
 		auditInfo.add("dateChanged", so.get("dateChanged"));
 		so.removeProperty("dateChanged");
 		so.add("auditInfo", auditInfo);
-
 		return so;
 	}
 
