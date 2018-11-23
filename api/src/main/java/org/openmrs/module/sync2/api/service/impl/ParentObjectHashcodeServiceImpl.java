@@ -43,6 +43,12 @@ public class ParentObjectHashcodeServiceImpl extends BaseOpenmrsService implemen
 	}
 
 	@Override
+	public ParentObjectHashcode save(String uuid, String hashCode) {
+		ParentObjectHashcode parentObjectHashcode = new ParentObjectHashcode(uuid, hashCode);
+		return save(parentObjectHashcode);
+	}
+
+	@Override
 	public void delete(ParentObjectHashcode parentObjectHashcode, String reason) {
 		parentObjectHashcode.setVoided(true);
 		parentObjectHashcode.setVoidedBy(Context.getAuthenticatedUser());

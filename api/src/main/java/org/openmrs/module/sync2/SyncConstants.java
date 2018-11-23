@@ -70,5 +70,11 @@ public class SyncConstants {
 
     public static final String MERGE_CONFLICT_UUID_FIELD_NAME = "uuid";
 
+    public static final String SYNC_2_MERGE_BEHAVIOR = "sync2.mergeBehavior";
+
+    public static final String SYNC_2_DEFAULT_MERGE_BEHAVIOR = "sync2.defaultMergeBehaviour";
+
+    public static final String AUDIT_MESSAGE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     private SyncConstants() {}
 }

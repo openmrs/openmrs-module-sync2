@@ -19,5 +19,8 @@ public interface ParentObjectHashcodeService extends OpenmrsService {
 	ParentObjectHashcode save(ParentObjectHashcode parentObjectHashcode);
 
 	@Transactional
+	ParentObjectHashcode save(String uuid, String hashCode);
+
+	@Transactional
 	void delete(ParentObjectHashcode parentObjectHashcode, String reason);
 }
