@@ -1,6 +1,9 @@
 package org.openmrs.module.sync2.api.mother;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
+
+import java.util.LinkedHashMap;
 
 public abstract class SimpleObjectMother {
 
@@ -18,10 +21,11 @@ public abstract class SimpleObjectMother {
 		SimpleObject result = new SimpleObject();
 		result.add(UUID_KEY, uuid);
 		result.add(VALUE_KEY, value);
+		addLink(result, false);
 		return result;
 	}
 
-	public static SimpleObject createInstanceWithDateChanged(String dateChange, boolean withAuditInfo) {
+	public static SimpleObject createInstanceWithDateChanged(String dateChange, boolean withAuditInfo, boolean linksAsMap) {
 		SimpleObject simpleObject = new SimpleObject();
 		SimpleObject auditInfo = new SimpleObject();
 		if (withAuditInfo) {
@@ -29,7 +33,18 @@ public abstract class SimpleObjectMother {
 			simpleObject.add(AUDIT_INFO_KEY, auditInfo);
 		}
 		simpleObject.add(VALUE_KEY, TEST_VALUE);
-
+		addLink(simpleObject, linksAsMap);
 		return simpleObject;
+	}
+
+	private static void addLink(SimpleObject so, boolean linksAsMap) {
+		if (linksAsMap) {
+			LinkedHashMap<String, String> map = new LinkedHashMap<>();
+			map.put("rel", "self");
+			map.put("uri", ".");
+			so.add("links", map);
+		} else {
+			so.add("links", new Hyperlink("self", "."));
+		}
 	}
 }

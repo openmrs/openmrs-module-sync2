@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
@@ -10,7 +11,6 @@ import org.openmrs.module.sync2.api.service.UnifyService;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,22 +59,25 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
             String localPull = getPullUrl(resourceLinks, clientName, CHILD);
             String localPush = getPushUrl(resourceLinks, clientName, CHILD);
 
-            Object pulledObject = getPulledObject(category, action, clientName, uuid, parentPull);
-            Object localPulledObject = syncClient.pullData(category, clientName, localPull, CHILD);
-            SimpleObject localObject = unifyService.unifyObject(localPulledObject, category, clientName);
-            SimpleObject foreignObject = isDeleteAction(action) ? null :
-                    unifyService.unifyObject(pulledObject, category, clientName);
+            SyncObject pulledObject = new SyncObject(getPulledObject(category, action, clientName, uuid, parentPull));
+            pulledObject.setSimpleObject(isDeleteAction(action) ? null :
+                    unifyService.unifyObject(pulledObject.getBaseObject(), category, clientName));
+            SyncObject localPulledObject = new SyncObject(syncClient.pullData(category, clientName, localPull, CHILD));
+            localPulledObject.setSimpleObject(unifyService.unifyObject(localPulledObject.getBaseObject(), category, clientName));
 
-            shouldSynchronize = pullFilterService.shouldBeSynced(category, pulledObject, action)
-                && pulledObject != null && shouldSynchronize(foreignObject, localObject);
+            shouldSynchronize = pullFilterService.shouldBeSynced(category, pulledObject.getBaseObject(), action)
+                && pulledObject.getBaseObject() != null
+                && shouldSynchronize(pulledObject.getSimpleObject(), localPulledObject.getSimpleObject());
 
             if (shouldSynchronize) {
                 String hashCode = null;
                 if (!isDeleteAction(action)) {
-                    pulledObject = detectAndResolveConflict(foreignObject, localObject, auditMessage);
-                    hashCode = SyncHashcodeUtils.getHashcode(unifyService.unifyObject(pulledObject, category, clientName));
+                    pulledObject.setBaseObject(detectAndResolveConflict(
+                            pulledObject, localPulledObject, auditMessage).getBaseObject());
+                    hashCode = SyncHashcodeUtils.getHashcode(
+                            unifyService.unifyObject(pulledObject.getBaseObject(), category, clientName));
                 }
-                syncClient.pushData(category, pulledObject, clientName, localPush, action, CHILD);
+                syncClient.pushData(category, pulledObject.getBaseObject(), clientName, localPush, action, CHILD);
                 parentObjectHashcodeService.save(uuid, hashCode);
             }
 

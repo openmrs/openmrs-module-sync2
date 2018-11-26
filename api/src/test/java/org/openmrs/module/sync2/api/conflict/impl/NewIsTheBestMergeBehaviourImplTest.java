@@ -7,6 +7,7 @@ import org.openmrs.module.fhir.api.merge.MergeConflict;
 import org.openmrs.module.fhir.api.merge.MergeMessageEnum;
 import org.openmrs.module.fhir.api.merge.MergeResult;
 import org.openmrs.module.fhir.api.merge.MergeSuccess;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.mother.SimpleObjectMother;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
@@ -27,9 +28,11 @@ public class NewIsTheBestMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessIfDateChangedNotExitAndChooseTheForeign() {
-		SimpleObject localObj = SimpleObjectMother.createInstanceWithDateChanged(null,  false);
-		SimpleObject foreignObj = SimpleObjectMother.createInstanceWithDateChanged(null,  false);
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged
+				(null,  false, false));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				null,  false, false));
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
@@ -38,9 +41,11 @@ public class NewIsTheBestMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessIfOnlyForeignHasDateChanged() {
-		SimpleObject localObj = SimpleObjectMother.createInstanceWithDateChanged(null,  false);
-		SimpleObject foreignObj = SimpleObjectMother.createInstanceWithDateChanged(LATER_DATE,  true);
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				null,  false, false));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				LATER_DATE,  true, false));
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
@@ -49,9 +54,11 @@ public class NewIsTheBestMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessAndChooseTheNewest() {
-		SimpleObject localObj = SimpleObjectMother.createInstanceWithDateChanged(LATER_DATE,  true);
-		SimpleObject foreignObj = SimpleObjectMother.createInstanceWithDateChanged(EARLIER_DATE,  true);
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				LATER_DATE,  true, false));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				EARLIER_DATE,  true, false));
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.LOCAL_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateLocal());
@@ -60,9 +67,11 @@ public class NewIsTheBestMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessAndChooseLocalIfDatesAreTheSame() {
-		SimpleObject localObj = SimpleObjectMother.createInstanceWithDateChanged(EARLIER_DATE,  true);
-		SimpleObject foreignObj = SimpleObjectMother.createInstanceWithDateChanged(EARLIER_DATE,  true);
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				EARLIER_DATE,  true, false));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				EARLIER_DATE,  true, false));
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.LOCAL_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateLocal());
@@ -71,10 +80,16 @@ public class NewIsTheBestMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnMergeConflictIfInvalidDateFormat() {
-		SimpleObject localObj = SimpleObjectMother.createInstanceWithDateChanged(EARLIER_DATE,  true);
-		SimpleObject foreignObj = SimpleObjectMother.createInstanceWithDateChanged(INVALID_DATE,  true);
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				EARLIER_DATE,  true, false));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
+				INVALID_DATE,  true, false));
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeConflict);
 		Assert.assertEquals(MergeMessageEnum.CONFLICT, actual.getMessage());
+	}
+
+	private SyncObject getSyncObject(SimpleObject simpleObject) {
+		return new SyncObject(simpleObject, simpleObject);
 	}
 }

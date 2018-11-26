@@ -11,6 +11,7 @@ import org.openmrs.module.fhir.api.merge.MergeSuccess;
 import org.openmrs.module.sync2.api.conflict.ConflictDetection;
 import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
 import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
@@ -132,14 +133,14 @@ public abstract class AbstractSynchronizationService {
             && !localHashCode.equalsIgnoreCase(pulledHashCode));
     }
 
-    protected Object detectAndResolveConflict(SimpleObject oldObject, SimpleObject newObject, AuditMessage auditMessage)
+    protected SyncObject detectAndResolveConflict(SyncObject oldObject, SyncObject newObject, AuditMessage auditMessage)
             throws MergeConflictException {
-        boolean conflict = conflictDetection.detectConflict(oldObject, newObject);
+        boolean conflict = conflictDetection.detectConflict(oldObject.getSimpleObject(), newObject.getSimpleObject());
         if (conflict) {
             MergeResult result = SyncUtils.getMergeBehaviour()
-                    .resolveDiff(SimpleObject.class, oldObject, newObject);
+                    .resolveDiff(SyncObject.class, oldObject, newObject);
             if (result instanceof MergeSuccess) {
-                oldObject = (SimpleObject) ((MergeSuccess) result).getMerged();
+                oldObject.setBaseObject(((MergeSuccess) result).getMerged());
             } else if (result instanceof MergeConflict){
                 org.openmrs.module.sync2.api.model.MergeConflict mergeConflict = mergeConflictService
                         .save(mergeConflictMapper.map((MergeConflict) result));

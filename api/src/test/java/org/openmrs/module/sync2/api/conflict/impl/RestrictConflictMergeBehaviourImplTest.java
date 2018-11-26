@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.api.conflict.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,14 +12,13 @@ import org.openmrs.module.fhir.api.merge.MergeMessageEnum;
 import org.openmrs.module.fhir.api.merge.MergeResult;
 import org.openmrs.module.fhir.api.merge.MergeSuccess;
 import org.openmrs.module.sync2.api.model.ParentObjectHashcode;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.mother.ParentObjectHashcodeMother;
 import org.openmrs.module.sync2.api.mother.SimpleObjectMother;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
-import java.util.UUID;
-
-public class ConflictMergeBehaviourImplTest {
+public class RestrictConflictMergeBehaviourImplTest {
 
 	private static final String TEST_VALUE = "Test value";
 
@@ -38,7 +36,7 @@ public class ConflictMergeBehaviourImplTest {
 	ParentObjectHashcodeService parentObjectHashcodeService;
 
 	@InjectMocks
-	private ConflictMergeBehaviourImpl conflictMergeBehaviour;
+	private RestrictConflictMergeBehaviourImpl conflictMergeBehaviour;
 
 	@Before
 	public void  setUp() {
@@ -52,9 +50,9 @@ public class ConflictMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessAndChooseForeignIfParentHashcodeNotExist() {
-		SimpleObject localObj = SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE);
-		SimpleObject foreignObj = SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE_2);
-		MergeResult actual = conflictMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE_2));
+		MergeResult actual = conflictMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
@@ -63,9 +61,9 @@ public class ConflictMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessAndChooseLocalIfOnlyLocalChanged() {
-		SimpleObject localObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE);
-		SimpleObject foreignObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALID_HASHCODE_VALUE);
-		MergeResult actual = conflictMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALID_HASHCODE_VALUE));
+		MergeResult actual = conflictMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.LOCAL_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateLocal());
@@ -74,9 +72,9 @@ public class ConflictMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnSuccessAndChooseForeignIfOnlyForeignChanged() {
-		SimpleObject localObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALID_HASHCODE_VALUE);
-		SimpleObject foreignObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE_2);
-		MergeResult actual = conflictMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALID_HASHCODE_VALUE));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE_2));
+		MergeResult actual = conflictMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
@@ -85,10 +83,14 @@ public class ConflictMergeBehaviourImplTest {
 
 	@Test
 	public void resolveDiff_shouldReturnConflictWhenBothObjectsChanged() {
-		SimpleObject localObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE);
-		SimpleObject foreignObj = SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE_2);
-		MergeResult actual = conflictMergeBehaviour.resolveDiff(SimpleObject.class, localObj, foreignObj);
+		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE));
+		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstance(VALID_UUID, TEST_VALUE_2));
+		MergeResult actual = conflictMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeConflict);
 		Assert.assertEquals(MergeMessageEnum.CONFLICT, actual.getMessage());
+	}
+
+	private SyncObject getSyncObject(SimpleObject simpleObject) {
+		return new SyncObject(simpleObject, simpleObject);
 	}
 }

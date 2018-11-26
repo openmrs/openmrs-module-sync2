@@ -104,7 +104,7 @@ public class SyncAuditServiceImplTest {
         when(dao.getMessageById(AUDIT_ID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageById(AUDIT_ID);
+        String fetched = auditService.getJsonMessageById(AUDIT_ID) + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -114,7 +114,7 @@ public class SyncAuditServiceImplTest {
         when(dao.getMessageByUuid(AUDIT_UUID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageByUuid(AUDIT_UUID);
+        String fetched = auditService.getJsonMessageByUuid(AUDIT_UUID) + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -129,7 +129,8 @@ public class SyncAuditServiceImplTest {
                 .thenReturn(messages);
         
         String expected = readJsonFromFile(PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON);
-        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "", "");
+        String fetched = auditService.getPaginatedMessages(
+                page, pageSize, null, "", "", "") + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -230,7 +231,7 @@ public class SyncAuditServiceImplTest {
     @Test
     public void convert_shouldSerializeAuditMessage() throws Exception {
         AuditMessage toSerialize = prepareAuditMessage(false);
-        String fetched = auditMessageToStringConverter.convert(toSerialize);
+        String fetched = auditMessageToStringConverter.convert(toSerialize) + '\n';
         final String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
 
         Assert.assertEquals(expected, fetched);

@@ -11,11 +11,11 @@ import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.UUID;
 
 import static org.openmrs.module.sync2.api.utils.SyncUtils.createDefaultGson;
 
@@ -188,11 +188,12 @@ public class SyncHashcodeUtilsUtilsTest {
 	 * @return returns an object which extends SimpleObject
 	 */
 	private SimpleObject getSimpleObject(Object object) throws IOException {
-		return moveAuditToAuditInfo(getJson(object));
+		SimpleObject so = SimpleObject.parseJson(getJson(object));
+		addLink(so);
+		return moveAuditToAuditInfo(so);
 	}
 
-	private SimpleObject moveAuditToAuditInfo(String json) throws IOException {
-		SimpleObject so = SimpleObject.parseJson(json);
+	private SimpleObject moveAuditToAuditInfo(SimpleObject so) throws IOException {
 		SimpleObject auditInfo = new SimpleObject();
 		auditInfo.add("creator", so.get("creator"));
 		so.removeProperty("creator");
@@ -204,6 +205,10 @@ public class SyncHashcodeUtilsUtilsTest {
 		so.removeProperty("dateChanged");
 		so.add("auditInfo", auditInfo);
 		return so;
+	}
+
+	private void addLink(SimpleObject so) {
+		so.add("links", new Hyperlink("self", "."));
 	}
 
 	private String getJson(Object object) {

@@ -5,6 +5,7 @@ import org.openmrs.module.fhir.api.merge.MergeBehaviour;
 import org.openmrs.module.fhir.api.merge.MergeConflict;
 import org.openmrs.module.fhir.api.merge.MergeResult;
 import org.openmrs.module.fhir.api.merge.MergeSuccess;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component("sync2.newIsTheBestMergeBehaviourImpl")
-public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SimpleObject> {
+public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SyncObject> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NewIsTheBestMergeBehaviourImpl.class);
 
@@ -26,31 +27,34 @@ public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SimpleObje
 	private static final String DATE_CHANGED_KEY = "dateChanged";
 
 	@Override
-	public MergeResult<SimpleObject> resolveDiff(Class<? extends SimpleObject> clazz, SimpleObject local,
-			SimpleObject foreign) {
+	public MergeResult<SyncObject> resolveDiff(Class<? extends SyncObject> clazz, SyncObject local, SyncObject foreign) {
 		return resolveConflict(clazz, local, foreign);
 	}
 
-	private MergeResult resolveConflict(Class<? extends SimpleObject> clazz, SimpleObject local, SimpleObject foreign) {
-		MergeResult result = new MergeConflict(clazz, local, foreign);
-
-		SimpleObject localAuditInfo = local.get(AUDIT_INFO_KEY);
+	private MergeResult<SyncObject> resolveConflict(Class<? extends SyncObject> clazz, SyncObject local,
+			SyncObject foreign) {
+		Class storedClass = SimpleObject.class;
+		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, local.getSimpleObject(), foreign.getSimpleObject());
+		SimpleObject localAuditInfo = local.getSimpleObject().get(AUDIT_INFO_KEY);
 		String localDateChangedStr = localAuditInfo != null ? localAuditInfo.get(DATE_CHANGED_KEY) : null;
 
-		SimpleObject foreignAuditInfo = foreign.get(AUDIT_INFO_KEY);
+		SimpleObject foreignAuditInfo = foreign.getSimpleObject().get(AUDIT_INFO_KEY);
 		String foreignDateChangedStr = foreignAuditInfo != null ? foreignAuditInfo.get(DATE_CHANGED_KEY) : null;
 
 		if (StringUtils.isBlank(localDateChangedStr)) {
-			result = new MergeSuccess(clazz, local, foreign, foreign, false, true);
+			result = new MergeSuccess<>(storedClass, local.getSimpleObject(), foreign.getSimpleObject(),
+					foreign.getBaseObject(), false, true);
 		} else if (StringUtils.isNotBlank(localDateChangedStr) && StringUtils.isNotBlank(foreignDateChangedStr)) {
 			DateFormat formatter = new SimpleDateFormat(ConversionUtil.DATE_FORMAT);
 			try {
 				Date localDateChanged = formatter.parse(localDateChangedStr);
 				Date foreignDateChanged = formatter.parse(foreignDateChangedStr);
 				if (localDateChanged.before(foreignDateChanged)) {
-					result = new MergeSuccess(clazz, local, foreign, foreign, false, true);
+					result = new MergeSuccess<>(storedClass, local.getSimpleObject(), foreign.getSimpleObject(),
+							foreign.getBaseObject(), false, true);
 				} else {
-					result = new MergeSuccess(clazz, local, foreign, local, true, false);
+					result = new MergeSuccess<>(storedClass, local.getSimpleObject(), foreign.getSimpleObject(),
+							local.getBaseObject(), true, false);
 				}
 			}
 			catch (ParseException e) {

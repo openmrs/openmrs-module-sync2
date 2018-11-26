@@ -1,7 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.SerializationUtils;
 
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -35,7 +34,7 @@ public class SyncHashcodeUtils {
 	}
 
 	private static SimpleObject removeFields(SimpleObject simpleObject) {
-		SimpleObject result = SerializationUtils.clone(simpleObject);
+		SimpleObject result = SimpleObjectSerializationUtils.clone(simpleObject);
 		removeVoided(result);
 		removeStopWords(result);
 		return result;
