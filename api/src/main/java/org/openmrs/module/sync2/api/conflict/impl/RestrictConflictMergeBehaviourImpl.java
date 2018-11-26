@@ -23,11 +23,10 @@ public class RestrictConflictMergeBehaviourImpl implements MergeBehaviour<SyncOb
 
 	@Override
 	public MergeResult<SyncObject> resolveDiff(Class<? extends SyncObject> clazz, SyncObject local, SyncObject foreign) {
-		return revolveConflict(clazz, local, foreign);
+		return revolveConflict(local, foreign);
 	}
 
-	private MergeResult<SyncObject> revolveConflict(Class<? extends SyncObject> clazz, SyncObject currentObject,
-			SyncObject newObject) {
+	private MergeResult<SyncObject> revolveConflict(SyncObject currentObject, SyncObject newObject) {
 		Class storedClass = SimpleObject.class;
 		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, currentObject.getSimpleObject(), newObject.getSimpleObject());
 		String localHashCode = SyncHashcodeUtils.getHashcode(currentObject.getSimpleObject());

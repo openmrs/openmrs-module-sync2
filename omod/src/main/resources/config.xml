@@ -98,7 +98,7 @@
 
 	<globalProperty>
 		<property>${project.parent.artifactId}.mergeBehavior</property>
-		<defaultValue>sync2.newIsTheBestMergeBehaviourImpl</defaultValue>
+		<defaultValue>sync2.conflictMergeBehaviour</defaultValue>
 		<description>Used merge behavior</description>
 	</globalProperty>
 

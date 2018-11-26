@@ -45,7 +45,7 @@ public class NewIsTheBestMergeBehaviourImplTest {
 				null,  false, false));
 		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
 				LATER_DATE,  true, false));
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, foreignObj, localObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
@@ -58,7 +58,7 @@ public class NewIsTheBestMergeBehaviourImplTest {
 				LATER_DATE,  true, false));
 		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstanceWithDateChanged(
 				EARLIER_DATE,  true, false));
-		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
+		MergeResult actual = newIsTheBestMergeBehaviour.resolveDiff(SyncObject.class, foreignObj, localObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
 		Assert.assertEquals(MergeMessageEnum.LOCAL_SAVE_MESSAGE, actual.getMessage());
 		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateLocal());

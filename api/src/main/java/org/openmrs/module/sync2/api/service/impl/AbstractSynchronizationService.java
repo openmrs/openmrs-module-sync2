@@ -137,8 +137,7 @@ public abstract class AbstractSynchronizationService {
             throws MergeConflictException {
         boolean conflict = conflictDetection.detectConflict(oldObject.getSimpleObject(), newObject.getSimpleObject());
         if (conflict) {
-            MergeResult result = SyncUtils.getMergeBehaviour()
-                    .resolveDiff(SyncObject.class, oldObject, newObject);
+            MergeResult result = SyncUtils.getMergeBehaviour().resolveDiff(SyncObject.class, oldObject, newObject);
             if (result instanceof MergeSuccess) {
                 oldObject.setBaseObject(((MergeSuccess) result).getMerged());
             } else if (result instanceof MergeConflict){
