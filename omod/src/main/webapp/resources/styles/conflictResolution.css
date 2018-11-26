@@ -1,0 +1,49 @@
+#objectComparison {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#objectComparison td {
+    padding: 20px;
+}
+
+#objectComparison td, #objectComparison th {
+    border: 1px solid #ddd;
+}
+
+#objectMergeTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#objectMergeTable td, #objectMergeTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#objectMergeTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#objectMergeTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #009384;
+    color: white;
+}
+
+.applyButton {
+    width: 100%;
+    background-color: #F26522;
+    border: none;
+    color: white;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.applyButton:hover {
+    background-color: #5B57A6;
+}

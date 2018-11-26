@@ -1,7 +1,6 @@
 package org.openmrs.module.sync2.web.controller;
 
 import com.google.gson.Gson;
-import org.openmrs.Patient;
 import org.openmrs.module.sync2.api.model.MergeConflict;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
@@ -12,10 +11,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.io.IOException;
-
-import static org.openmrs.module.sync2.api.utils.SyncUtils.createDefaultGson;
 
 @Controller
 public class ConflictResolutionController {
