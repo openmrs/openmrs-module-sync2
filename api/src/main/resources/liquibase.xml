@@ -134,4 +134,18 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="sync2-2018-11-22-10:00" author="Arkadiusz Lalo">
+        <preConditions>
+            <not>
+                <columnExists tableName="sync_audit_message" columnName="merge_conflict_uuid" />
+            </not>
+        </preConditions>
+        <comment>
+            Adding the merge_conflict_uuid column which could be use to find merge conflict
+        </comment>
+        <addColumn tableName="sync_audit_message">
+            <column name="merge_conflict_uuid" type="char(38)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

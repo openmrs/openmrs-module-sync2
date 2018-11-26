@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.mother;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.sync2.api.model.ParentObjectHashcode;
 
 public class ParentObjectHashcodeMother {
@@ -20,6 +21,17 @@ public class ParentObjectHashcodeMother {
 		parentObjectHashcode.setObjectUuid(OBJECT_UUID);
 		parentObjectHashcode.setHashcode(hashcode);
 		parentObjectHashcode.setUuid(UUID);
+		return parentObjectHashcode;
+	}
+
+	public static ParentObjectHashcode createInstance(String uuid, String hashcode) {
+		ParentObjectHashcode parentObjectHashcode = new ParentObjectHashcode(uuid, hashcode);
+		if (StringUtils.isBlank(uuid)) {
+			parentObjectHashcode.setObjectUuid(java.util.UUID.randomUUID().toString());
+		}
+		if (StringUtils.isBlank(hashcode)) {
+			parentObjectHashcode.setHashcode(java.util.UUID.randomUUID().toString());
+		}
 		return parentObjectHashcode;
 	}
 }

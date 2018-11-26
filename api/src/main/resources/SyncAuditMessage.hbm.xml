@@ -25,6 +25,7 @@
         <property column="next_message_uuid" name="nextMessageUuid" type="java.lang.String" />
 
         <property column="creator_instance_id" name="creatorInstanceId" type="java.lang.String" />
+        <property column="merge_conflict_uuid" name="mergeConflictUuid" type="java.lang.String" />
         <many-to-one column="changed_by" name="changedBy" class="org.openmrs.User" />
         <many-to-one column="creator" name="creator" class="org.openmrs.User" />
 

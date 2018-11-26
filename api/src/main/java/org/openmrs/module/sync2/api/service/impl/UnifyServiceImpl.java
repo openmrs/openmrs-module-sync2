@@ -16,12 +16,12 @@ import javax.transaction.NotSupportedException;
 public class UnifyServiceImpl implements UnifyService {
 
 	@Override
-	public Object unifyObject(Object object, String category, String clientName) throws NotSupportedException {
+	public SimpleObject unifyObject(Object object, String category, String clientName) throws NotSupportedException {
 		Object result = null;
 
 		if (isObjectAlreadyUnified(object)) {
 			result = object;
-		} else {
+		} else if (object != null) {
 			CategoryEnum cat = CategoryEnum.getByCategory(category);
 
 			if (SyncConstants.FHIR_CLIENT.equals(clientName)) {
@@ -35,7 +35,7 @@ public class UnifyServiceImpl implements UnifyService {
 			}
 		}
 
-		return result;
+		return (SimpleObject) result;
 	}
 
 	private boolean isObjectAlreadyUnified(Object object) {

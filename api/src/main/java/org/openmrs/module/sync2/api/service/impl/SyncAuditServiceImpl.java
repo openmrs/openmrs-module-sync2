@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.sync2.api.serializers.AuditMessageSerializer;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
@@ -64,7 +65,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
                 resourceName, creatorInstanceId);
         return serializeResultsWithAuditMessage(paginatedAuditMessages);
     }
-    
+
     @Override
     public AuditMessage saveAuditMessageDuringSync(AuditMessage auditMessage) {
         boolean persistSuccessAudit = BooleanUtils.isTrue(auditMessage.getSuccess())
@@ -101,7 +102,7 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
 
     private <T> String serializeResultsWithAuditMessage(T results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
-        gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessage.AuditMessageSerializer());
+        gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
 
         return gson.toJson(results);

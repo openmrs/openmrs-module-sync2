@@ -9,7 +9,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
-import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.sync2.client.rest.impl.RestResourceConverterImpl;
 import org.openmrs.module.webservices.rest.SimpleObject;

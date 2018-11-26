@@ -50,6 +50,8 @@ public class SyncAuditServiceImplTest {
     private static final String AUDIT_NEXT_MESSAGE_UUID = "next_message_uuid";
     private static final String AUDIT_UUID = "9f3dccc9-6bc3-4a2b-862d-af4ce41caa28";
     private static final String AUDIT_CREATOR_INSTANCE = "sampleCreatorInstance1";
+    private static final String AUDIT_MERGE_CONFLICT_UUID = "test";
+    private static final String AUDIT_MERGE_CONFLICT_UUID2 = "test2";
 
     private static final Integer PAGINATED_PAGE = 1;
     private static final Integer PAGINATED_PAGE_SIZE = 100;
@@ -102,7 +104,7 @@ public class SyncAuditServiceImplTest {
         when(dao.getMessageById(AUDIT_ID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageById(AUDIT_ID);
+        String fetched = auditService.getJsonMessageById(AUDIT_ID) + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -112,7 +114,7 @@ public class SyncAuditServiceImplTest {
         when(dao.getMessageByUuid(AUDIT_UUID)).thenReturn(prepareAuditMessage(false));
 
         String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
-        String fetched = auditService.getJsonMessageByUuid(AUDIT_UUID);
+        String fetched = auditService.getJsonMessageByUuid(AUDIT_UUID) + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -127,7 +129,8 @@ public class SyncAuditServiceImplTest {
                 .thenReturn(messages);
         
         String expected = readJsonFromFile(PAGINATED_AUDIT_MESSAGE_RESPONSE_JSON);
-        String fetched = auditService.getPaginatedMessages(page, pageSize, null, "", "", "");
+        String fetched = auditService.getPaginatedMessages(
+                page, pageSize, null, "", "", "") + '\n';
 
         Assert.assertEquals(expected, fetched);
     }
@@ -228,7 +231,7 @@ public class SyncAuditServiceImplTest {
     @Test
     public void convert_shouldSerializeAuditMessage() throws Exception {
         AuditMessage toSerialize = prepareAuditMessage(false);
-        String fetched = auditMessageToStringConverter.convert(toSerialize);
+        String fetched = auditMessageToStringConverter.convert(toSerialize) + '\n';
         final String expected = readJsonFromFile(AUDIT_MESSAGE_JSON);
 
         Assert.assertEquals(expected, fetched);
@@ -261,6 +264,7 @@ public class SyncAuditServiceImplTest {
         newMessage.setCreatorInstanceId(AUDIT_CREATOR_INSTANCE);
         newMessage.setUuid(AUDIT_UUID);
         newMessage.setSuccess(success);
+        newMessage.setMergeConflictUuid(AUDIT_MERGE_CONFLICT_UUID);
     
         String createDate = "2017-12-07 00:00:00";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -278,11 +282,13 @@ public class SyncAuditServiceImplTest {
         list.get(0).setResourceName("Test 1");
         list.get(0).setId(AUDIT_ID);
         list.get(0).setUuid(AUDIT_UUID);
+        list.get(0).setId(2);
 
         list.get(1).setResourceName("Test 2");
-        list.get(0).setId(2);
         list.get(1).setUuid("74e75d4a-393c-4611-a903-883a0fd5fc6f");
-        
+        list.get(1).setMergeConflictUuid(AUDIT_MERGE_CONFLICT_UUID2);
+
+
         return new PaginatedAuditMessages((long) list.size(), PAGINATED_PAGE, PAGINATED_PAGE_SIZE, list);
     }
 
