@@ -96,6 +96,12 @@
 		<description>Preferred client for pulling resources.</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>${project.parent.artifactId}.mergeBehavior</property>
+		<defaultValue>sync2.conflictMergeBehaviour</defaultValue>
+		<description>Used merge behavior</description>
+	</globalProperty>
+
 	<privilege>
 		<name>Load Sync2 config</name>
 		<description>Ability to load Sync 2 configuration from file.</description>
@@ -108,7 +114,7 @@
 
 	<!-- Maps hibernate file's, if present -->
 	<mappingFiles>
-		SyncAuditMessage.hbm.xml MergeConflict.hbm.xml
+		SyncAuditMessage.hbm.xml ParentObjectHashcode.hbm.xml MergeConflict.hbm.xml
 	</mappingFiles>
 
 </module>

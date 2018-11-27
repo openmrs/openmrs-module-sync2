@@ -6,7 +6,7 @@
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.js"/>
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
-<p>Resolution of conflict id: <b>${conflictId}</b></p>
+<p>Resolution of conflict id: <b>${conflictUuid}</b></p>
 <p>Conflicted objects of class: <b>${className}</b></p>
 <br/><br/>
 

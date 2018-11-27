@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_DELETED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_RETIRED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
@@ -91,6 +93,8 @@ public class SyncClient {
 					result = updateObject(category, resourceUrl, destinationUrl, object, clientName);
 					break;
 				case ACTION_VOIDED:
+				case ACTION_DELETED:
+				case ACTION_RETIRED:
 					result = deleteObject(category, resourceUrl, destinationUrl, (String) object, clientName);
 					break;
 				default:

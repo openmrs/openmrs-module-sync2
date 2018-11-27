@@ -1,13 +1,25 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
 import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
+import org.openmrs.module.fhir.api.merge.MergeConflict;
+import org.openmrs.module.fhir.api.merge.MergeResult;
+import org.openmrs.module.fhir.api.merge.MergeSuccess;
+import org.openmrs.module.sync2.api.conflict.ConflictDetection;
+import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
+import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
+import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.service.MergeConflictService;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
+import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_DELETED;
+import static org.openmrs.module.sync2.SyncConstants.ACTION_RETIRED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME;
@@ -33,6 +47,15 @@ public abstract class AbstractSynchronizationService {
 
     @Autowired
     private FeedConfigurationService feedConfigurationService;
+
+    @Autowired
+    private ConflictDetection conflictDetection;
+
+    @Autowired
+    private MergeConflictService mergeConflictService;
+
+    @Autowired
+    private MergeConflictMapper mergeConflictMapper;
 
     private static final String INITIAL_INFO_FORMAT = "%s category: %s, address: %s, action: %s";
 
@@ -101,6 +124,46 @@ public abstract class AbstractSynchronizationService {
         }
 
         return result;
+    }
+
+    protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject) {
+        String localHashCode = SyncHashcodeUtils.getHashcode(oldObject);
+        String pulledHashCode = SyncHashcodeUtils.getHashcode(newObject);
+        return oldObject == null || newObject == null || (StringUtils.isNotBlank(localHashCode) && StringUtils.isNotBlank(pulledHashCode)
+            && !localHashCode.equalsIgnoreCase(pulledHashCode));
+    }
+
+    protected SyncObject detectAndResolveConflict(SyncObject oldObject, SyncObject newObject, AuditMessage auditMessage)
+            throws MergeConflictException {
+        boolean conflict = conflictDetection.detectConflict(oldObject.getSimpleObject(), newObject.getSimpleObject());
+        if (conflict) {
+            MergeResult result = SyncUtils.getMergeBehaviour().resolveDiff(SyncObject.class, oldObject, newObject);
+            if (result instanceof MergeSuccess) {
+                oldObject.setBaseObject(((MergeSuccess) result).getMerged());
+            } else if (result instanceof MergeConflict){
+                org.openmrs.module.sync2.api.model.MergeConflict mergeConflict = mergeConflictService
+                        .save(mergeConflictMapper.map((MergeConflict) result));
+                auditMessage.setMergeConflictUuid(mergeConflict.getUuid());
+                throw new MergeConflictException("Detected merge conflict which couldn't be resolved automatically.");
+            }
+        }
+        return oldObject;
+    }
+
+    protected Object pullData(String category, String action, String clientName, String uuid,
+            String pullUrl, OpenMRSSyncInstance instance) {
+        Object pulledObject;
+        if (isDeleteAction(action)) {
+            pulledObject = uuid;
+        } else {
+            pulledObject = syncClient.pullData(category, clientName, pullUrl, instance);
+        }
+        return pulledObject;
+    }
+
+    protected boolean isDeleteAction(String action) {
+        return action.equalsIgnoreCase(ACTION_VOIDED) || action.equalsIgnoreCase(ACTION_DELETED)
+                || action.equalsIgnoreCase(ACTION_RETIRED);
     }
 
     private void logInitialInfo(String category, String action, Map<String, String> resourceLinks, String clientName) {

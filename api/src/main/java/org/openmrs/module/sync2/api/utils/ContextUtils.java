@@ -18,7 +18,7 @@ public class ContextUtils {
         try {
             return Context.getRegisteredComponent(beanName, clazz);
         } catch (APIException ex) {
-            LOGGER.debug("Could not fetch '{}' component", ex);
+            LOGGER.warn("Could not fetch '{}' component", ex);
             return null;
         }
     }

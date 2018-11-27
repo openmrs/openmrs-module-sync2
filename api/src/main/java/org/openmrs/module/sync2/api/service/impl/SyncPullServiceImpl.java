@@ -1,10 +1,14 @@
 package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.service.UnifyService;
+import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
@@ -15,18 +19,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.compareLocalAndPulled;
 
 @Component("sync2.syncPullService")
 public class SyncPullServiceImpl extends AbstractSynchronizationService implements SyncPullService {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);
 
     @Autowired
@@ -37,6 +39,12 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
 
     @Autowired
     private ParentFeedReader parentFeedReader;
+
+    @Autowired
+    private ParentObjectHashcodeService parentObjectHashcodeService;
+
+    @Autowired
+    private UnifyService unifyService;
 
     private static final String FAILED_SYNC_MESSAGE = "Problem with pulling from parent";
 
@@ -51,17 +59,29 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
             String localPull = getPullUrl(resourceLinks, clientName, CHILD);
             String localPush = getPushUrl(resourceLinks, clientName, CHILD);
 
-            Object pulledObject = action.equals(ACTION_VOIDED) ? uuid : syncClient.pullData(category,
-                    clientName, parentPull, PARENT);
-            shouldSynchronize = pullFilterService.shouldBeSynced(category, pulledObject, action)
-                    && shouldPullObject(pulledObject, category,clientName, localPull);
+            SyncObject pulledObject = new SyncObject(getPulledObject(category, action, clientName, uuid, parentPull));
+            pulledObject.setSimpleObject(isDeleteAction(action) ? null :
+                    unifyService.unifyObject(pulledObject.getBaseObject(), category, clientName));
+            SyncObject localPulledObject = new SyncObject(syncClient.pullData(category, clientName, localPull, CHILD));
+            localPulledObject.setSimpleObject(unifyService.unifyObject(localPulledObject.getBaseObject(), category, clientName));
+
+            shouldSynchronize = pullFilterService.shouldBeSynced(category, pulledObject.getBaseObject(), action)
+                && pulledObject.getBaseObject() != null
+                && shouldSynchronize(pulledObject.getSimpleObject(), localPulledObject.getSimpleObject());
 
             if (shouldSynchronize) {
-                syncClient.pushData(category, pulledObject, clientName, localPush, action, CHILD);
+                String hashCode = null;
+                if (!isDeleteAction(action)) {
+                    pulledObject.setBaseObject(detectAndResolveConflict(
+                            pulledObject, localPulledObject, auditMessage).getBaseObject());
+                    hashCode = SyncHashcodeUtils.getHashcode(
+                            unifyService.unifyObject(pulledObject.getBaseObject(), category, clientName));
+                }
+                syncClient.pushData(category, pulledObject.getBaseObject(), clientName, localPush, action, CHILD);
+                parentObjectHashcodeService.save(uuid, hashCode);
             }
 
             auditMessage = successfulMessage(auditMessage);
-
         } catch (Error | Exception e) {
             auditMessage = failedMessage(auditMessage, e);
         } finally {
@@ -121,18 +141,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
         return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }
 
-    /**
-     *
-     * @param   pulledObject the object from the parent instance
-     * @param   category the category of the object. Represents name of the object class
-     * @param   clientName the name of the used client i.e. rest, fhir
-     * @param   url the url to pull local instance of the object
-     *
-     * @return  true if the parent and local objects are not equal.
-     *          false if the objects are equal or pulled object from the parent instance doesn't exists.
-     */
-    private boolean shouldPullObject(Object pulledObject, String category, String clientName, String url) {
-        Object localPulledObject = syncClient.pullData(category, clientName, url, CHILD);
-        return pulledObject != null && !compareLocalAndPulled(clientName, category, pulledObject, localPulledObject);
+    private Object getPulledObject(String category, String action, String clientName, String uuid, String parentPull) {
+        return pullData(category, action, clientName, uuid, parentPull, PARENT);
     }
 }

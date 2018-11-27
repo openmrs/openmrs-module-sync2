@@ -20,8 +20,8 @@ public class ClientHelperFactory {
 			case FHIR_CLIENT:
 				return new FHIRClientHelper();
 			default:
-				LOGGER.warn(String.format("Unrecognized clientType: %s", clientType));
-				return null;
+				LOGGER.warn(String.format("Unrecognized clientType: %s. The REST Client will be used.", clientType));
+				return new RESTClientHelper();
 		}
 	}
 }
