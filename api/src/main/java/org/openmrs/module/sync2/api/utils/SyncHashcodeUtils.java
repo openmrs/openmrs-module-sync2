@@ -1,7 +1,6 @@
 package org.openmrs.module.sync2.api.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
@@ -9,14 +8,9 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class SyncHashcodeUtils {
 	private static final SimpleObjectMessageConverter converter = new SimpleObjectMessageConverter();
-
-	private static final String REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
-
-	private static final String REPLACEMENT = "$1-$2-$3-$4-$5";
 
 	private static final List<String> STOP_WORDS = Arrays.asList("links", "auditInfo");
 
@@ -24,13 +18,11 @@ public class SyncHashcodeUtils {
 		if (simpleObject == null) {
 			return null;
 		}
-		return createUuidFromString(converter.convertToJson(removeFields(simpleObject))).toString();
+		return createUuidFromString(converter.convertToJson(removeFields(simpleObject)));
 	}
 
-	private static UUID createUuidFromString(String data) {
-		String md5Hex = DigestUtils.md5Hex(data);
-		md5Hex = md5Hex.replaceFirst(REGEX, REPLACEMENT);
-		return UUID.fromString(md5Hex);
+	private static String createUuidFromString(String data) {
+		return DigestUtils.sha512Hex(data);
 	}
 
 	private static SimpleObject removeFields(SimpleObject simpleObject) {

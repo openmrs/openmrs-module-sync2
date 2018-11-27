@@ -26,27 +26,27 @@ public class RestrictConflictMergeBehaviourImpl implements MergeBehaviour<SyncOb
 		return revolveConflict(local, foreign);
 	}
 
-	private MergeResult<SyncObject> revolveConflict(SyncObject currentObject, SyncObject newObject) {
+	private MergeResult<SyncObject> revolveConflict(SyncObject source, SyncObject target) {
 		Class storedClass = SimpleObject.class;
-		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, currentObject.getSimpleObject(), newObject.getSimpleObject());
-		String localHashCode = SyncHashcodeUtils.getHashcode(currentObject.getSimpleObject());
-		String foreignHashCode = SyncHashcodeUtils.getHashcode(newObject.getSimpleObject());
-		String objectUuid = (currentObject.getSimpleObject() != null ) ? currentObject.getSimpleObject().get(UUID_KEY) : null;
+		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
+		String sourceHashCode = SyncHashcodeUtils.getHashcode(source.getSimpleObject());
+		String targetHashCode = SyncHashcodeUtils.getHashcode(target.getSimpleObject());
+		String objectUuid = (source.getSimpleObject() != null ) ? source.getSimpleObject().get(UUID_KEY) : null;
 		ParentObjectHashcode previousHashCode = parentObjectHashcodeService.getByObjectUuid(objectUuid);
 
-		if (StringUtils.isNotBlank(localHashCode) && StringUtils.isNotBlank(foreignHashCode)) {
+		if (StringUtils.isNotBlank(sourceHashCode) && StringUtils.isNotBlank(targetHashCode)) {
 			if (previousHashCode == null) {
-				result = new MergeSuccess<>(storedClass, currentObject.getSimpleObject(), newObject.getSimpleObject(),
-						newObject.getBaseObject(), false, true);
+				result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+						source.getBaseObject(), true, false);
 			} else {
-				boolean localEquals = previousHashCode.getHashcode().equalsIgnoreCase(localHashCode);
-				boolean foreignEquals = previousHashCode.getHashcode().equalsIgnoreCase(foreignHashCode);
-				if (localEquals && !foreignEquals) {
-					result = new MergeSuccess<>(storedClass, currentObject.getSimpleObject(), newObject.getSimpleObject(),
-							newObject.getBaseObject(), false, true);
-				} else if (!localEquals && foreignEquals) {
-					result = new MergeSuccess<>(storedClass, currentObject.getSimpleObject(), newObject.getSimpleObject(),
-							currentObject.getBaseObject(), true, false);
+				boolean sourceEquals = previousHashCode.getHashcode().equalsIgnoreCase(sourceHashCode);
+				boolean targetEquals = previousHashCode.getHashcode().equalsIgnoreCase(targetHashCode);
+				if (sourceEquals && !targetEquals) {
+					result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+							target.getBaseObject(), false, true);
+				} else if (!sourceEquals && targetEquals) {
+					result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+							source.getBaseObject(), true, false);
 				}
 			}
 		}

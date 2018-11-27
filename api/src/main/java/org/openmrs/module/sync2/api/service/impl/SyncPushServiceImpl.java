@@ -59,25 +59,25 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
             String localPull = getPullUrl(resourceLinks, clientName, CHILD);
             String parentPull = getPullUrl(resourceLinks, clientName, PARENT);
 
-            SyncObject localObj2 = new SyncObject(getLocalObject(category, action, clientName, uuid, localPull));
-            localObj2.setSimpleObject(unifyService.unifyObject(localObj2.getBaseObject(), category, clientName));
-            SyncObject parentObj2 = new SyncObject(syncClient.pullData(category, clientName, parentPull, PARENT));
-            parentObj2.setSimpleObject(isDeleteAction(action) ? null :
-                    unifyService.unifyObject(parentObj2.getBaseObject(), category, clientName));
+            SyncObject localObj = new SyncObject(getLocalObject(category, action, clientName, uuid, localPull));
+            localObj.setSimpleObject(unifyService.unifyObject(localObj.getBaseObject(), category, clientName));
+            SyncObject parentObj = new SyncObject(syncClient.pullData(category, clientName, parentPull, PARENT));
+            parentObj.setSimpleObject(isDeleteAction(action) ? null :
+                    unifyService.unifyObject(parentObj.getBaseObject(), category, clientName));
 
-            shouldSynchronize = pushFilterService.shouldBeSynced(category, localObj2.getBaseObject(), action)
-                    && localObj2.getBaseObject() != null
-                    && shouldSynchronize(localObj2.getSimpleObject(), parentObj2.getSimpleObject());
+            shouldSynchronize = pushFilterService.shouldBeSynced(category, localObj.getBaseObject(), action)
+                    && localObj.getBaseObject() != null
+                    && shouldSynchronize(localObj.getSimpleObject(), parentObj.getSimpleObject());
 
             if (shouldSynchronize) {
                 String hashCode = null;
                 if (!isDeleteAction(action)) {
-                    localObj2.setBaseObject(detectAndResolveConflict(
-                            localObj2, parentObj2, auditMessage).getBaseObject());
+                    localObj.setBaseObject(detectAndResolveConflict(
+                            localObj, parentObj, auditMessage).getBaseObject());
                     hashCode = SyncHashcodeUtils.getHashcode(
-                            unifyService.unifyObject(localObj2.getBaseObject(), category, clientName));
+                            unifyService.unifyObject(localObj.getBaseObject(), category, clientName));
                 }
-                syncClient.pushData(category, localObj2.getBaseObject(), clientName, parentPush, action, PARENT);
+                syncClient.pushData(category, localObj.getBaseObject(), clientName, parentPush, action, PARENT);
                 parentObjectHashcodeService.save(uuid, hashCode);
             }
 
