@@ -29,32 +29,32 @@ public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SyncObject
 
 	@Override
 	public MergeResult<SyncObject> resolveDiff(Class<? extends SyncObject> clazz, SyncObject local, SyncObject foreign) {
-		return resolveConflict(foreign, local);
+		return resolveConflict(local, foreign);
 	}
 
-	private MergeResult<SyncObject> resolveConflict(SyncObject foreign, SyncObject local) {
+	private MergeResult<SyncObject> resolveConflict(SyncObject source, SyncObject target) {
 		Class storedClass = SimpleObject.class;
-		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, foreign.getSimpleObject(), local.getSimpleObject());
-		Map<String, Object> localAuditInfo = foreign.getSimpleObject().get(AUDIT_INFO_KEY);
-		String localDateChangedStr = localAuditInfo != null ? (String) localAuditInfo.get(DATE_CHANGED_KEY) : null;
+		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
+		Map<String, Object> sourceAuditInfo = source.getSimpleObject().get(AUDIT_INFO_KEY);
+		String sourceDateChangedStr = sourceAuditInfo != null ? (String) sourceAuditInfo.get(DATE_CHANGED_KEY) : null;
 
-		Map<String, Object> foreignAuditInfo = local.getSimpleObject().get(AUDIT_INFO_KEY);
-		String foreignDateChangedStr = foreignAuditInfo != null ? (String) foreignAuditInfo.get(DATE_CHANGED_KEY) : null;
+		Map<String, Object> targerAuditInfo = target.getSimpleObject().get(AUDIT_INFO_KEY);
+		String targetDateChangedStr = targerAuditInfo != null ? (String) targerAuditInfo.get(DATE_CHANGED_KEY) : null;
 
-		if (StringUtils.isBlank(localDateChangedStr)) {
-			result = new MergeSuccess<>(storedClass, foreign.getSimpleObject(), local.getSimpleObject(),
-					local.getBaseObject(), false, true);
-		} else if (StringUtils.isNotBlank(localDateChangedStr) && StringUtils.isNotBlank(foreignDateChangedStr)) {
+		if (StringUtils.isBlank(targetDateChangedStr)) {
+			result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+					source.getBaseObject(), true, false);
+		} else if (StringUtils.isNotBlank(sourceDateChangedStr) && StringUtils.isNotBlank(targetDateChangedStr)) {
 			DateFormat formatter = new SimpleDateFormat(ConversionUtil.DATE_FORMAT);
 			try {
-				Date localDateChanged = formatter.parse(localDateChangedStr);
-				Date foreignDateChanged = formatter.parse(foreignDateChangedStr);
-				if (localDateChanged.before(foreignDateChanged)) {
-					result = new MergeSuccess<>(storedClass, foreign.getSimpleObject(), local.getSimpleObject(),
-							foreign.getBaseObject(), false, true);
+				Date sourceDateChanged = formatter.parse(sourceDateChangedStr);
+				Date targetDateChanged = formatter.parse(targetDateChangedStr);
+				if (sourceDateChanged.before(targetDateChanged)) {
+					result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+							target.getBaseObject(), false, true);
 				} else {
-					result = new MergeSuccess<>(storedClass, foreign.getSimpleObject(), local.getSimpleObject(),
-							local.getBaseObject(), true, false);
+					result = new MergeSuccess<>(storedClass, source.getSimpleObject(), target.getSimpleObject(),
+							source.getBaseObject(), true, false);
 				}
 			}
 			catch (ParseException e) {

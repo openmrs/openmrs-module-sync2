@@ -49,14 +49,14 @@ public class RestrictConflictMergeBehaviourImplTest {
 	}
 
 	@Test
-	public void resolveDiff_shouldReturnSuccessAndChooseForeignIfParentHashcodeNotExist() {
+	public void resolveDiff_shouldReturnSuccessAndChooseLocalIfParentHashcodeNotExist() {
 		SyncObject localObj = getSyncObject(SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE));
 		SyncObject foreignObj = getSyncObject(SimpleObjectMother.createInstance(INVALID_UUID, TEST_VALUE_2));
 		MergeResult actual = conflictMergeBehaviour.resolveDiff(SyncObject.class, localObj, foreignObj);
 		Assert.assertTrue(actual instanceof MergeSuccess);
-		Assert.assertEquals(MergeMessageEnum.FOREIGN_SAVE_MESSAGE, actual.getMessage());
-		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateLocal());
-		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateForeign());
+		Assert.assertEquals(MergeMessageEnum.LOCAL_SAVE_MESSAGE, actual.getMessage());
+		Assert.assertTrue(((MergeSuccess) actual).shouldUpdateLocal());
+		Assert.assertFalse(((MergeSuccess) actual).shouldUpdateForeign());
 	}
 
 	@Test
