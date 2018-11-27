@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-@Component("sync2.newIsTheBestMergeBehaviourImpl")
+@Component("sync2.newIsTheBestMergeBehaviour")
 public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SyncObject> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NewIsTheBestMergeBehaviourImpl.class);
