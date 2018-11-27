@@ -12,10 +12,6 @@ import java.util.Map;
 public class SyncHashcodeUtils {
 	private static final SimpleObjectMessageConverter converter = new SimpleObjectMessageConverter();
 
-	private static final String REGEX = "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})";
-
-	private static final String REPLACEMENT = "$1-$2-$3-$4-$5";
-
 	private static final List<String> STOP_WORDS = Arrays.asList("links", "auditInfo");
 
 	public static String getHashcode(SimpleObject simpleObject) {
@@ -26,8 +22,7 @@ public class SyncHashcodeUtils {
 	}
 
 	private static String createUuidFromString(String data) {
-		String sha512Hex = DigestUtils.sha512Hex(data);
-		return sha512Hex.replaceFirst(REGEX, REPLACEMENT);
+		return DigestUtils.sha512Hex(data);
 	}
 
 	private static SimpleObject removeFields(SimpleObject simpleObject) {
