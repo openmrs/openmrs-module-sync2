@@ -28,7 +28,8 @@ public class RestrictConflictMergeBehaviourImplTest {
 
 	private static final String VALID_UUID = "valid_uuid";
 
-	private static final String TEST_HASHCODE = "f920e06a-a331-4a7e-9226-ce03df96ae47";
+	private static final String TEST_HASHCODE = "96c4ae94164efdbfe4a86fe834ac13a866da78252f71d3ee0bec2dce374"
+			+ "37e135c6c52ee4857837589abe06691536153c749d7da4f7fc8cae7cfb35878d154e1";
 
 	private static final String INVALID_UUID = "INVALID_UUID";
 

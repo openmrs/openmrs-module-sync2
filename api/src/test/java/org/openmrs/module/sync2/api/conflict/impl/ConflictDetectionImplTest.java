@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.api.conflict.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,8 @@ public class ConflictDetectionImplTest {
 
 	private static final String INVALID_UUID = "INVALID_UUID";
 
-	private static final String TEST_HASHCODE = "f920e06a-a331-4a7e-9226-ce03df96ae47";
+	private static final String TEST_HASHCODE = "96c4ae94164efdbfe4a86fe834ac13a866da78252f71d3ee0bec2dce3743"
+			+ "7e135c6c52ee4857837589abe06691536153c749d7da4f7fc8cae7cfb35878d154e1";
 
 	@Mock
 	private ParentObjectHashcodeService parentObjectHashcodeService;
