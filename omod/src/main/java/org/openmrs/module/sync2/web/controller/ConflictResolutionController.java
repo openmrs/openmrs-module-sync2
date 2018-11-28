@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.web.controller;
 
-import com.google.gson.Gson;
 import org.openmrs.module.sync2.api.model.MergeConflict;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
@@ -29,6 +28,7 @@ public class ConflictResolutionController {
 
 		MergeConflict mergeConflict = mergeConflictService.getByUuid(conflictUuid);
 
+		// TODO Fetch real object from mergeConflict object above
 		String localObjJson = "{\n"
 				+ "      \"resourceType\": \"Patient\",\n"
 				+ "      \"id\": \"971b278d-b75d-492f-82dc-8a0d7725bd8f\",\n"
