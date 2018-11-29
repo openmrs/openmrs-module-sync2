@@ -93,7 +93,9 @@
         </a>
     <% } %>
 <% } %>
-<a class="button confirm right" onClick="conflictResolution();">
-    <i class="icon-stethoscope"></i>
-    ${ ui.message('sync2.conflict.resolution.title') }
-</a>
+<% if (auditLog.mergeConflictUuid != null) { %>
+    <a class="button confirm right" onClick="conflictResolution();">
+        <i class="icon-wrench"></i>
+        ${ ui.message('sync2.conflict.resolution.title') }
+    </a>
+<% } %>

@@ -26,10 +26,10 @@ public class ConflictResolutionController {
 		MergeConflict mergeConflict = mergeConflictService.getByUuid(conflictUuid);
 
 		// TODO Fetch real object from mergeConflict object above
-		String localObjJson = "";
+		String localObjJson = "{}";
 		model.addAttribute("localObjJson", localObjJson);
 
-		String foreignObjJson = "";
+		String foreignObjJson = "{}";
 		model.addAttribute("foreignObjJson", foreignObjJson);
 
 		String className = mergeConflict.getFullClassName();
