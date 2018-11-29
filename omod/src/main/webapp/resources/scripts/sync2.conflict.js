@@ -8,16 +8,16 @@ function conflictResolution() {
     });
 }
 
-function setCustomValue(key, customValue) {
+function setValueOfRadioButton(key, customValue) {
     document.getElementById(key).value = customValue.value;
 }
 
-function setValueOfKey(obj, current, pathKey, pathValue) {
+function setValueOfJsonKey(obj, current, pathKey, pathValue) {
     for(var key in obj) {
         var value = obj[key];
         var newKey = (current ? current + "." + key : key);
         if(value && typeof value === "object") {
-            setValueOfKey(value, newKey, pathKey, pathValue);
+            setValueOfJsonKey(value, newKey, pathKey, pathValue);
         } else {
             if(newKey == pathKey) {
                 obj[key] = pathValue;
@@ -27,12 +27,12 @@ function setValueOfKey(obj, current, pathKey, pathValue) {
     return obj;
 }
 
-function dotNotate(obj, current, dotNotatedObj) {
+function jsonToDotNotation(obj, current, dotNotatedObj) {
     for(var key in obj) {
         var value = obj[key];
         var newKey = (current ? current + "." + key : key);
         if(value && typeof value === "object") {
-            dotNotate(value, newKey, dotNotatedObj);
+            jsonToDotNotation(value, newKey, dotNotatedObj);
         } else {
             dotNotatedObj[newKey] = value;
         }
@@ -46,13 +46,13 @@ function compareObj(localObj, foreignObj, objectMergeTableId) {
             compareObj (localObj[i], foreignObj[i]);
         } else {
             if(foreignObj[i] !== localObj[i]) {
-                appendFieldChoice(i, localObj[i], foreignObj[i], objectMergeTableId);
+                appendFieldValueChoice(i, localObj[i], foreignObj[i], objectMergeTableId);
             }
         }
     }
 };
 
-function appendFieldChoice(key, value1, value2, objectMergeTableId) {
+function appendFieldValueChoice(key, value1, value2, objectMergeTableId) {
     var fieldChoice =
         `<tr>
             <td>
@@ -66,7 +66,7 @@ function appendFieldChoice(key, value1, value2, objectMergeTableId) {
             </td>
             <td>
                 <input type='radio' id=${key} name=${key} value="">
-                <input type='text' onchange="setCustomValue(\'${key}\', this);">
+                <input type='text' onchange="setValueOfRadioButton(\'${key}\', this);">
             </td>
         </tr>`;
     jQuery("#" + objectMergeTableId).append(fieldChoice);

@@ -54,8 +54,8 @@
         jQuery("#localObjJson").jsonViewer(localObjJson);
         jQuery("#foreignObjJson").jsonViewer(foreignObjJson);
 
-        var localObj = dotNotate(localObjJson, null, {});
-        var foreignObj = dotNotate(foreignObjJson, null, {});
+        var localObj = jsonToDotNotation(localObjJson, null, {});
+        var foreignObj = jsonToDotNotation(foreignObjJson, null, {});
 
         compareObj(localObj, foreignObj, "objectMergeTable");
 
@@ -67,7 +67,7 @@
                 if(form.elements.item(i).checked) {
                     var key = form.elements.item(i).name;
                     var value = form.elements.item(i).value;
-                    setValueOfKey(localObjJson, null, key, value);
+                    setValueOfJsonKey(localObjJson, null, key, value);
                 }
             };
             // Objects merged!
