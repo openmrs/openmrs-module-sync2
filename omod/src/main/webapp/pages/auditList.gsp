@@ -54,7 +54,6 @@
         { id: "ALL", name: "${ ui.message('sync2.log.status.all') }" },
         { id: "SUCCESS", name: "${ ui.message('sync2.log.status.success') }" },
         { id: "FAILURE", name: "${ ui.message('sync2.log.status.failure') }" },
-        { id: "CONFLICT", name: "${ ui.message('sync2.log.status.conflict') }" }
     ];
 
     var syncOperation = [
