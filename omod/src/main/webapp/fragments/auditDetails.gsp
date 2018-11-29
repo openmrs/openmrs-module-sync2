@@ -50,7 +50,9 @@
                 <%=
                 auditLog.success
                     ? ui.message(messagesPrefix + ".details.status.success")
-                    : ui.message(messagesPrefix + ".details.status.failure")
+                    : (auditLog.mergeConflictUuid == null
+                        ? ui.message(messagesPrefix + ".details.status.failure")
+                        : ui.message(messagesPrefix + ".details.status.conflict"))
                 %>
             </td>
         </tr>
