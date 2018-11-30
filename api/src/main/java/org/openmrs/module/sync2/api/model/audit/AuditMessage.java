@@ -45,7 +45,7 @@ public class AuditMessage extends BaseOpenmrsData implements RestResource {
     private String creatorInstanceId;
 
     private String mergeConflictUuid;
-    
+
     public AuditMessage() {
     }
 

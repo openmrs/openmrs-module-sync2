@@ -19,12 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class Sync2ModuleController {
-	
+
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
-	
+
 	@RequestMapping(value = "/module/sync2/sync2", method = RequestMethod.GET)
 	public void manage(ModelMap model) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
 	}
-	
 }

@@ -2,6 +2,7 @@
     def messagesPrefix = "sync2.log.header"
     def detailViewProvider = "sync2"
     ui.includeJavascript("sync2", "sync2.audit.retry.js")
+    ui.includeJavascript("sync2", "sync2.conflict.js")
 %>
 
 <style>
@@ -49,7 +50,9 @@
                 <%=
                 auditLog.success
                     ? ui.message(messagesPrefix + ".details.status.success")
-                    : ui.message(messagesPrefix + ".details.status.failure")
+                    : (auditLog.mergeConflictUuid == null
+                        ? ui.message(messagesPrefix + ".details.status.failure")
+                        : ui.message(messagesPrefix + ".details.status.conflict"))
                 %>
             </td>
         </tr>
@@ -89,4 +92,10 @@
             ${ ui.message(messagesPrefix + '.retry') }
         </a>
     <% } %>
+<% } %>
+<% if (auditLog.mergeConflictUuid != null) { %>
+    <a class="button confirm right" onClick="conflictResolution();">
+        <i class="icon-wrench"></i>
+        ${ ui.message('sync2.conflict.resolution.title') }
+    </a>
 <% } %>
