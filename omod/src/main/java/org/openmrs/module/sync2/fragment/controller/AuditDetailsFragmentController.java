@@ -58,10 +58,10 @@ public class AuditDetailsFragmentController {
 		    @SpringBean("syncAuditService") SyncAuditService syncAuditService) {
 
 	    AuditMessage message = syncAuditService.getMessageByUuid(messageUuid);
-	    String conflictId = message.getConflictId();
+	    String conflictUuid = message.getMergeConflictUuid();
 
 	    SimpleObject result = new SimpleObject();
-	    String conflictResolutionUrl = "/module/sync2/conflictResolution.form?conflictId=" + conflictId;
+	    String conflictResolutionUrl = "/module/sync2/conflictResolution.form?conflictUuid=" + conflictUuid;
 	    result.put("url", conflictResolutionUrl);
 
 	    return result;

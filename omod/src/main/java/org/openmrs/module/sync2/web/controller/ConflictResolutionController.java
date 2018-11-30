@@ -19,9 +19,9 @@ public class ConflictResolutionController {
 	@RequestMapping(value = "/module/sync2/conflictResolution", method = RequestMethod.GET)
 	public void initConflictResolution(
 			ModelMap model,
-			@RequestParam("conflictId") String conflictUuid
+			@RequestParam("conflictUuid") String conflictUuid
 	) {
-		model.addAttribute("conflictId", conflictUuid);
+		model.addAttribute("conflictUuid", conflictUuid);
 
 		MergeConflict mergeConflict = mergeConflictService.getByUuid(conflictUuid);
 
