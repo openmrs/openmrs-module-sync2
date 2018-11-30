@@ -1,6 +1,6 @@
 function conflictResolution() {
 
-    jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/sync2/AuditDetails/conflictResolution.action',
+    jQuery.getJSON('/' + OPENMRS_CONTEXT_PATH + '/sync2/AuditDetails/conflictResolution.action',
     {
         conflictLogUuid:$('#retryLogUuid').text()
     }).success(function(data) {
@@ -12,12 +12,12 @@ function setValueOfRadioButton(key, customValue) {
     document.getElementById(key).value = customValue.value;
 }
 
-function setValueOfJsonKey(obj, current, pathKey, pathValue) {
+function changeValueOfJsonKey(obj, current, pathKey, pathValue) {
     for(var key in obj) {
         var value = obj[key];
         var newKey = (current ? current + "." + key : key);
         if(value && typeof value === "object") {
-            setValueOfJsonKey(value, newKey, pathKey, pathValue);
+            changeValueOfJsonKey(value, newKey, pathKey, pathValue);
         } else {
             if(newKey == pathKey) {
                 obj[key] = pathValue;

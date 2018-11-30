@@ -23,6 +23,9 @@ public class AuditDetailsFragmentController {
     private static final String AUDIT_LOG = "auditLog";
     private static final String LOCAL_INSTANCE_ID = "localInstanceId";
 
+    private static final String CONFLICT_RESOLUTION_PAGE_PATH = "/module/sync2/conflictResolution.form";
+    private static final String CONFLICT_UUID_URL_PARAM_PATH = "?conflictUuid=";
+
     public void controller(FragmentModel model,
                            @SpringBean("syncAuditService") SyncAuditService syncAuditService,
                            @FragmentParam(value = "messageUuid", required = true) String messageUuid){
@@ -61,7 +64,7 @@ public class AuditDetailsFragmentController {
 	    String conflictUuid = message.getMergeConflictUuid();
 
 	    SimpleObject result = new SimpleObject();
-	    String conflictResolutionUrl = "/module/sync2/conflictResolution.form?conflictUuid=" + conflictUuid;
+	    String conflictResolutionUrl = CONFLICT_RESOLUTION_PAGE_PATH + CONFLICT_UUID_URL_PARAM_PATH + conflictUuid;
 	    result.put("url", conflictResolutionUrl);
 
 	    return result;

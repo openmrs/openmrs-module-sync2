@@ -16,23 +16,29 @@ public class ConflictResolutionController {
 	@Autowired
 	MergeConflictService mergeConflictService;
 
+	private static final String LOCAL_OBJ_MODEL_ATTR = "localObjJson";
+	private static final String FOREIGN_OBJ_MODEL_ATTR = "foreignObjJson";
+	private static final String CONFLICT_UUID_MODEL_ATTR = "conflictUuid";
+	private static final String CLASS_NAME_MODEL_ATTR = "className";
+
+
 	@RequestMapping(value = "/module/sync2/conflictResolution", method = RequestMethod.GET)
 	public void initConflictResolution(
 			ModelMap model,
 			@RequestParam("conflictUuid") String conflictUuid
 	) {
-		model.addAttribute("conflictUuid", conflictUuid);
+		model.addAttribute(CONFLICT_UUID_MODEL_ATTR, conflictUuid);
 
 		MergeConflict mergeConflict = mergeConflictService.getByUuid(conflictUuid);
 
 		// TODO Fetch real object from mergeConflict object above
 		String localObjJson = "{}";
-		model.addAttribute("localObjJson", localObjJson);
+		model.addAttribute(LOCAL_OBJ_MODEL_ATTR, localObjJson);
 
 		String foreignObjJson = "{}";
-		model.addAttribute("foreignObjJson", foreignObjJson);
+		model.addAttribute(FOREIGN_OBJ_MODEL_ATTR, foreignObjJson);
 
 		String className = mergeConflict.getFullClassName();
-		model.addAttribute("className", className);
+		model.addAttribute(CLASS_NAME_MODEL_ATTR, className);
 	}
 }

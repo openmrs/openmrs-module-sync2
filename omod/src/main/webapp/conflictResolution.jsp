@@ -50,6 +50,7 @@
 
         var localObjJson = ${localObjJson};
         var foreignObjJson = ${foreignObjJson};
+        var mergedObjJson = ${localObjJson};
 
         jQuery("#localObjJson").jsonViewer(localObjJson);
         jQuery("#foreignObjJson").jsonViewer(foreignObjJson);
@@ -67,12 +68,12 @@
                 if(form.elements.item(i).checked) {
                     var key = form.elements.item(i).name;
                     var value = form.elements.item(i).value;
-                    setValueOfJsonKey(localObjJson, null, key, value);
+                    mergedObjJson = changeValueOfJsonKey(mergedObjJson, null, key, value);
                 }
             };
             // Objects merged!
-            console.log(localObjJson);
-            // TODO: Send 'localObjJson' after merging
+            console.log(mergedObjJson);
+            // TODO: Send 'mergedObjJson' after merging
         })
     });
 
