@@ -10,7 +10,9 @@ public class SyncMethodConfiguration implements Serializable {
     private static final long serialVersionUID = -6931575656903938518L;
 
     private boolean enabled;
+
     private Integer schedule;
+
     private List<ClassConfiguration> classes;
 
     public SyncMethodConfiguration() {

@@ -1,37 +1,43 @@
 {
   "general" : {
     "parentFeedLocation" : "",
-    "localFeedLocation" : "defaultAddress2",
-    "localInstanceId" : "localInstanceId2"
+    "localFeedLocation" : "defaultAddress",
+    "localInstanceId" : "localInstanceId",
+    "persistSuccessAudit" : false,
+    "persistFailureAudit" : false
   },
   "push" : {
-    "enabled" : false,
-    "schedule" : 24,
+    "enabled" : true,
+    "schedule" : 12,
     "classes" : [ {
-      "classTitle" : "Encounter",
-      "category" : "encounter",
-      "openMrsClass" : "org.openmrs.Encounter",
-      "enabled" : false
+      "classTitle" : "Location",
+      "category" : "location",
+      "openMrsClass" : "org.openmrs.Location",
+      "enabled" : true,
+      "preferredClient" : "fhir"
     }, {
-      "classTitle" : "Visit",
-      "category" : "visit",
-      "openMrsClass" : "org.openmrs.Visit",
-      "enabled" : false
+      "classTitle" : "Observation",
+      "category" : "observation",
+      "openMrsClass" : "org.openmrs.Obs",
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "pull" : {
-    "enabled" : false,
-    "schedule" : 24,
+    "enabled" : true,
+    "schedule" : 12,
     "classes" : [ {
-      "classTitle" : "Encounter",
-      "category" : "encounter",
-      "openMrsClass" : "org.openmrs.Encounter",
-      "enabled" : false
+      "classTitle" : "Location",
+      "category" : "location",
+      "openMrsClass" : "org.openmrs.Location",
+      "enabled" : true,
+      "preferredClient" : "fhir"
     }, {
-      "classTitle" : "Visit",
-      "category" : "visit",
-      "openMrsClass" : "org.openmrs.Visit",
-      "enabled" : false
+      "classTitle" : "Observation",
+      "category" : "observation",
+      "openMrsClass" : "org.openmrs.Obs",
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "whitelist" : {

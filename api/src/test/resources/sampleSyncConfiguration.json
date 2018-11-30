@@ -14,7 +14,7 @@
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
       "enabled" : true,
-      "preferredClient" : "REST"
+      "preferredClient" : "fhir"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",
@@ -31,7 +31,7 @@
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
       "enabled" : true,
-      "preferredClient" : "REST"
+      "preferredClient" : "fhir"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",

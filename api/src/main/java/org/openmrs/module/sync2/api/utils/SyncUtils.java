@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.sun.syndication.feed.atom.Category;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.api.context.Context;
@@ -14,6 +15,8 @@ import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.fhir.api.merge.MergeBehaviour;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -114,8 +117,13 @@ public class SyncUtils {
 		return map.get(ATOMFEED_TAG_VALUE_FIELD_NAME);
 	}
 
-	public static String selectAppropriateClientName(Map<String, String> availableResourceLinks) {
-		String preferredClient = getPreferredClient();
+	public static String selectAppropriateClientName(Map<String, String> availableResourceLinks, String category,
+			SyncOperation operation) {
+		ClassConfiguration classConfiguration = getSyncConfigurationService().getClassConfiguration(category, operation);
+		String preferredClient = getClassPreferredClient(classConfiguration);
+		if (StringUtils.isBlank(preferredClient)) {
+			preferredClient = getGlobalPreferredClient();
+		}
 		if (availableResourceLinks.containsKey(preferredClient)) {
 			return preferredClient;
 		} else {
@@ -131,8 +139,17 @@ public class SyncUtils {
 		}
 	}
 
-	public static String getPreferredClient() {
-		return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
+	public static String getClassPreferredClient(ClassConfiguration classConfiguration) {
+		String preferredClient = null;
+		if (classConfiguration != null) {
+			preferredClient = classConfiguration.getPreferredClient();
+		}
+		return preferredClient;
+	}
+
+	public static String getGlobalPreferredClient() {
+		return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT,
+				SyncConstants.DEFAULT_SYNC_2_CLIENT);
 	}
 
 	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {

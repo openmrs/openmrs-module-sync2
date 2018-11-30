@@ -8,7 +8,7 @@ import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.InstanceId;
-import org.openmrs.module.sync2.api.model.enums.Operation;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.model.enums.Status;
 import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
@@ -172,8 +172,8 @@ public class SyncAuditRestController {
 
     private String extractOperation(String enumValue) {
         try {
-            return Operation.valueOf(enumValue).name().equals(Operation.ALL.name()) ?
-                    "" : Operation.valueOf(enumValue).name();
+            SyncOperation operation = SyncOperation.getByValue(enumValue);
+            return operation.equals(SyncOperation.ALL) ? "" : operation.name();
         } catch (IllegalArgumentException e) {
             throw new SyncException(String.format("There is no suitable operation: %s.", enumValue), e);
         }

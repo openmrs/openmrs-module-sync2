@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
@@ -109,8 +110,8 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    protected String getOperation() {
-        return PULL_OPERATION;
+    protected SyncOperation getOperation() {
+        return SyncOperation.PULL;
     }
 
     @Override
@@ -136,7 +137,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     @Override
     public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
                                                   String action) {
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
         return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }

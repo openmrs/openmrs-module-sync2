@@ -10,6 +10,7 @@ public class WhitelistConfiguration implements Serializable {
     private static final long serialVersionUID = 3878263730073981879L;
 
     private boolean enabled;
+
     private List<String> instanceIds;
 
     public WhitelistConfiguration() {

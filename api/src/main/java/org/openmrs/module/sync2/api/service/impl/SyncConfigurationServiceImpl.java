@@ -1,10 +1,15 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.api.validator.SyncConfigurationValidator;
 import org.openmrs.util.OpenmrsUtil;
@@ -12,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
@@ -65,6 +71,22 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
     }
 
     @Override
+    public ClassConfiguration getClassConfiguration(String category, SyncOperation operation) {
+        ClassConfiguration result = null;
+        if (StringUtils.isNotBlank(category) && operation != null) {
+            SyncMethodConfiguration methodConfiguration = getSyncMethodConfiguration(operation);
+            List<ClassConfiguration> classes = getClassesConfiguration(methodConfiguration);
+            for (ClassConfiguration classConfiguration : classes) {
+                if (classConfiguration.getCategory().equalsIgnoreCase(category)) {
+                    result = classConfiguration;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public Errors validateConfiguration() {
         Errors errors = new Errors();
         List<SyncConfigurationValidator> validators = Context.getRegisteredComponents(SyncConfigurationValidator.class);
@@ -77,5 +99,28 @@ public class SyncConfigurationServiceImpl implements SyncConfigurationService {
     private String getConfigFilePath() {
         File configFileFolder = OpenmrsUtil.getDirectoryInApplicationDataDirectory(CONFIGURATION_DIR);
         return new File(configFileFolder, SYNC2_NAME_OF_CUSTOM_CONFIGURATION).getAbsolutePath();
+    }
+
+    private SyncMethodConfiguration getSyncMethodConfiguration(SyncOperation operation) {
+        SyncMethodConfiguration configuration;
+        switch (operation) {
+            case PULL:
+                configuration = getSyncConfiguration().getPull();
+                break;
+            case PUSH:
+                configuration = getSyncConfiguration().getPush();
+                break;
+            default:
+                configuration = null;
+        }
+        return configuration;
+    }
+
+    private List<ClassConfiguration> getClassesConfiguration(SyncMethodConfiguration methodConfiguration) {
+        List<ClassConfiguration> result = new ArrayList<>();
+        if (methodConfiguration != null) {
+            result = methodConfiguration.getClasses();
+        }
+        return result;
     }
 }

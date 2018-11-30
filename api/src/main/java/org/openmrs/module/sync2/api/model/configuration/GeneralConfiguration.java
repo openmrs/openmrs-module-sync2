@@ -8,9 +8,13 @@ public class GeneralConfiguration implements Serializable {
     private static final long serialVersionUID = -2762773054306474129L;
 
     private String parentFeedLocation;
+
     private String localFeedLocation;
+
     private String localInstanceId;
+
     private boolean persistSuccessAudit;
+
     private boolean persistFailureAudit;
 
     public GeneralConfiguration() { }

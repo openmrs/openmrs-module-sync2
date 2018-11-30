@@ -14,6 +14,7 @@ import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
 import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
 import org.openmrs.module.sync2.api.sync.SyncClient;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
@@ -64,7 +65,7 @@ public abstract class AbstractSynchronizationService {
     protected abstract AuditMessage synchronizeObject(String category, Map<String, String> resourceLinks,
             String action, String clientName, String uuid);
 
-    protected abstract String getOperation();
+    protected abstract SyncOperation getOperation();
 
     protected abstract String getBaseResourceUrl(Map<String, String> resourceLinks, String clientName);
 
@@ -98,7 +99,7 @@ public abstract class AbstractSynchronizationService {
         FeedConfiguration configuration = feedConfigurationService.getFeedConfigurationByCategory(category);
 
         Map<String, String> resourceLinks = configuration.getLinkTemplates();
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
         Map<String, String> mappedResourceLinks = includeUuidInResourceLinks(resourceLinks, uuid);
 
         String restUrl = mappedResourceLinks.get(REST_CLIENT);
@@ -173,7 +174,7 @@ public abstract class AbstractSynchronizationService {
 
     private AuditMessage prepareAuditMessage(String category, String clientName,
             Map<String, String> resourceLinks, String action) {
-        AuditMessage auditMessage = prepareBaseAuditMessage(getOperation());
+        AuditMessage auditMessage = prepareBaseAuditMessage(getOperation().getValue());
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getBaseResourceUrl(resourceLinks, clientName));
         auditMessage.setLinkType(clientName);
