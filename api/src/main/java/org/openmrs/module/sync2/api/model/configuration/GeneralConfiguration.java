@@ -1,8 +1,11 @@
 package org.openmrs.module.sync2.api.model.configuration;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class GeneralConfiguration {
+public class GeneralConfiguration implements Serializable {
+
+    private static final long serialVersionUID = -2762773054306474129L;
 
     private String parentFeedLocation;
     private String localFeedLocation;

@@ -13,12 +13,14 @@
       "classTitle" : "Location",
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : "REST"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "pull" : {
@@ -28,12 +30,14 @@
       "classTitle" : "Location",
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : "REST"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "whitelist" : {

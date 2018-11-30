@@ -12,7 +12,6 @@ import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.WhitelistConfiguration;
-import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
 import org.openmrs.module.sync2.api.scheduler.impl.SyncSchedulerServiceImpl;
 
@@ -57,7 +56,7 @@ public class SyncConfigurationServiceImplTest {
         expectedSyncConfiguration.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
-                "location", "org.openmrs.Location", true);
+                "location", "org.openmrs.Location", true, "REST");
         ClassConfiguration observationClass = new ClassConfiguration("Observation",
                 "observation", "org.openmrs.Obs", true);
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);

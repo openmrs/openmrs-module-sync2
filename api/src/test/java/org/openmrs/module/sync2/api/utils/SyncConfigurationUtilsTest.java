@@ -50,7 +50,7 @@ public class SyncConfigurationUtilsTest {
         EXPECTED_CONFIGURATION.setGeneral(general);
 
         ClassConfiguration locationClass = new ClassConfiguration("Location",
-                "location", "org.openmrs.Location", true);
+                "location", "org.openmrs.Location", true, "REST");
         ClassConfiguration observationClass = new ClassConfiguration("Observation",
                 "observation", "org.openmrs.Obs", true);
         List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
@@ -119,7 +119,7 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void shouldWriteSyncConfigurationToJsonString() throws SyncException {
-        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION);
+        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION) + '\n';
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
 
         Assert.assertEquals(expected, result);
@@ -133,7 +133,7 @@ public class SyncConfigurationUtilsTest {
         writeSyncConfigurationToJsonFile(EXPECTED_CONFIGURATION, path);
 
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
-        String result = readResourceFileAbsolutePath(path);
+        String result = readResourceFileAbsolutePath(path) + '\n';
 
         Assert.assertEquals(expected, result);
     }

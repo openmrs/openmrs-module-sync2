@@ -1,8 +1,11 @@
 package org.openmrs.module.sync2.api.model.configuration;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SyncConfiguration {
+public class SyncConfiguration implements Serializable {
+
+    private static final long serialVersionUID = 6912987641002329930L;
 
     private GeneralConfiguration general;
     private SyncMethodConfiguration push;
