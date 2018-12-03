@@ -7,10 +7,6 @@
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.js"/>
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
-<p>Resolution of conflict id: <b>${conflictUuid}</b></p>
-<p>Conflicted objects of class: <b>${className}</b></p>
-<br/><br/>
-
 <h3>Conflicted object properties:</h3>
 <p><i>Choose one option for each field and click 'Apply changes'</i></p>
 <form id="objectMergeForm">
@@ -71,10 +67,23 @@
                     mergedObjJson = changeValueOfJsonKey(mergedObjJson, null, key, value);
                 }
             };
-            // Objects merged!
-            console.log(mergedObjJson);
-            // TODO: Send 'mergedObjJson' after merging
-        })
+            var postUrl = document.location.origin + "/openmrs/ws/rest/sync2/conflict/resolve?conflictUuid=" +
+                "${conflictUuid}";
+            jQuery.ajax({
+                type: "POST",
+                url: postUrl,
+                data: JSON.stringify(mergedObjJson),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    jQuery('#server-error-msg').hide();
+                    toggleFields(data.isValid);
+                },
+                failure: function() {
+                    jQuery('#server-error-msg').show();
+                }
+            });
+        });
     });
 
 </script>
