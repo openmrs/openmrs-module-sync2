@@ -76,8 +76,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function(data) {
-                    jQuery('#server-error-msg').hide();
-                    toggleFields(data.isValid);
+                    window.location.replace(document.location.origin + data['url']);
                 },
                 failure: function() {
                     jQuery('#server-error-msg').show();

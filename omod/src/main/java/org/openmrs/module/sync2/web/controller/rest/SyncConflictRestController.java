@@ -23,6 +23,10 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResour
 @RequestMapping(value = "/rest/sync2/conflict", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncConflictRestController {
 
+	private static final String PAGE = "/openmrs/sync2/details.page?";
+	private static final String MESSAGE_UUID = "messageUuid=";
+	public static final String BACK_PAGE = "&backPage=auditList&backPageIndex=1";
+
 	@Autowired
 	private SyncAuditService syncAuditService;
 	@Autowired
@@ -41,16 +45,13 @@ public class SyncConflictRestController {
 				String uuid = extractUUIDFromResourceLinks(conflictMessage.getAvailableResourceUrlsAsMap());
 				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, conflictMessage.getResourceName(),
 						conflictMessage.getAvailableResourceUrlsAsMap(), conflictMessage.getAction(), uuid);
+				syncAuditService.setNextAudit(conflictMessage, resultAudit);
 
 				if (resultAudit.getSuccess()) {
-					resultAudit.setMergeConflictUuid(conflictMessage.getMergeConflictUuid());
-					syncAuditService.saveAuditMessage(resultAudit);
-					syncAuditService.setNextAudit(conflictMessage, resultAudit);
-					result.add("url", "/sync2/auditList.page");
+					String conflictResolutionUrl = PAGE + MESSAGE_UUID + conflictMessage.getUuid() + BACK_PAGE;
+					result.put("url", conflictResolutionUrl);
 					return ResponseEntity.accepted().body(result);
 				} else {
-					syncAuditService.saveAuditMessage(resultAudit);
-					syncAuditService.setNextAudit(conflictMessage, resultAudit);
 					return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 				}
 			} catch (Error | Exception e) {

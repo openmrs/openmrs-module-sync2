@@ -120,7 +120,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
             auditMessage.setSuccess(childAudit.getSuccess());
         }
 
-        return auditMessage;
+        return syncAuditService.saveAuditMessage(auditMessage);
     }
 
     @Override
