@@ -107,4 +107,9 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
 
         return gson.toJson(results);
     }
+
+    @Override
+    public AuditMessage getMessageByMergeConflictUuid(String uuid) throws APIException {
+        return dao.getMessageByMergeConflictUuid(uuid);
+    }
 }

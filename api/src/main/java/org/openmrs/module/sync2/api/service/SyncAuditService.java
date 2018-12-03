@@ -50,4 +50,8 @@ public interface SyncAuditService extends OpenmrsService {
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     @Transactional
     Set<String> getAllCreatorIds() throws APIException;
+
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    @Transactional(readOnly = true)
+    AuditMessage getMessageByMergeConflictUuid(String uuid) throws APIException;
 }

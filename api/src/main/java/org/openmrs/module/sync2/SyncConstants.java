@@ -40,6 +40,8 @@ public class SyncConstants {
 
     public static final String AUDIT_MESSAGE_VOIDED_FIELD_NAME = "voided";
 
+    public static final String AUDIT_MESSAGE_MERGE_CONFLICT_UUID_NAME = "mergeConflictUuid";
+
     public static final String PULL_OPERATION = "PULL";
 
     public static final String PUSH_OPERATION = "PUSH";

@@ -20,4 +20,6 @@ public interface SyncAuditDao {
     Long getCountOfMessages();
 
     AuditMessage saveItem(AuditMessage auditMessage);
+
+    AuditMessage getMessageByMergeConflictUuid(String uuid);
 }
