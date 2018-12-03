@@ -32,7 +32,8 @@ public class SyncConfigurationUtilsTest {
     private static final String SAMPLE_PRETTY_SERIALIZED_MAP = "samplePrettySerializedMap.json";
 
     private static final String NOT_EXISTING_FILE_PATH = "pathToNotExistingFile";
-    private static final SyncConfiguration EXPECTED_CONFIGURATION = SyncConfigurationMother.creteInstance(true);
+    private static final SyncConfiguration EXPECTED_CONFIGURATION = SyncConfigurationMother
+            .creteInstance(true, false);
 
     @Test
     public void readResourceFile_shouldReadSampleFile() throws SyncException {

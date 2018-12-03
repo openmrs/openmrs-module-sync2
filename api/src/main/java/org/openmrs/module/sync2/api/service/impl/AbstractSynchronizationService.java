@@ -8,6 +8,7 @@ import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
 import org.openmrs.module.fhir.api.merge.MergeConflict;
 import org.openmrs.module.fhir.api.merge.MergeResult;
 import org.openmrs.module.fhir.api.merge.MergeSuccess;
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.conflict.ConflictDetection;
 import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
 import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
@@ -174,7 +175,7 @@ public abstract class AbstractSynchronizationService {
 
     private AuditMessage prepareAuditMessage(String category, String clientName,
             Map<String, String> resourceLinks, String action) {
-        AuditMessage auditMessage = prepareBaseAuditMessage(getOperation().getValue());
+        AuditMessage auditMessage = prepareBaseAuditMessage(getOperation().getValue(), clientName);
         auditMessage.setResourceName(category);
         auditMessage.setUsedResourceUrl(getBaseResourceUrl(resourceLinks, clientName));
         auditMessage.setLinkType(clientName);
@@ -193,10 +194,10 @@ public abstract class AbstractSynchronizationService {
 
     private List<String> determineActions(String category, String restUrl) {
         String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
-        String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(), restUrl);
+        String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(SyncConstants.REST_CLIENT), restUrl);
 
-        Object localObj = syncClient.pullData(category, REST_CLIENT, localPullUrl, CHILD);
-        Object parentObj = syncClient.pullData(category, REST_CLIENT, parentPullUrl, PARENT);
+        Object localObj = syncClient.pullData(category, SyncConstants.REST_CLIENT, localPullUrl, CHILD);
+        Object parentObj = syncClient.pullData(category, SyncConstants.REST_CLIENT, parentPullUrl, PARENT);
 
         return determineActionsBasingOnSyncType(localObj, parentObj);
     }

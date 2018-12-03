@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;

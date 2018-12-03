@@ -42,7 +42,7 @@ public class SyncConfigurationServiceImplTest {
 
     @Test
     public void saveConfiguration_shouldLoadTheSyncConfigurationFromObjectCorrectly() throws SyncException {
-        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(true);
+        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(true, false);
 
         SyncConfiguration syncConfiguration = parseJsonFileToSyncConfiguration(SAMPLE_FEED_CONFIGURATION_PATH, RELATIVE);
         sync2ConfigurationService.saveConfiguration(syncConfiguration);
@@ -52,7 +52,7 @@ public class SyncConfigurationServiceImplTest {
 
     @Test
     public void saveConfiguration_shouldLoadTheSyncConfigurationFromStringCorrectly() throws SyncException {
-        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(false);
+        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(false, true);
 
         String json = readResourceFile(SAMPLE_FEED_CONFIGURATION_PATH2);
         sync2ConfigurationService.saveConfiguration(json);
@@ -62,7 +62,7 @@ public class SyncConfigurationServiceImplTest {
 
     @Test
     public void saveConfiguration_shouldSavedConfigurationWithDefaultWhitelist() throws SyncException {
-        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(false);
+        final SyncConfiguration expectedSyncConfiguration = SyncConfigurationMother.creteInstance(false, false);
 
         String json = readResourceFile(NO_WHITELIST_PROVIDED_CONFIGURATION_PATH);
         sync2ConfigurationService.saveConfiguration(json);

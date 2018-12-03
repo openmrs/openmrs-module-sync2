@@ -42,7 +42,7 @@ public class SyncUtilsTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         Mockito.when(syncConfigurationServiceImpl.getSyncConfiguration()).thenReturn(
-                SyncConfigurationMother.creteInstance(true));
+                SyncConfigurationMother.creteInstance(true, true));
         Mockito.when(syncConfigurationServiceImpl.getClassConfiguration(Mockito.any(), Mockito.any())).thenCallRealMethod();
 
         Mockito.when(administrationService.getGlobalProperty(SyncConstants.RESOURCE_PREFERRED_CLIENT,

@@ -7,6 +7,7 @@ import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.InnerRequest;
 import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.sync2.client.RequestWrapperConverter;
 import org.slf4j.Logger;
@@ -57,10 +58,10 @@ public class SyncClient {
 
 		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		prepareRestTemplate(clientHelper);
-		String destinationUrl = getDestinationUri(instance);
+		String destinationUrl = getDestinationUri(instance, clientName);
 
 		try {
-			result = retrieveObject(category, resourceUrl, destinationUrl, clientName);
+			result = retrieveObject(category, resourceUrl, destinationUrl, clientName, instance);
 		}
 		catch (HttpClientErrorException e) {
 			if (e.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
@@ -80,22 +81,22 @@ public class SyncClient {
 			String resourceUrl, String action, OpenMRSSyncInstance instance) {
 		ResponseEntity<String> result = null;
 		setUpCredentials(instance);
-		String destinationUrl = getDestinationUri(instance);
+		String destinationUrl = getDestinationUri(instance, clientName);
 		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		prepareRestTemplate(clientHelper);
 
 		try {
 			switch (action) {
 				case ACTION_CREATED:
-					result = createObject(category, resourceUrl, destinationUrl, object, clientName);
+					result = createObject(category, resourceUrl, destinationUrl, object, clientName, instance);
 					break;
 				case ACTION_UPDATED:
-					result = updateObject(category, resourceUrl, destinationUrl, object, clientName);
+					result = updateObject(category, resourceUrl, destinationUrl, object, clientName, instance);
 					break;
 				case ACTION_VOIDED:
 				case ACTION_DELETED:
 				case ACTION_RETIRED:
-					result = deleteObject(category, resourceUrl, destinationUrl, (String) object, clientName);
+					result = deleteObject(category, resourceUrl, destinationUrl, (String) object, clientName, instance);
 					break;
 				default:
 					LOGGER.warn(String.format("Sync push exception. Unrecognized action: %s", action));
@@ -130,38 +131,54 @@ public class SyncClient {
 		restTemplate.setMessageConverters(converters);
 	}
 
-	private Object retrieveObject(String category, String resourceUrl, String destinationUrl, String clientName)
+	private Object retrieveObject(String category, String resourceUrl, String destinationUrl, String clientName,
+			OpenMRSSyncInstance instance)
 			throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 		Class<?> clazz = helper.resolveClassByCategory(category);
 
-		return restTemplate.exchange(sendRequest(category, destinationUrl, clientName,
-				new InnerRequest(helper.retrieveRequest(resourceUrl))),
-				clazz).getBody();
+		RequestEntity request = helper.retrieveRequest(resourceUrl);
+		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
+		}
+		return exchange(request, clazz).getBody();
 	}
 
 	private ResponseEntity<String> createObject(String category, String resourceUrl, String destinationUrl, Object object,
-			String clientName) throws RestClientException, URISyntaxException {
+			String clientName, OpenMRSSyncInstance instance) throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
-		InnerRequest request = new InnerRequest(helper.createRequest(resourceUrl, object));
 
-		return restTemplate.exchange(sendRequest(category, destinationUrl, clientName, request), String.class);
+		RequestEntity request = helper.createRequest(resourceUrl, object);
+		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
+		}
+		return exchange(request, String.class);
 	}
 
 	private ResponseEntity<String> deleteObject(String category, String resourceUrl, String destinationUrl, String uuid,
-			String clientName) throws URISyntaxException {
+			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
-		InnerRequest request = new InnerRequest(helper.deleteRequest(resourceUrl, uuid));
 
-		return restTemplate.exchange(sendRequest(category, destinationUrl, clientName, request), String.class);
+		RequestEntity request = helper.createRequest(resourceUrl, uuid);
+		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
+		}
+		return exchange(request, String.class);
 	}
 
 	private ResponseEntity<String> updateObject(String category, String resourceUrl, String destinationUrl, Object object,
-			String clientName) throws URISyntaxException {
+			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
-		InnerRequest request = new InnerRequest(helper.updateRequest(resourceUrl, object));
 
-		return restTemplate.exchange(sendRequest(category, destinationUrl, clientName, request), String.class);
+		RequestEntity request = helper.createRequest(resourceUrl, object);
+		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
+		}
+		return exchange(request, String.class);
+	}
+
+	private ResponseEntity exchange(RequestEntity request, Class clazz) {
+		return restTemplate.exchange(request, clazz);
 	}
 
 	private RequestEntity<RequestWrapper> sendRequest(String category, String destinationUrl, String clientName,
@@ -179,11 +196,11 @@ public class SyncClient {
 		return new RequestEntity<>(wrapper, HttpMethod.POST, new URI(destinationUrl));
 	}
 
-	private String getDestinationUri(OpenMRSSyncInstance instance) {
+	private String getDestinationUri(OpenMRSSyncInstance instance, String clientName) {
 		String uri = "";
 		switch (instance) {
 			case PARENT:
-				uri = getParentBaseUrl();
+				uri = getParentBaseUrl(clientName);
 				break;
 			case CHILD:
 				uri = getLocalBaseUrl();

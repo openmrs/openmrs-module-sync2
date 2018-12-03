@@ -15,12 +15,13 @@ import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.fhir.api.merge.MergeBehaviour;
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
-import org.openmrs.module.sync2.api.model.enums.SyncOperation;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.ClientConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,9 +58,34 @@ public class SyncUtils {
 		}
 	}
 
-	public static String getParentBaseUrl() {
-		SyncConfigurationService cs = getSyncConfigurationService();
-		return cs.getSyncConfiguration().getGeneral().getParentFeedLocation();
+	public static String getParentBaseUrl(String clientName) {
+		String parentBaseUrl = null;
+		parentBaseUrl = getSpecificClientAddress(clientName);
+		if (StringUtils.isBlank(parentBaseUrl)) {
+			SyncConfigurationService cs = getSyncConfigurationService();
+			parentBaseUrl = cs.getSyncConfiguration().getGeneral().getParentFeedLocation();
+		}
+		return parentBaseUrl;
+	}
+
+	public static String getSpecificClientAddress(String clientName) {
+		String address = null;
+		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
+				.getSyncConfiguration().getGeneral().getClients();
+		if (!availableConfigurations.isEmpty()) {
+			ClientConfiguration configuration = availableConfigurations.get(clientName);
+			if (configuration != null) {
+				address = configuration.getHostAddress();
+			}
+		}
+		return address;
+	}
+
+	public static boolean clientHasSpecificAddress(String clientName, OpenMRSSyncInstance instance) {
+		if (instance == OpenMRSSyncInstance.CHILD) {
+			return false;
+		}
+		return StringUtils.isNotBlank(getSpecificClientAddress(clientName));
 	}
 
 	public static String getLocalBaseUrl() {
@@ -72,12 +99,12 @@ public class SyncUtils {
 	}
 
 	public static String getPullUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
-		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl(clientName);
 		return getFullUrl(base, resourceLinks.get(clientName));
 	}
 
 	public static String getPushUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
-		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl(clientName);
 		return getFullUrl(base, getPushPath(resourceLinks.get(clientName)));
 
 	}
@@ -104,7 +131,13 @@ public class SyncUtils {
 	}
 
 	private static String getPushPath(String pathWithId) {
-		return pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+		String result = null;
+		if (pathWithId.contains("/")) {
+			result = pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+		} else {
+			result = pathWithId;
+		}
+		return result;
 	}
 
 	private static String getTagValue(Object tag) {
