@@ -24,7 +24,9 @@ import java.util.Map;
 import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.*;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
 
 @Component("sync2.syncPushService")
 public class SyncPushServiceImpl extends AbstractSynchronizationService implements SyncPushService {
@@ -106,21 +108,11 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
                         SyncConstants.REST_CLIENT));
                 parentObjectHashcodeService.save(uuid, hashCode);
             } catch (Error | Exception e) {
-                auditMessage = failedMessage(auditMessage, e);
+                return syncAuditService.saveAuditMessage(failedMessage(auditMessage, e));
             }
-        } else {
-            auditMessage.setDetails(parentAudit.getDetails());
-            auditMessage.setSuccess(parentAudit.getSuccess());
         }
 
-        if (parentAudit.getSuccess() && childAudit.getSuccess()) {
-            auditMessage = successfulMessage(auditMessage);
-        } else {
-            auditMessage.setDetails(childAudit.getDetails());
-            auditMessage.setSuccess(childAudit.getSuccess());
-        }
-
-        return syncAuditService.saveAuditMessage(auditMessage);
+        return syncAuditService.saveAuditMessage(combineForceAuditMessages(auditMessage, parentAudit, childAudit));
     }
 
     @Override
@@ -193,5 +185,24 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
         }
 
         return syncAuditService.saveAuditMessageDuringSync(message);
+    }
+
+    private AuditMessage combineForceAuditMessages(AuditMessage combined, AuditMessage msg,  AuditMessage msg2) {
+        if (msg.getSuccess()) {
+            if (msg2.getSuccess()) {
+                combined = successfulMessage(combined);
+            } else {
+                combined.setDetails(msg2.getDetails());
+                combined.setSuccess(false);
+            }
+        } else {
+            StringBuilder sb = new StringBuilder(msg.getDetails());
+            if (!msg2.getSuccess()) {
+                sb.append(msg2.getDetails());
+            }
+            combined.setDetails(sb.toString());
+            combined.setSuccess(false);
+        }
+        return combined;
     }
 }
