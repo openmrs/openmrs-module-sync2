@@ -93,7 +93,7 @@
         </a>
     <% } %>
 <% } %>
-<% if (auditLog.mergeConflictUuid != null) { %>
+<% if (auditLog.mergeConflictUuid != null && auditLog.nextMessageUuid == null) { %>
     <a class="button confirm right" onClick="conflictResolution();">
         <i class="icon-wrench"></i>
         ${ ui.message('sync2.conflict.resolution.title') }

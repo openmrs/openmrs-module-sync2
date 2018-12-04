@@ -15,4 +15,7 @@ public interface SyncPushService {
     List<AuditMessage> readAndPushObjectToParent(String category, String uuid);
 
     void readAndPushObjectsToParent(String category);
+
+    AuditMessage mergeForcePush(Object merged, String category, Map<String, String> resourceLinks,
+            String action, String uuid);
 }

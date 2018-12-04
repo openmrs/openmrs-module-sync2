@@ -2,7 +2,6 @@ package org.openmrs.module.sync2.api.dao.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -75,6 +74,14 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
     public AuditMessage saveItem(AuditMessage auditMessage) {
         getSession().saveOrUpdate(auditMessage);
         return auditMessage;
+    }
+
+    @Override
+    public AuditMessage getMessageByMergeConflictUuid(String uuid) {
+        return (AuditMessage) getSession()
+                .createCriteria(AuditMessage.class)
+                .add(Restrictions.eq(SyncConstants.AUDIT_MESSAGE_MERGE_CONFLICT_UUID_NAME, uuid))
+                .uniqueResult();
     }
 
     private Criteria createSelectCriteria(Boolean success, String operation, String resourceName,
