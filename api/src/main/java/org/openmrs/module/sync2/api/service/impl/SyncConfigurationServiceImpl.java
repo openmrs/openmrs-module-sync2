@@ -2,14 +2,13 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
-import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.scheduler.SyncSchedulerService;
-import org.openmrs.module.sync2.api.utils.SyncUtils;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.api.validator.SyncConfigurationValidator;
 import org.openmrs.util.OpenmrsUtil;
@@ -26,10 +25,10 @@ import static org.openmrs.module.sync2.SyncConstants.SYNC2_PATH_TO_DEFAULT_CONFI
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE;
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.RELATIVE;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.customConfigExists;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 
 @Component("sync2.syncConfigurationService")
 public class SyncConfigurationServiceImpl implements SyncConfigurationService {

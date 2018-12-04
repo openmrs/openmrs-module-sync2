@@ -32,7 +32,6 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,13 +70,9 @@ public class SyncUtils {
 
 	public static String getSpecificClientAddress(String clientName) {
 		String address = null;
-		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
-				.getSyncConfiguration().getGeneral().getClients();
-		if (!availableConfigurations.isEmpty()) {
-			ClientConfiguration configuration = availableConfigurations.get(clientName);
-			if (configuration != null) {
-				address = configuration.getHostAddress();
-			}
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			address = configuration.getHostAddress();
 		}
 		return address;
 	}
@@ -111,26 +106,18 @@ public class SyncUtils {
 
 	public static String getClientSpecificLogin(String clientName) {
 		String login = null;
-		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
-				.getSyncConfiguration().getGeneral().getClients();
-		if (!availableConfigurations.isEmpty()) {
-			ClientConfiguration configuration = availableConfigurations.get(clientName);
-			if (configuration != null) {
-				login = configuration.getLogin();
-			}
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			login = configuration.getLogin();
 		}
 		return login;
 	}
 
 	public static String getClientSpecificPassword(String clientName) {
 		String password = null;
-		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
-				.getSyncConfiguration().getGeneral().getClients();
-		if (!availableConfigurations.isEmpty()) {
-			ClientConfiguration configuration = availableConfigurations.get(clientName);
-			if (configuration != null) {
-				password = configuration.getPassword();
-			}
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			password = configuration.getPassword();
 		}
 		return password;
 	}
@@ -195,7 +182,7 @@ public class SyncUtils {
 	private static String getPushPath(String pathWithId) {
 		String result = null;
 		if (pathWithId.contains("/")) {
-			result = pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+			result = pathWithId.substring(SyncConstants.ZERO, pathWithId.lastIndexOf("/"));
 		} else {
 			result = pathWithId;
 		}

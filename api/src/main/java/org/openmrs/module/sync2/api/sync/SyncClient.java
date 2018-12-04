@@ -126,7 +126,7 @@ public class SyncClient {
 		Class<?> clazz = helper.resolveClassByCategory(category);
 
 		RequestEntity request = helper.retrieveRequest(resourceUrl);
-		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
 		return exchange(request, clazz).getBody();
@@ -137,7 +137,7 @@ public class SyncClient {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
 		RequestEntity request = helper.createRequest(resourceUrl, object);
-		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
 		return exchange(request, String.class);
@@ -148,7 +148,7 @@ public class SyncClient {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
 		RequestEntity request = helper.createRequest(resourceUrl, uuid);
-		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
 		return exchange(request, String.class);
@@ -159,7 +159,7 @@ public class SyncClient {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
 		RequestEntity request = helper.createRequest(resourceUrl, object);
-		if (!SyncUtils.clientHasSpecificAddress(clientName, instance)) {
+		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
 		return exchange(request, String.class);
@@ -182,6 +182,10 @@ public class SyncClient {
 		wrapper.setRequest(request);
 
 		return new RequestEntity<>(wrapper, HttpMethod.POST, new URI(destinationUrl));
+	}
+
+	private boolean shouldWrappMessage(String clientName, OpenMRSSyncInstance instance) {
+		return !SyncUtils.clientHasSpecificAddress(clientName, instance);
 	}
 
 	private String getDestinationUri(OpenMRSSyncInstance instance, String clientName) {
