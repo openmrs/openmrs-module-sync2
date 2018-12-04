@@ -1,13 +1,15 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
-import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
-import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.service.UnifyService;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -22,8 +24,8 @@ import java.util.Map;
 
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
-import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
+import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
 
 @Component("sync2.syncPushService")
@@ -93,6 +95,27 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
+    public AuditMessage mergeForcePush(Object merged, String category, Map<String, String> resourceLinks,
+            String action, String uuid) {
+
+        AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
+        AuditMessage parentAudit = forcePush(merged, category, resourceLinks, action, SyncConstants.REST_CLIENT, PARENT);
+        AuditMessage childAudit = forcePush(merged, category, resourceLinks, action, SyncConstants.REST_CLIENT, CHILD);
+
+        if (parentAudit.getSuccess()) {
+            try {
+                String hashCode = SyncHashcodeUtils.getHashcode(unifyService.unifyObject(merged, category,
+                        SyncConstants.REST_CLIENT));
+                parentObjectHashcodeService.save(uuid, hashCode);
+            } catch (Error | Exception e) {
+                return syncAuditService.saveAuditMessage(failedMessage(auditMessage, e));
+            }
+        }
+
+        return syncAuditService.saveAuditMessage(combineForceAuditMessages(auditMessage, parentAudit, childAudit));
+    }
+
+    @Override
     public List<AuditMessage> readAndPushObjectToParent(String category, String uuid) {
         return synchronizeObject(category, uuid);
     }
@@ -143,5 +166,43 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
 
     private Object getLocalObject(String category, String action, String clientName, String uuid, String localPull) {
         return pullData(category, action, clientName, uuid, localPull, CHILD);
+    }
+
+    private AuditMessage forcePush(Object merged, String category, Map<String, String> resourceLinks,
+            String action, String clientName, OpenMRSSyncInstance instance) {
+        AuditMessage message = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
+        try {
+            syncClient.pushData(
+                    category,
+                    merged,
+                    clientName,
+                    getPushUrl(resourceLinks, clientName, instance),
+                    action,
+                    instance);
+            message = successfulMessage(message);
+        } catch (Error | Exception e) {
+            message = failedMessage(message, e);
+        }
+
+        return syncAuditService.saveAuditMessageDuringSync(message);
+    }
+
+    private AuditMessage combineForceAuditMessages(AuditMessage combined, AuditMessage msg,  AuditMessage msg2) {
+        if (msg.getSuccess()) {
+            if (msg2.getSuccess()) {
+                combined = successfulMessage(combined);
+            } else {
+                combined.setDetails(msg2.getDetails());
+                combined.setSuccess(false);
+            }
+        } else {
+            StringBuilder sb = new StringBuilder(msg.getDetails());
+            if (!msg2.getSuccess()) {
+                sb.append(msg2.getDetails());
+            }
+            combined.setDetails(sb.toString());
+            combined.setSuccess(false);
+        }
+        return combined;
     }
 }

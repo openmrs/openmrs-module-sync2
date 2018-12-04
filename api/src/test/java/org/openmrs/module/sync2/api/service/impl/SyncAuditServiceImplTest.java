@@ -265,7 +265,7 @@ public class SyncAuditServiceImplTest {
         newMessage.setUuid(AUDIT_UUID);
         newMessage.setSuccess(success);
         newMessage.setMergeConflictUuid(AUDIT_MERGE_CONFLICT_UUID);
-    
+
         String createDate = "2017-12-07 00:00:00";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date parsedDate = dateFormat.parse(createDate);
