@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.sun.syndication.feed.atom.Category;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.api.filter.FeedFilter;
@@ -14,10 +16,13 @@ import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.fhir.api.merge.MergeBehaviour;
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
+import org.openmrs.module.sync2.api.model.configuration.ClientConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
@@ -53,9 +58,30 @@ public class SyncUtils {
 		}
 	}
 
-	public static String getParentBaseUrl() {
-		SyncConfigurationService cs = getSyncConfigurationService();
-		return cs.getSyncConfiguration().getGeneral().getParentFeedLocation();
+	public static String getParentBaseUrl(String clientName) {
+		String parentBaseUrl = null;
+		parentBaseUrl = getSpecificClientAddress(clientName);
+		if (StringUtils.isBlank(parentBaseUrl)) {
+			SyncConfigurationService cs = getSyncConfigurationService();
+			parentBaseUrl = cs.getSyncConfiguration().getGeneral().getParentFeedLocation();
+		}
+		return parentBaseUrl;
+	}
+
+	public static String getSpecificClientAddress(String clientName) {
+		String address = null;
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			address = configuration.getHostAddress();
+		}
+		return address;
+	}
+
+	public static boolean clientHasSpecificAddress(String clientName, OpenMRSSyncInstance instance) {
+		if (instance == OpenMRSSyncInstance.CHILD) {
+			return false;
+		}
+		return StringUtils.isNotBlank(getSpecificClientAddress(clientName));
 	}
 
 	public static String getLocalBaseUrl() {
@@ -69,14 +95,67 @@ public class SyncUtils {
 	}
 
 	public static String getPullUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
-		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl(clientName);
 		return getFullUrl(base, resourceLinks.get(clientName));
 	}
 
 	public static String getPushUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
-		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl();
+		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl(clientName);
 		return getFullUrl(base, getPushPath(resourceLinks.get(clientName)));
+	}
 
+	public static String getClientSpecificLogin(String clientName) {
+		String login = null;
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			login = configuration.getLogin();
+		}
+		return login;
+	}
+
+	public static String getClientSpecificPassword(String clientName) {
+		String password = null;
+		ClientConfiguration configuration = SyncConfigurationUtils.getClientConfiguration(clientName);
+		if (configuration != null) {
+			password = configuration.getPassword();
+		}
+		return password;
+	}
+
+	public static boolean clientHasSpecificCridentials(String clientName, OpenMRSSyncInstance instance) {
+		if (instance == OpenMRSSyncInstance.CHILD) {
+			return false;
+		}
+		return StringUtils.isNotBlank(getClientSpecificPassword(clientName))
+				&& StringUtils.isNotBlank(getClientSpecificLogin(clientName));
+	}
+
+	public static String getClientLogin(String clientName, OpenMRSSyncInstance instance) {
+		String login = null;
+		if (clientHasSpecificCridentials(clientName, instance)) {
+			login = getClientSpecificLogin(clientName);
+		}
+		if (StringUtils.isBlank(login)) {
+			AdministrationService adminService = Context.getAdministrationService();
+			login = instance.equals(OpenMRSSyncInstance.PARENT) ?
+					adminService.getGlobalProperty(SyncConstants.PARENT_USERNAME_PROPERTY) :
+					adminService.getGlobalProperty(SyncConstants.LOCAL_USERNAME_PROPERTY);
+		}
+		return login;
+	}
+
+	public static String getClientPassword(String clientName, OpenMRSSyncInstance instance) {
+		String password = null;
+		if (clientHasSpecificCridentials(clientName, instance)) {
+			password = getClientSpecificPassword(clientName);
+		}
+		if (StringUtils.isBlank(password)) {
+			AdministrationService adminService = Context.getAdministrationService();
+			password = instance.equals(OpenMRSSyncInstance.PARENT) ?
+					adminService.getGlobalProperty(SyncConstants.PARENT_PASSWORD_PROPERTY) :
+					adminService.getGlobalProperty(SyncConstants.LOCAL_PASSWORD_PROPERTY);
+		}
+		return password;
 	}
 
 	public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {
@@ -101,7 +180,13 @@ public class SyncUtils {
 	}
 
 	private static String getPushPath(String pathWithId) {
-		return pathWithId.substring(0, pathWithId.lastIndexOf("/"));
+		String result = null;
+		if (pathWithId.contains("/")) {
+			result = pathWithId.substring(SyncConstants.ZERO, pathWithId.lastIndexOf("/"));
+		} else {
+			result = pathWithId;
+		}
+		return result;
 	}
 
 	private static String getTagValue(Object tag) {
@@ -114,8 +199,13 @@ public class SyncUtils {
 		return map.get(ATOMFEED_TAG_VALUE_FIELD_NAME);
 	}
 
-	public static String selectAppropriateClientName(Map<String, String> availableResourceLinks) {
-		String preferredClient = getPreferredClient();
+	public static String selectAppropriateClientName(Map<String, String> availableResourceLinks, String category,
+			SyncOperation operation) {
+		ClassConfiguration classConfiguration = getSyncConfigurationService().getClassConfiguration(category, operation);
+		String preferredClient = getClassPreferredClient(classConfiguration);
+		if (StringUtils.isBlank(preferredClient)) {
+			preferredClient = getGlobalPreferredClient();
+		}
 		if (availableResourceLinks.containsKey(preferredClient)) {
 			return preferredClient;
 		} else {
@@ -131,8 +221,17 @@ public class SyncUtils {
 		}
 	}
 
-	public static String getPreferredClient() {
-		return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT);
+	public static String getClassPreferredClient(ClassConfiguration classConfiguration) {
+		String preferredClient = null;
+		if (classConfiguration != null) {
+			preferredClient = classConfiguration.getPreferredClient();
+		}
+		return preferredClient;
+	}
+
+	public static String getGlobalPreferredClient() {
+		return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT,
+				SyncConstants.DEFAULT_SYNC_2_CLIENT);
 	}
 
 	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {

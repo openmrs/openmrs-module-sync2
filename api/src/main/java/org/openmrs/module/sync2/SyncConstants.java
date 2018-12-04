@@ -40,6 +40,8 @@ public class SyncConstants {
 
     public static final String AUDIT_MESSAGE_VOIDED_FIELD_NAME = "voided";
 
+    public static final String ALL_OPERATIONS = "ALL";
+
     public static final String AUDIT_MESSAGE_MERGE_CONFLICT_UUID_NAME = "mergeConflictUuid";
 
     public static final String PULL_OPERATION = "PULL";
@@ -49,6 +51,8 @@ public class SyncConstants {
     public static final String FHIR_CLIENT = "fhir";
 
     public static final String REST_CLIENT = "rest";
+
+    public static final String DEFAULT_SYNC_2_CLIENT = REST_CLIENT;
 
     public static final String RECENT_FEED = "recent";
 

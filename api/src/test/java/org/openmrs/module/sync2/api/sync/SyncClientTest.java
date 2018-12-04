@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -86,7 +87,7 @@ public class SyncClientTest {
         when(ContextUtils.getConversionService()).thenReturn(new DefaultConversionService());
 
         mockStatic(SyncUtils.class);
-        when(SyncUtils.getParentBaseUrl()).thenReturn(PARENT_FEED_LOCATION);
+        when(SyncUtils.getParentBaseUrl(Mockito.anyString())).thenReturn(PARENT_FEED_LOCATION);
 
         expectedPatient = createPatient();
         expectedVisit = createVisit();
@@ -121,16 +122,16 @@ public class SyncClientTest {
         SyncClient syncClient =  PowerMockito.spy(new SyncClient());
         PowerMockito.doReturn(createPatient())
                 .when(syncClient, "retrieveObject", PATIENT_CATEGORY, REST_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
-                        REST_CLIENT_KEY);
+                        REST_CLIENT_KEY, PARENT);
         PowerMockito.doReturn(createVisit())
                 .when(syncClient, "retrieveObject", VISIT_CATEGORY, REST_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
-                        REST_CLIENT_KEY);
+                        REST_CLIENT_KEY, PARENT);
         PowerMockito.doReturn(createPatient())
                 .when(syncClient, "retrieveObject", PATIENT_CATEGORY, FHIR_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
-                        FHIR_CLIENT_KEY);
+                        FHIR_CLIENT_KEY, PARENT);
         PowerMockito.doReturn(createVisit())
                 .when(syncClient, "retrieveObject", VISIT_CATEGORY, FHIR_FULL_RESOURCE_URL, PARENT_DESTINATION_URL,
-                        FHIR_CLIENT_KEY);
+                        FHIR_CLIENT_KEY, PARENT);
         whenNew(SyncClient.class).withNoArguments().thenReturn(syncClient);
     }
     

@@ -1,33 +1,26 @@
 package org.openmrs.module.sync2.api.utils;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
-import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
-import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
-import org.openmrs.module.sync2.api.model.configuration.WhitelistConfiguration;
+import org.openmrs.module.sync2.api.mother.SyncConfigurationMother;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.CONFIGURATION_DIR;
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.RELATIVE;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonFileToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFile;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.isValidateJson;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.readResourceFileAbsolutePath;
+import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonFile;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
-import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.resourceFileExists;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.serialize;
 
@@ -39,33 +32,8 @@ public class SyncConfigurationUtilsTest {
     private static final String SAMPLE_PRETTY_SERIALIZED_MAP = "samplePrettySerializedMap.json";
 
     private static final String NOT_EXISTING_FILE_PATH = "pathToNotExistingFile";
-    private static final SyncConfiguration EXPECTED_CONFIGURATION = new SyncConfiguration();
-    
-    private static final String SAMPLE_LOCAL_INSTANCE_ID = "localInstanceId";
-    
-    @Before
-    public void setUp() {
-        GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
-                SAMPLE_LOCAL_INSTANCE_ID, false, false);
-        EXPECTED_CONFIGURATION.setGeneral(general);
-
-        ClassConfiguration locationClass = new ClassConfiguration("Location",
-                "location", "org.openmrs.Location", true);
-        ClassConfiguration observationClass = new ClassConfiguration("Observation",
-                "observation", "org.openmrs.Obs", true);
-        List<ClassConfiguration> classes = Arrays.asList(locationClass, observationClass);
-
-        SyncMethodConfiguration push = new SyncMethodConfiguration(true, 12, classes);
-        EXPECTED_CONFIGURATION.setPush(push);
-
-        SyncMethodConfiguration pull = new SyncMethodConfiguration(true, 12, classes);
-        EXPECTED_CONFIGURATION.setPull(pull);
-
-        List<String> instanceIds = new ArrayList<>();
-        instanceIds.add("childInstanceId");
-        WhitelistConfiguration whitelist = new WhitelistConfiguration(true, instanceIds);
-        EXPECTED_CONFIGURATION.setWhitelist(whitelist);
-    }
+    private static final SyncConfiguration EXPECTED_CONFIGURATION = SyncConfigurationMother
+            .creteInstance(true, false);
 
     @Test
     public void readResourceFile_shouldReadSampleFile() throws SyncException {
@@ -119,7 +87,7 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void shouldWriteSyncConfigurationToJsonString() throws SyncException {
-        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION);
+        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION) + '\n';
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
 
         Assert.assertEquals(expected, result);
@@ -133,7 +101,7 @@ public class SyncConfigurationUtilsTest {
         writeSyncConfigurationToJsonFile(EXPECTED_CONFIGURATION, path);
 
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
-        String result = readResourceFileAbsolutePath(path);
+        String result = readResourceFileAbsolutePath(path) + '\n';
 
         Assert.assertEquals(expected, result);
     }

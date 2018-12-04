@@ -37,6 +37,6 @@ public class Sync2PageController {
 	}
 
 	private boolean parentInstanceUriIsEmpty() {
-		return StringUtils.isBlank(SyncUtils.getParentBaseUrl());
+		return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
 	}
 }

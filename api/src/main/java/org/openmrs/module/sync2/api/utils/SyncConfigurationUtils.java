@@ -8,16 +8,16 @@ import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.model.configuration.ClientConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
 import org.openmrs.module.sync2.api.model.enums.ResourcePathType;
 import org.openmrs.module.sync2.api.validator.Errors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 
 import static org.openmrs.module.sync2.api.model.enums.ResourcePathType.ABSOLUTE;
 
@@ -118,5 +118,15 @@ public class SyncConfigurationUtils {
 
     public static boolean customConfigExists(String path) {
         return new File(path).exists();
+    }
+
+    public static ClientConfiguration getClientConfiguration(String clientName) {
+        ClientConfiguration configuration = null;
+        LinkedHashMap<String, ClientConfiguration> availableConfigurations = SyncUtils.getSyncConfigurationService()
+                .getSyncConfiguration().getGeneral().getClients();
+        if (!availableConfigurations.isEmpty()) {
+            configuration = availableConfigurations.get(clientName);
+        }
+        return configuration;
     }
 }

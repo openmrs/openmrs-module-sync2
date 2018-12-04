@@ -4,7 +4,8 @@
     "localFeedLocation" : "defaultAddress",
     "localInstanceId" : "localInstanceId",
     "persistSuccessAudit" : false,
-    "persistFailureAudit" : false
+    "persistFailureAudit" : false,
+    "clients" : { }
   },
   "push" : {
     "enabled" : true,
@@ -13,12 +14,14 @@
       "classTitle" : "Location",
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : "fhir"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "pull" : {
@@ -28,12 +31,14 @@
       "classTitle" : "Location",
       "category" : "location",
       "openMrsClass" : "org.openmrs.Location",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : "fhir"
     }, {
       "classTitle" : "Observation",
       "category" : "observation",
       "openMrsClass" : "org.openmrs.Obs",
-      "enabled" : true
+      "enabled" : true,
+      "preferredClient" : null
     } ]
   },
   "whitelist" : {

@@ -4,6 +4,7 @@ import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PUSH_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
@@ -137,8 +137,8 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    protected String getOperation() {
-        return PUSH_OPERATION;
+    protected SyncOperation getOperation() {
+        return SyncOperation.PUSH;
     }
 
     @Override
@@ -159,7 +159,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     @Override
     public AuditMessage readAndPushObjectToParent(String category, Map<String, String> resourceLinks,
             String action) {
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks);
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }

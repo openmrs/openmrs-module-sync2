@@ -10,11 +10,11 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.getParentBaseUrl;
 
 public class SyncAuditUtils {
 
-    public static AuditMessage prepareBaseAuditMessage(String operation) {
+    public static AuditMessage prepareBaseAuditMessage(String operation, String clientName) {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
         auditMessage.setOperation(operation);
-        auditMessage.setParentUrl(getParentBaseUrl());
+        auditMessage.setParentUrl(getParentBaseUrl(clientName));
         auditMessage.setLocalUrl(getLocalBaseUrl());
         auditMessage.setCreatorInstanceId(getLocalInstanceId());
 
