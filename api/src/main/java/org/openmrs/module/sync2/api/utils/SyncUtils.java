@@ -7,6 +7,7 @@ import com.sun.syndication.feed.atom.Category;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.api.db.EventAction;
 import org.openmrs.module.atomfeed.api.filter.FeedFilter;
@@ -106,7 +107,68 @@ public class SyncUtils {
 	public static String getPushUrl(Map<String, String> resourceLinks, String clientName, OpenMRSSyncInstance instance) {
 		String base = instance.equals(CHILD) ? getLocalBaseUrl() : getParentBaseUrl(clientName);
 		return getFullUrl(base, getPushPath(resourceLinks.get(clientName)));
+	}
 
+	public static String getClientSpecificLogin(String clientName) {
+		String login = null;
+		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
+				.getSyncConfiguration().getGeneral().getClients();
+		if (!availableConfigurations.isEmpty()) {
+			ClientConfiguration configuration = availableConfigurations.get(clientName);
+			if (configuration != null) {
+				login = configuration.getLogin();
+			}
+		}
+		return login;
+	}
+
+	public static String getClientSpecificPassword(String clientName) {
+		String password = null;
+		LinkedHashMap<String, ClientConfiguration> availableConfigurations = getSyncConfigurationService()
+				.getSyncConfiguration().getGeneral().getClients();
+		if (!availableConfigurations.isEmpty()) {
+			ClientConfiguration configuration = availableConfigurations.get(clientName);
+			if (configuration != null) {
+				password = configuration.getPassword();
+			}
+		}
+		return password;
+	}
+
+	public static boolean clientHasSpecificCridentials(String clientName, OpenMRSSyncInstance instance) {
+		if (instance == OpenMRSSyncInstance.CHILD) {
+			return false;
+		}
+		return StringUtils.isNotBlank(getClientSpecificPassword(clientName))
+				&& StringUtils.isNotBlank(getClientSpecificLogin(clientName));
+	}
+
+	public static String getClientLogin(String clientName, OpenMRSSyncInstance instance) {
+		String login = null;
+		if (clientHasSpecificCridentials(clientName, instance)) {
+			login = getClientSpecificLogin(clientName);
+		}
+		if (StringUtils.isBlank(login)) {
+			AdministrationService adminService = Context.getAdministrationService();
+			login = instance.equals(OpenMRSSyncInstance.PARENT) ?
+					adminService.getGlobalProperty(SyncConstants.PARENT_USERNAME_PROPERTY) :
+					adminService.getGlobalProperty(SyncConstants.LOCAL_USERNAME_PROPERTY);
+		}
+		return login;
+	}
+
+	public static String getClientPassword(String clientName, OpenMRSSyncInstance instance) {
+		String password = null;
+		if (clientHasSpecificCridentials(clientName, instance)) {
+			password = getClientSpecificPassword(clientName);
+		}
+		if (StringUtils.isBlank(password)) {
+			AdministrationService adminService = Context.getAdministrationService();
+			password = instance.equals(OpenMRSSyncInstance.PARENT) ?
+					adminService.getGlobalProperty(SyncConstants.PARENT_PASSWORD_PROPERTY) :
+					adminService.getGlobalProperty(SyncConstants.LOCAL_PASSWORD_PROPERTY);
+		}
+		return password;
 	}
 
 	public static String getValueOfAtomfeedEventTag(List tags, AtomfeedTagContent atomfeedTagContent) {

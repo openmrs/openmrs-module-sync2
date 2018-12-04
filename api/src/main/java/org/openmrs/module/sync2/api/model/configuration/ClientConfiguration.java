@@ -9,10 +9,16 @@ public class ClientConfiguration implements Serializable {
 
 	private String hostAddress;
 
+	private String login;
+
+	private String password;
+
 	public ClientConfiguration() { }
 
-	public ClientConfiguration(String hostAddress) {
+	public ClientConfiguration(String hostAddress, String login, String password) {
 		this.hostAddress = hostAddress;
+		this.login = login;
+		this.password = password;
 	}
 
 	public String getHostAddress() {
@@ -23,6 +29,22 @@ public class ClientConfiguration implements Serializable {
 		this.hostAddress = hostAddress;
 	}
 
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -30,11 +52,13 @@ public class ClientConfiguration implements Serializable {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		ClientConfiguration that = (ClientConfiguration) o;
-		return Objects.equals(hostAddress, that.hostAddress);
+		return Objects.equals(hostAddress, that.hostAddress) &&
+				Objects.equals(login, that.login) &&
+				Objects.equals(password, that.password);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(hostAddress);
+		return Objects.hash(hostAddress, login, password);
 	}
 }

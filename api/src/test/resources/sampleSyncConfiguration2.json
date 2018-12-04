@@ -5,7 +5,13 @@
     "localInstanceId" : "localInstanceId",
     "persistSuccessAudit" : false,
     "persistFailureAudit" : false,
-    "clients" : {"rest" : {"hostAddress" : "http://address.org"}}
+    "clients" : {
+      "rest" : {
+        "hostAddress" : "http://address.org",
+        "login" : "clientLogin",
+        "password" : "clientPassword"
+      }
+    }
   },
   "push" : {
     "enabled" : true,

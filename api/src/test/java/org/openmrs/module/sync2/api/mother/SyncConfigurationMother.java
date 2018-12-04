@@ -19,6 +19,10 @@ public abstract class SyncConfigurationMother {
 
 	private static final String CLIENT_SPECIFIC_ADDRESS = "http://address.org";
 
+	private static final String CLIENT_LOGIN = "clientLogin";
+
+	private static final String CLIENT_PASSWORD = "clientPassword";
+
 	public static SyncConfiguration creteInstance(boolean withWhiteList, boolean clientsConf) {
 		SyncConfiguration configuration = createInstance();
 
@@ -30,7 +34,7 @@ public abstract class SyncConfigurationMother {
 		}
 		if (clientsConf) {
 			configuration.getGeneral().getClients().put(SyncConstants.REST_CLIENT,
-					new ClientConfiguration(CLIENT_SPECIFIC_ADDRESS));
+					new ClientConfiguration(CLIENT_SPECIFIC_ADDRESS, CLIENT_LOGIN, CLIENT_PASSWORD));
 		}
 
 		return configuration;
