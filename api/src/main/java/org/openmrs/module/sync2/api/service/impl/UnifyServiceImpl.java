@@ -21,6 +21,8 @@ public class UnifyServiceImpl implements UnifyService {
 
 		if (isObjectAlreadyUnified(object)) {
 			result = object;
+		} else if (object instanceof String) {
+			result = new SimpleObject().add("uuid", object);
 		} else if (object != null) {
 			CategoryEnum cat = CategoryEnum.getByCategory(category);
 
