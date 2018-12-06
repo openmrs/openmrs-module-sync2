@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.api.scheduler;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
-import org.openmrs.module.sync2.client.reader.impl.LocalFeedReaderImpl;
+import org.openmrs.module.sync2.client.reader.atomfeed.impl.LocalFeedReaderImpl;
 import org.openmrs.scheduler.tasks.AbstractTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

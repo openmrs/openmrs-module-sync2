@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.client.reader;
+package org.openmrs.module.sync2.client.reader.atomfeed;
 
 import org.ict4h.atomfeed.client.domain.Event;
 import org.openmrs.api.context.Context;

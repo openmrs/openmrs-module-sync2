@@ -1,4 +1,4 @@
-package org.openmrs.module.sync2.client.reader.impl;
+package org.openmrs.module.sync2.client.reader.atomfeed.impl;
 
 import org.openmrs.module.atomfeed.api.utils.AtomfeedUtils;
 import org.openmrs.module.atomfeed.client.AtomFeedClient;

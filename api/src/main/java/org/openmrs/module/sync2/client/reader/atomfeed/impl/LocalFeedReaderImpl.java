@@ -1,9 +1,9 @@
-package org.openmrs.module.sync2.client.reader.impl;
+package org.openmrs.module.sync2.client.reader.atomfeed.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
-import org.openmrs.module.sync2.client.reader.LocalFeedWorker;
+import org.openmrs.module.sync2.client.reader.atomfeed.LocalFeedWorker;
 import org.springframework.stereotype.Component;
 
 @Component("sync2.localFeedReader")
