@@ -1,9 +1,9 @@
-package org.openmrs.module.sync2.client.reader.impl;
+package org.openmrs.module.sync2.client.reader.atomfeed.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.sync2.client.reader.ParentFeedWorker;
+import org.openmrs.module.sync2.client.reader.atomfeed.ParentFeedWorker;
 import org.springframework.stereotype.Service;
 
 @Service("sync2.parentFeedReader")
