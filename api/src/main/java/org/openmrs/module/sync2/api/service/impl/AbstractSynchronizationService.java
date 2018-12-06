@@ -3,8 +3,6 @@ package org.openmrs.module.sync2.api.service.impl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.BaseOpenmrsData;
-import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
-import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
 import org.openmrs.module.fhir.api.merge.MergeConflict;
 import org.openmrs.module.fhir.api.merge.MergeResult;
 import org.openmrs.module.fhir.api.merge.MergeSuccess;
@@ -14,10 +12,13 @@ import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
 import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
 import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
 import org.openmrs.module.sync2.api.sync.SyncClient;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -46,9 +47,6 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
 public abstract class AbstractSynchronizationService {
 
     protected SyncClient syncClient = new SyncClient();
-
-    @Autowired
-    private FeedConfigurationService feedConfigurationService;
 
     @Autowired
     private ConflictDetection conflictDetection;
@@ -97,7 +95,8 @@ public abstract class AbstractSynchronizationService {
     protected List<AuditMessage> synchronizeObject(String category, String uuid) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
-        FeedConfiguration configuration = feedConfigurationService.getFeedConfigurationByCategory(category);
+        EventConfiguration configuration = ContextUtils.getEventConfigurationService().getEventConfigurationByCategory(
+                CategoryEnum.getByCategory(category));
 
         Map<String, String> resourceLinks = configuration.getLinkTemplates();
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
