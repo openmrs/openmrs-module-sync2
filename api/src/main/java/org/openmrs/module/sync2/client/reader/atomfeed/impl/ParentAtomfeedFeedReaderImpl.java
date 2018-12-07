@@ -4,14 +4,14 @@ import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.sync2.client.reader.atomfeed.ParentFeedWorker;
+import org.openmrs.module.sync2.client.reader.atomfeed.ParentAtomfeedFeedWorker;
 import org.springframework.stereotype.Service;
 
 @Service("sync2.parentFeedReader")
 public class ParentAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader implements ParentFeedReader {
 
 	public ParentAtomfeedFeedReaderImpl() {
-		super(new ParentFeedWorker());
+		super(new ParentAtomfeedFeedWorker());
 	}
 
 	@Override

@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class LocalFeedWorker implements FeedEventWorker {
+public class LocalAtomfeedFeedWorker implements FeedEventWorker {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LocalFeedWorker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(LocalAtomfeedFeedWorker.class);
 
 	@Override
 	public void process(Event event) {
