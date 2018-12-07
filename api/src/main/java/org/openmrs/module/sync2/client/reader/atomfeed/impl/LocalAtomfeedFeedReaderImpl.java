@@ -8,9 +8,9 @@ import org.openmrs.module.sync2.client.reader.atomfeed.LocalFeedWorker;
 import org.springframework.stereotype.Component;
 
 @Component("sync2.localFeedReader")
-public class LocalFeedReaderImpl extends AbstractFeedReader implements LocalFeedReader {
+public class LocalAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader implements LocalFeedReader {
 
-	public LocalFeedReaderImpl() {
+	public LocalAtomfeedFeedReaderImpl() {
 		super(new LocalFeedWorker());
 	}
 

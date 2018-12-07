@@ -8,9 +8,9 @@ import org.openmrs.module.sync2.client.reader.atomfeed.ParentFeedWorker;
 import org.springframework.stereotype.Service;
 
 @Service("sync2.parentFeedReader")
-public class ParentFeedReaderImpl extends AbstractFeedReader implements ParentFeedReader {
+public class ParentAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader implements ParentFeedReader {
 
-	public ParentFeedReaderImpl() {
+	public ParentAtomfeedFeedReaderImpl() {
 		super(new ParentFeedWorker());
 	}
 
