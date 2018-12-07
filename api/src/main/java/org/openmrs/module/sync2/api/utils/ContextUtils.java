@@ -4,6 +4,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.service.EventConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
@@ -34,6 +35,11 @@ public class ContextUtils {
 
     public static ConversionService getConversionService() {
         return Context.getRegisteredComponent("conversionService", ConversionService.class);
+    }
+
+    public static EventConfigurationService getEventConfigurationService() {
+        return Context.getRegisteredComponent("sync2.atomfeed.AtomFeedEventConfigurationService",   //TODO SYNCT-288
+                EventConfigurationService.class);
     }
 
     private ContextUtils() {}
