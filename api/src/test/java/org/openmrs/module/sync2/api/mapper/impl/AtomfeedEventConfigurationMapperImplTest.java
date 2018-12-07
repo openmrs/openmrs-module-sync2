@@ -9,7 +9,7 @@ import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
 
 import java.util.LinkedHashMap;
 
-public class EventConfigurationMapperImplTest {
+public class AtomfeedEventConfigurationMapperImplTest {
 
 	private FeedConfiguration feedConfiguration;
 
@@ -20,7 +20,7 @@ public class EventConfigurationMapperImplTest {
 		feedConfiguration = new FeedConfiguration();
 		feedConfiguration.setLinkTemplates(createLinkTemplates());
 
-		eventConfigurationMapper = new EventConfigurationMapperImpl();
+		eventConfigurationMapper = new AtomfeedEventConfigurationMapperImpl();
 	}
 
 	@Test

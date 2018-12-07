@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.page.controller;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
@@ -26,10 +27,10 @@ public class ManualSyncPullPageController {
     
     public String controller(PageModel model,
                              @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,
-                             @SpringBean("sync2.parentFeedReader") ParentFeedReader parentFeedReader,
                              HttpSession session, UiUtils ui) {
         try {
             LOGGER.info("Start Parent Feed Reader...");
+            ParentFeedReader parentFeedReader = ContextUtils.getParentFeedReader();
             parentFeedReader.pullAndProcessAllFeeds();
             InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
         } catch (SyncValidationException e) {

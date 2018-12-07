@@ -12,6 +12,7 @@ import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.service.UnifyService;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
@@ -38,9 +39,6 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
 
     @Autowired
     private SyncAuditService syncAuditService;
-
-    @Autowired
-    private LocalFeedReader localFeedReader;
 
     @Autowired
     private ParentObjectHashcodeService parentObjectHashcodeService;
@@ -123,6 +121,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
 
     @Override
     public void readAndPushObjectsToParent(CategoryEnum category) throws SyncException {
+        LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
         localFeedReader.readAndPushAllFeeds(category);
     }
 
