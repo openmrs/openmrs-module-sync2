@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class ParentFeedWorker implements FeedEventWorker {
+public class ParentAtomfeedFeedWorker implements FeedEventWorker {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ParentFeedWorker.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ParentAtomfeedFeedWorker.class);
 
 	SyncPullService pullService;
 
