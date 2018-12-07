@@ -1,9 +1,8 @@
 package org.openmrs.module.sync2.api.mapper;
 
-import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
 
-public interface EventConfigurationMapper {
+public interface EventConfigurationMapper<T> {
 
-	EventConfiguration map(FeedConfiguration feedConfiguration);
+	EventConfiguration map(T externalConfiguration);
 }

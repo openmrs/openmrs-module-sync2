@@ -6,7 +6,7 @@ import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
 import org.springframework.stereotype.Component;
 
 @Component("sync2.EventConfigurationMapper")
-public class EventConfigurationMapperImpl implements EventConfigurationMapper {
+public class EventConfigurationMapperImpl implements EventConfigurationMapper<FeedConfiguration> {
 
 	@Override
 	public EventConfiguration map(FeedConfiguration feedConfiguration) {
