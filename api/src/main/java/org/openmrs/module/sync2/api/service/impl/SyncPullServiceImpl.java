@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
@@ -50,7 +51,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     private static final String FAILED_SYNC_MESSAGE = "Problem with pulling from parent";
 
     @Override
-    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveObjectFromParent(CategoryEnum category, Map<String, String> resourceLinks,
                                                   String action, String clientName, String uuid) {
         AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, clientName);
         boolean shouldSynchronize = true;
@@ -94,7 +95,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public List<AuditMessage> pullAndSaveObjectFromParent(String category, String uuid) {
+    public List<AuditMessage> pullAndSaveObjectFromParent(CategoryEnum category, String uuid) {
         return synchronizeObject(category, uuid);
     }
 
@@ -104,7 +105,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    protected AuditMessage synchronizeObject(String category, Map<String, String> resourceLinks, String action,
+    protected AuditMessage synchronizeObject(CategoryEnum category, Map<String, String> resourceLinks, String action,
             String clientName, String uuid) {
         return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }
@@ -130,19 +131,19 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public void pullAndSaveObjectsFromParent(String category) throws SyncException {
+    public void pullAndSaveObjectsFromParent(CategoryEnum category) throws SyncException {
         parentFeedReader.pullAndProcessFeeds(category);
     }
 
     @Override
-    public AuditMessage pullAndSaveObjectFromParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage pullAndSaveObjectFromParent(CategoryEnum category, Map<String, String> resourceLinks,
                                                   String action) {
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
         return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }
 
-    private Object getPulledObject(String category, String action, String clientName, String uuid, String parentPull) {
+    private Object getPulledObject(CategoryEnum category, String action, String clientName, String uuid, String parentPull) {
         return pullData(category, action, clientName, uuid, parentPull, PARENT);
     }
 }

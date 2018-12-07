@@ -14,6 +14,7 @@ import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
 import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
 import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
@@ -63,7 +64,7 @@ public abstract class AbstractSynchronizationService {
 
     protected abstract List<String> determineActionsBasingOnSyncType(Object localObj, Object parentObj);
 
-    protected abstract AuditMessage synchronizeObject(String category, Map<String, String> resourceLinks,
+    protected abstract AuditMessage synchronizeObject(CategoryEnum category, Map<String, String> resourceLinks,
             String action, String clientName, String uuid);
 
     protected abstract SyncOperation getOperation();
@@ -74,7 +75,7 @@ public abstract class AbstractSynchronizationService {
 
     protected abstract String getFailedSynchronizationMessage();
 
-    protected AuditMessage initSynchronization(String category, Map<String, String> resourceLinks,
+    protected AuditMessage initSynchronization(CategoryEnum category, Map<String, String> resourceLinks,
             String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
         logInitialInfo(category, action, resourceLinks, clientName);
@@ -94,13 +95,13 @@ public abstract class AbstractSynchronizationService {
         return base;
     }
 
-    protected List<AuditMessage> synchronizeObject(String category, String uuid) {
+    protected List<AuditMessage> synchronizeObject(CategoryEnum category, String uuid) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
-        FeedConfiguration configuration = feedConfigurationService.getFeedConfigurationByCategory(category);
+        FeedConfiguration configuration = feedConfigurationService.getFeedConfigurationByCategory(category.getCategory());
 
         Map<String, String> resourceLinks = configuration.getLinkTemplates();
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
         Map<String, String> mappedResourceLinks = includeUuidInResourceLinks(resourceLinks, uuid);
 
         String restUrl = mappedResourceLinks.get(REST_CLIENT);
@@ -152,7 +153,7 @@ public abstract class AbstractSynchronizationService {
         return oldObject;
     }
 
-    protected Object pullData(String category, String action, String clientName, String uuid,
+    protected Object pullData(CategoryEnum category, String action, String clientName, String uuid,
             String pullUrl, OpenMRSSyncInstance instance) {
         Object pulledObject;
         if (isDeleteAction(action)) {
@@ -168,15 +169,15 @@ public abstract class AbstractSynchronizationService {
                 || action.equalsIgnoreCase(ACTION_RETIRED);
     }
 
-    private void logInitialInfo(String category, String action, Map<String, String> resourceLinks, String clientName) {
+    private void logInitialInfo(CategoryEnum category, String action, Map<String, String> resourceLinks, String clientName) {
         getLogger().info(String.format(INITIAL_INFO_FORMAT,
                 this.getClass().getSimpleName(), category, getBaseResourceUrl(resourceLinks, clientName), action));
     }
 
-    private AuditMessage prepareAuditMessage(String category, String clientName,
+    private AuditMessage prepareAuditMessage(CategoryEnum category, String clientName,
             Map<String, String> resourceLinks, String action) {
         AuditMessage auditMessage = prepareBaseAuditMessage(getOperation().getValue(), clientName);
-        auditMessage.setResourceName(category);
+        auditMessage.setResourceName(category.getCategory());
         auditMessage.setUsedResourceUrl(getBaseResourceUrl(resourceLinks, clientName));
         auditMessage.setLinkType(clientName);
         auditMessage.setAvailableResourceUrls(prettySerialize(resourceLinks));
@@ -192,7 +193,7 @@ public abstract class AbstractSynchronizationService {
         return mappedResourceLinks;
     }
 
-    private List<String> determineActions(String category, String restUrl) {
+    private List<String> determineActions(CategoryEnum category, String restUrl) {
         String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
         String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(SyncConstants.REST_CLIENT), restUrl);
 

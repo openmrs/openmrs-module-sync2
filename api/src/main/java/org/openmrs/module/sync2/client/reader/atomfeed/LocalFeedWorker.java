@@ -4,6 +4,7 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class LocalFeedWorker implements FeedEventWorker {
 		List tags = event.getCategories();
 
 		pushService.readAndPushObjectToParent(
-				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
+				CategoryEnum.getByCategory(SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY)),
 				SyncUtils.getLinks(event.getContent()),
 				SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)
 		);
