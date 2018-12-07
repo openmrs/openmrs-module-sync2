@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.client.reader.atomfeed.impl;
 
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
@@ -7,7 +8,7 @@ import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.openmrs.module.sync2.client.reader.atomfeed.LocalAtomfeedFeedWorker;
 import org.springframework.stereotype.Component;
 
-@Component("sync2.localFeedReader")
+@Component("sync2.localFeedReader." + SyncConstants.ATOMFEED_EVENT_HANDLER)
 public class LocalAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader implements LocalFeedReader {
 
 	public LocalAtomfeedFeedReaderImpl() {

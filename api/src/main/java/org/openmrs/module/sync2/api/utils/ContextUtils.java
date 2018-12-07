@@ -5,6 +5,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.service.EventConfigurationService;
+import org.openmrs.module.sync2.client.reader.LocalFeedReader;
+import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
@@ -38,9 +40,20 @@ public class ContextUtils {
     }
 
     public static EventConfigurationService getEventConfigurationService() {
-        return Context.getRegisteredComponent("sync2.atomfeed.AtomFeedEventConfigurationService",   //TODO SYNCT-288
+        String eventHandlerName = SyncUtils.getEventHandlerName();
+        return Context.getRegisteredComponent("sync2.eventConfigurationService." + eventHandlerName,
                 EventConfigurationService.class);
     }
+
+    public static LocalFeedReader getLocalFeedReader() {
+        String eventHandlerName = SyncUtils.getEventHandlerName();
+        return Context.getRegisteredComponent("sync2.localFeedReader." + eventHandlerName, LocalFeedReader.class);
+    }
+
+	public static ParentFeedReader getParentFeedReader() {
+		String eventHandlerName = SyncUtils.getEventHandlerName();
+		return Context.getRegisteredComponent("sync2.parentFeedReader." + eventHandlerName, ParentFeedReader.class);
+	}
 
     private ContextUtils() {}
 }

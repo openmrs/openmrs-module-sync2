@@ -82,5 +82,9 @@ public class SyncConstants {
 
     public static final String AUDIT_MESSAGE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String EVENT_HANDLER_KEY = "sync2.event.handler";
+
+    public static final String ATOMFEED_EVENT_HANDLER = "atomfeed";
+
     private SyncConstants() {}
 }

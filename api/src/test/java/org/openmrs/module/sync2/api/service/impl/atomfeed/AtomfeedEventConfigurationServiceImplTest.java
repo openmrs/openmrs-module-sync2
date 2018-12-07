@@ -10,19 +10,19 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
 import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
-import org.openmrs.module.sync2.api.mapper.impl.EventConfigurationMapperImpl;
+import org.openmrs.module.sync2.api.mapper.impl.AtomfeedEventConfigurationMapperImpl;
 import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 
 import java.util.LinkedHashMap;
 
-public class AtomFeedEventConfigurationServiceImplTest {
+public class AtomfeedEventConfigurationServiceImplTest {
 
 	@Spy
-	private EventConfigurationMapperImpl eventConfigurationMapper;
+	private AtomfeedEventConfigurationMapperImpl eventConfigurationMapper;
 
 	@InjectMocks
-	private AtomFeedEventConfigurationServiceImpl atomFeedEventConfigurationService;
+	private AtomfeedEventConfigurationServiceImpl atomFeedEventConfigurationService;
 
 	@Mock
 	private FeedConfigurationService feedConfigurationService;

@@ -374,4 +374,9 @@ public class SyncUtils {
 		return Context.getRegisteredComponent(behavior, MergeBehaviour.class);
 	}
 
+	public static String getEventHandlerName() {
+		return Context.getAdministrationService().getGlobalProperty(SyncConstants.EVENT_HANDLER_KEY,
+				SyncConstants.ATOMFEED_EVENT_HANDLER);
+	}
+
 }

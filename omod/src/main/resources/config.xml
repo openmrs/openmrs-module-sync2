@@ -97,6 +97,12 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>${project.parent.artifactId}.event.handler</property>
+		<defaultValue>atomfeed</defaultValue>
+		<description>Used event handler</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>${project.parent.artifactId}.mergeBehavior</property>
 		<defaultValue>sync2.conflictMergeBehaviour</defaultValue>
 		<description>Used merge behavior</description>

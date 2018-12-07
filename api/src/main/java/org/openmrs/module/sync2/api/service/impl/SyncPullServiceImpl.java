@@ -1,15 +1,16 @@
 package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
-import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
-import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.service.UnifyService;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.PULL_OPERATION;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PARENT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
@@ -38,9 +38,6 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
 
     @Autowired
     private SyncAuditService syncAuditService;
-
-    @Autowired
-    private ParentFeedReader parentFeedReader;
 
     @Autowired
     private ParentObjectHashcodeService parentObjectHashcodeService;
@@ -132,6 +129,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
 
     @Override
     public void pullAndSaveObjectsFromParent(CategoryEnum category) throws SyncException {
+        ParentFeedReader parentFeedReader = ContextUtils.getParentFeedReader();
         parentFeedReader.pullAndProcessFeeds(category);
     }
 
