@@ -2,7 +2,7 @@ package org.openmrs.module.sync2.api.scheduler;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
-import org.openmrs.module.sync2.client.reader.atomfeed.impl.ParentFeedReaderImpl;
+import org.openmrs.module.sync2.client.reader.atomfeed.impl.ParentAtomfeedFeedReaderImpl;
 import org.openmrs.scheduler.tasks.AbstractTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class SyncPullTask extends AbstractTask {
      */
     @Override
     public void execute() {
-        parentFeedReader = Context.getRegisteredComponent("sync2.parentFeedReader", ParentFeedReaderImpl.class);
+        parentFeedReader = Context.getRegisteredComponent("sync2.parentFeedReader", ParentAtomfeedFeedReaderImpl.class);
 
         if (!isExecuting) {
             LOGGER.info("Starting Sync 2.0 Pull Task...");

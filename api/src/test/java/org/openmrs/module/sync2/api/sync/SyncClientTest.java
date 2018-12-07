@@ -17,6 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -56,8 +57,8 @@ public class SyncClientTest {
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_RESOURCE_LINK = "openmrs/ws/fhir/Patient/";
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
-    private static final String PATIENT_CATEGORY = "patient";
-    private static final String VISIT_CATEGORY = "visit";
+    private static final CategoryEnum PATIENT_CATEGORY = CategoryEnum.getByCategory("patient");
+    private static final CategoryEnum VISIT_CATEGORY = CategoryEnum.getByCategory("visit");
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";

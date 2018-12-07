@@ -2,6 +2,7 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
@@ -48,7 +49,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
         AuditMessage newMessage =
                 syncPushService.readAndPushObjectToParent(
-                        message.getResourceName(),
+                        CategoryEnum.getByCategory(message.getResourceName()),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
                         message.getLinkType(),
@@ -64,7 +65,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
         AuditMessage newMessage =
                 syncPullService.pullAndSaveObjectFromParent(
-                        message.getResourceName(),
+                        CategoryEnum.getByCategory(message.getResourceName()),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
                         message.getLinkType(),

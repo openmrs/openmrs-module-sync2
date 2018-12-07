@@ -16,7 +16,7 @@ import javax.transaction.NotSupportedException;
 public class UnifyServiceImpl implements UnifyService {
 
 	@Override
-	public SimpleObject unifyObject(Object object, String category, String clientName) throws NotSupportedException {
+	public SimpleObject unifyObject(Object object, CategoryEnum category, String clientName) throws NotSupportedException {
 		Object result = null;
 
 		if (isObjectAlreadyUnified(object)) {
@@ -24,16 +24,15 @@ public class UnifyServiceImpl implements UnifyService {
 		} else if (object instanceof String) {
 			result = new SimpleObject().add("uuid", object);
 		} else if (object != null) {
-			CategoryEnum cat = CategoryEnum.getByCategory(category);
 
 			if (SyncConstants.FHIR_CLIENT.equals(clientName)) {
 				FHIRClientHelper helper = new FHIRClientHelper();
-				result = helper.convertToOpenMrsObject(object, category);
+				result = helper.convertToOpenMrsObject(object, category.getCategory());
 				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
-			} else if (AuditMessage.class.isAssignableFrom(cat.getClazz())) {
+			} else if (AuditMessage.class.isAssignableFrom(category.getClazz())) {
 				result = ConversionUtil.convertToRepresentation(object, Representation.FULL);
 			} else {
-				throw new NotSupportedException(String.format("Category %s not supported.", category));
+				throw new NotSupportedException(String.format("Category %s not supported.", category.getCategory()));
 			}
 		}
 

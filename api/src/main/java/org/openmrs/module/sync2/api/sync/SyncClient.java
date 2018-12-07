@@ -4,6 +4,7 @@ import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.InnerRequest;
 import org.openmrs.module.sync2.api.model.RequestWrapper;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
@@ -45,7 +46,7 @@ public class SyncClient {
 
 	private RestTemplate restTemplate = new RestTemplate();
 
-	public Object pullData(String category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
+	public Object pullData(CategoryEnum category, String clientName, String resourceUrl, OpenMRSSyncInstance instance) {
 		Object result = null;
 		setUpCredentials(clientName, instance);
 
@@ -70,7 +71,7 @@ public class SyncClient {
 		return result;
 	}
 
-	public ResponseEntity<String> pushData(String category, Object object, String clientName,
+	public ResponseEntity<String> pushData(CategoryEnum category, Object object, String clientName,
 			String resourceUrl, String action, OpenMRSSyncInstance instance) {
 		ResponseEntity<String> result = null;
 		setUpCredentials(clientName, instance);
@@ -119,11 +120,11 @@ public class SyncClient {
 		restTemplate.setMessageConverters(converters);
 	}
 
-	private Object retrieveObject(String category, String resourceUrl, String destinationUrl, String clientName,
+	private Object retrieveObject(CategoryEnum category, String resourceUrl, String destinationUrl, String clientName,
 			OpenMRSSyncInstance instance)
 			throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
-		Class<?> clazz = helper.resolveClassByCategory(category);
+		Class<?> clazz = helper.resolveClassByCategory(category.getCategory());
 
 		RequestEntity request = helper.retrieveRequest(resourceUrl);
 		if (shouldWrappMessage(clientName, instance)) {
@@ -132,7 +133,7 @@ public class SyncClient {
 		return exchange(request, clazz).getBody();
 	}
 
-	private ResponseEntity<String> createObject(String category, String resourceUrl, String destinationUrl, Object object,
+	private ResponseEntity<String> createObject(CategoryEnum category, String resourceUrl, String destinationUrl, Object object,
 			String clientName, OpenMRSSyncInstance instance) throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -143,7 +144,7 @@ public class SyncClient {
 		return exchange(request, String.class);
 	}
 
-	private ResponseEntity<String> deleteObject(String category, String resourceUrl, String destinationUrl, String uuid,
+	private ResponseEntity<String> deleteObject(CategoryEnum category, String resourceUrl, String destinationUrl, String uuid,
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -154,7 +155,7 @@ public class SyncClient {
 		return exchange(request, String.class);
 	}
 
-	private ResponseEntity<String> updateObject(String category, String resourceUrl, String destinationUrl, Object object,
+	private ResponseEntity<String> updateObject(CategoryEnum category, String resourceUrl, String destinationUrl, Object object,
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -169,10 +170,10 @@ public class SyncClient {
 		return restTemplate.exchange(request, clazz);
 	}
 
-	private RequestEntity<RequestWrapper> sendRequest(String category, String destinationUrl, String clientName,
+	private RequestEntity<RequestWrapper> sendRequest(CategoryEnum category, String destinationUrl, String clientName,
 			InnerRequest request) throws URISyntaxException {
 		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
-		Class<?> clazz = clientHelper.resolveClassByCategory(category);
+		Class<?> clazz = clientHelper.resolveClassByCategory(category.getCategory());
 		String instanceId = getSyncConfigurationService().getSyncConfiguration().getGeneral().getLocalInstanceId();
 
 		RequestWrapper wrapper = new RequestWrapper();

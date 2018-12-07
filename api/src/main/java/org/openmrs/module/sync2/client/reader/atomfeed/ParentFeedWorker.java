@@ -9,6 +9,7 @@ import org.openmrs.module.atomfeed.api.service.TagService;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class ParentFeedWorker implements FeedEventWorker {
 
 		if (shouldBeSynced) {
 			pullService.pullAndSaveObjectFromParent(
-					SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY),
+					CategoryEnum.getByCategory(SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY)),
 					SyncUtils.getLinks(event.getContent()),
 					SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)
 			);

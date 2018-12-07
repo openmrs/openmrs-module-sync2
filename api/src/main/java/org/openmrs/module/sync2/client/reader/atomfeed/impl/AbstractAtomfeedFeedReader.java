@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractFeedReader {
+public abstract class AbstractAtomfeedFeedReader {
 
 	protected static final String WS_ATOMFEED = "/ws/atomfeed/";
 
@@ -26,7 +26,7 @@ public abstract class AbstractFeedReader {
 	@Autowired
 	protected SyncConfigurationService configurationService;
 
-	protected AbstractFeedReader(FeedEventWorker feedEventWorker) {
+	protected AbstractAtomfeedFeedReader(FeedEventWorker feedEventWorker) {
 		this.atomFeedClient = AtomFeedClientFactory.createClient(feedEventWorker);
 		AtomfeedUtils.disableMaxFailedEventCondition(atomFeedClient);
 	}

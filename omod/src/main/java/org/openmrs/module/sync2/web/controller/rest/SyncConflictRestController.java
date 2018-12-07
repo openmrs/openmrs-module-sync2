@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.web.controller.rest;
 
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -46,7 +47,8 @@ public class SyncConflictRestController {
 
 			try {
 				String uuid = extractUUIDFromResourceLinks(conflictMessage.getAvailableResourceUrlsAsMap());
-				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, conflictMessage.getResourceName(),
+				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, CategoryEnum.getByCategory(
+						conflictMessage.getResourceName()),
 						conflictMessage.getAvailableResourceUrlsAsMap(), conflictMessage.getAction(), uuid);
 				syncAuditService.setNextAudit(conflictMessage, resultAudit);
 

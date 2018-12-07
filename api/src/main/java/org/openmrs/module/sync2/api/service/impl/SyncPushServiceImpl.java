@@ -4,6 +4,7 @@ import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
 import org.openmrs.module.sync2.api.model.SyncObject;
+import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
@@ -50,7 +51,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     private static final String FAILED_SYNC_MESSAGE = "Problem with pushing to parent";
 
     @Override
-    public AuditMessage readAndPushObjectToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(CategoryEnum category, Map<String, String> resourceLinks,
                                                 String action, String clientName, String uuid) {
 
         AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, clientName);
@@ -95,7 +96,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public AuditMessage mergeForcePush(Object merged, String category, Map<String, String> resourceLinks,
+    public AuditMessage mergeForcePush(Object merged, CategoryEnum category, Map<String, String> resourceLinks,
             String action, String uuid) {
 
         AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
@@ -116,12 +117,12 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public List<AuditMessage> readAndPushObjectToParent(String category, String uuid) {
+    public List<AuditMessage> readAndPushObjectToParent(CategoryEnum category, String uuid) {
         return synchronizeObject(category, uuid);
     }
 
     @Override
-    public void readAndPushObjectsToParent(String category) throws SyncException {
+    public void readAndPushObjectsToParent(CategoryEnum category) throws SyncException {
         localFeedReader.readAndPushAllFeeds(category);
     }
 
@@ -131,7 +132,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    protected AuditMessage synchronizeObject(String category, Map<String, String> resourceLinks, String action,
+    protected AuditMessage synchronizeObject(CategoryEnum category, Map<String, String> resourceLinks, String action,
             String clientName, String uuid) {
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }
@@ -157,18 +158,18 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public AuditMessage readAndPushObjectToParent(String category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(CategoryEnum category, Map<String, String> resourceLinks,
             String action) {
-        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category, getOperation());
+        String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }
 
-    private Object getLocalObject(String category, String action, String clientName, String uuid, String localPull) {
+    private Object getLocalObject(CategoryEnum category, String action, String clientName, String uuid, String localPull) {
         return pullData(category, action, clientName, uuid, localPull, CHILD);
     }
 
-    private AuditMessage forcePush(Object merged, String category, Map<String, String> resourceLinks,
+    private AuditMessage forcePush(Object merged, CategoryEnum category, Map<String, String> resourceLinks,
             String action, String clientName, OpenMRSSyncInstance instance) {
         AuditMessage message = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
         try {
