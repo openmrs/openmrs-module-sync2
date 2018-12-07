@@ -158,7 +158,7 @@ public class SyncClient {
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
-		RequestEntity request = helper.createRequest(resourceUrl, object);
+		RequestEntity request = helper.updateRequest(resourceUrl, object);
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
