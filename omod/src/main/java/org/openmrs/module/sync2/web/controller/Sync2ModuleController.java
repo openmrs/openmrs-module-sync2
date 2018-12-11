@@ -19,43 +19,64 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class Sync2ModuleController {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
+	private static final String USER_MODEL = "user";
+	private static final String ALERT_MESSAGE_MODEL = "alertMessage";
+	private static final String PUSH_SUCCESS_MESSAGE = "sync2.sync.push.success";
+	private static final String PUSH_FAILURE_MESSAGE = "sync2.sync.push.failure";
+	private static final String PULL_SUCCESS_MESSAGE = "sync2.sync.pull.success";
+	private static final String PULL_FAILURE_MESSAGE = "sync2.sync.pull.failure";
 
-	@RequestMapping(value = "/module/sync2/sync2", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/sync2/sync2")
 	public void manage(ModelMap model) {
-		model.addAttribute("user", Context.getAuthenticatedUser());
+		model.addAttribute(USER_MODEL, Context.getAuthenticatedUser());
 	}
 
 	@RequestMapping(value = "/module/sync2/manualPush")
-	public String manualPush() {
+	public String manualPush(ModelMap model) {
 		try {
 			LOGGER.info("Start Local Feed Reader...");
 			LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
 			localFeedReader.readAndPushAllFeeds();
+			model.put(ALERT_MESSAGE_MODEL, PUSH_SUCCESS_MESSAGE);
 		} catch (SyncValidationException e) {
 			LOGGER.error("Error during pushing objects: ", e);
+			model.put(ALERT_MESSAGE_MODEL, PUSH_FAILURE_MESSAGE);
 		} catch (Exception e) {
 			LOGGER.error("Error during pushing objects: ", e);
+			model.put(ALERT_MESSAGE_MODEL, PUSH_FAILURE_MESSAGE);
 		}
-		return "module/admin";
+		return "/module/sync2/sync2";
 	}
 
 	@RequestMapping(value = "/module/sync2/manualPull")
-	public String manualPull() {
+	public String manualPull(ModelMap model) {
 		try {
 			LOGGER.info("Start Parent Feed Reader...");
 			ParentFeedReader parentFeedReader = ContextUtils.getParentFeedReader();
 			parentFeedReader.pullAndProcessAllFeeds();
+			model.put(ALERT_MESSAGE_MODEL, PULL_SUCCESS_MESSAGE);
 		} catch (SyncValidationException e) {
 			LOGGER.error("Error during reading feeds: ", e);
+			model.put(ALERT_MESSAGE_MODEL, PULL_FAILURE_MESSAGE);
 		} catch (Exception e) {
 			LOGGER.error("Error during reading feeds: ", e);
+			model.put(ALERT_MESSAGE_MODEL, PULL_FAILURE_MESSAGE);
 		}
-		return "module/admin";
+		return "/module/sync2/sync2";
+	}
+
+	@RequestMapping(value = "/module/sync2/auditList")
+	public String auditList() {
+		return "/module/sync2/sync2AuditList";
+	}
+
+	@RequestMapping(value = "/module/sync2/configuration")
+	public String configuration() {
+		return "/module/sync2/sync2Configuration";
 	}
 }

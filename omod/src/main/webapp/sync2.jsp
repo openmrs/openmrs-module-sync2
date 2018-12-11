@@ -4,31 +4,35 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
+<div id="message">
+    <c:if test="${alertMessage == 'sync2.sync.push.success'}">
+        <span class="success-msg"><spring:message code="sync2.sync.push.success" /></span>
+    </c:if>
+    <c:if test="${alertMessage == 'sync2.sync.push.failure'}">
+        <span class="failure-msg"><spring:message code="sync2.sync.push.failure" /></span>
+    </c:if>
+    <c:if test="${alertMessage == 'sync2.sync.pull.success'}">
+        <span class="success-msg"><spring:message code="sync2.sync.pull.success" /></span>
+    </c:if>
+    <c:if test="${alertMessage == 'sync2.sync.pull.failure'}">
+        <span class="failure-msg"><spring:message code="sync2.sync.pull.failure" /></span>
+    </c:if>
+</div>
 <div id="apps">
-    <a class="button app big"
-       href=""
-       id="sync.configuration">
-        <i class="icon-calendar"></i>
+    <a class="button"
+        href="${pageContext.request.contextPath}/module/sync2/configuration.form">
         <spring:message code="sync2.configuration.label"/>
     </a>
-    <a class="button app big"
-        href="${pageContext.request.contextPath}/module/sync2/manualPull.form"
-        title = ""
-        id="sync.pull">
-        <i class="icon-random"></i>
+    <a class="button"
+        href="${pageContext.request.contextPath}/module/sync2/manualPull.form">
         <spring:message code="sync2.sync.manual.pull.label"/>
     </a>
-    <a class="button app big"
-        href="${pageContext.request.contextPath}/module/sync2/manualPush.form"
-        title = ""
-        id="sync.push">
-        <i class="icon-random"></i>
+    <a class="button"
+        href="${pageContext.request.contextPath}/module/sync2/manualPush.form">
         <spring:message code="sync2.sync.manual.push.label"/>
     </a>
-    <a class="button app big"
-       href=""
-       id="outgoing-message-exceptions.ccd">
-        <i class="icon-calendar"></i>
+    <a class="button"
+        href="${pageContext.request.contextPath}/module/sync2/auditList.form">
         <spring:message code="sync2.audit.list.label"/>
     </a>
 </div>
