@@ -5,17 +5,13 @@
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
 <div id="message">
-    <c:if test="${alertMessage == 'sync2.sync.push.success'}">
-        <span class="success-msg"><spring:message code="sync2.sync.push.success" /></span>
-    </c:if>
-    <c:if test="${alertMessage == 'sync2.sync.push.failure'}">
-        <span class="failure-msg"><spring:message code="sync2.sync.push.failure" /></span>
-    </c:if>
-    <c:if test="${alertMessage == 'sync2.sync.pull.success'}">
-        <span class="success-msg"><spring:message code="sync2.sync.pull.success" /></span>
-    </c:if>
-    <c:if test="${alertMessage == 'sync2.sync.pull.failure'}">
-        <span class="failure-msg"><spring:message code="sync2.sync.pull.failure" /></span>
+    <c:if test="${not empty alertMessage}">
+        <c:if test="${success == true}">
+            <span class="success-msg"><spring:message code="${alertMessage}" /></span>
+        </c:if>
+        <c:if test="${success == false}">
+            <span class="failure-msg"><spring:message code="${alertMessage}" /></span>
+        </c:if>
     </c:if>
 </div>
 <div id="apps">
