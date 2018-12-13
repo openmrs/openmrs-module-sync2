@@ -4,6 +4,8 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
 
+Welcome back <b>${user}</b>!
+<br/><br/>
 <div id="message">
     <c:if test="${not empty alertMessage}">
         <c:if test="${success == true}">
