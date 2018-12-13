@@ -1,0 +1,36 @@
+#apps {
+    display: inline-flex;
+}
+
+.button {
+    width: 150px;
+    height: 90px;
+    padding-top: 60px;
+    text-align: center;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 10px;
+    background: #009384;
+    text-decoration: none !important;
+}
+
+.button:hover {
+    background: #5B57A6;
+    text-align: center;
+}
+
+#message {
+    float: right;
+}
+
+.success-msg {
+    border: 2px solid green;
+    background-color: limegreen;
+    padding: 20px;
+}
+
+.failure-msg {
+    border: 2px solid darkred;
+    background-color: indianred;
+    padding: 20px;
+}
