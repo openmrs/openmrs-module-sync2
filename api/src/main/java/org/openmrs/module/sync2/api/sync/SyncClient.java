@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
+import org.openmrs.module.fhir.api.client.ClientHttpEntity;
 import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
@@ -127,7 +127,7 @@ public class SyncClient {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 		Class<?> clazz = helper.resolveClassByCategory(category.getCategory());
 
-		RequestEntity request = helper.retrieveRequest(resourceUrl);
+		ClientHttpEntity request = helper.retrieveRequest(resourceUrl);
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
@@ -139,7 +139,7 @@ public class SyncClient {
 			String clientName, OpenMRSSyncInstance instance) throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
-		RequestEntity request = helper.createRequest(resourceUrl, object);
+		ClientHttpEntity request = helper.createRequest(resourceUrl, object);
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
@@ -151,7 +151,7 @@ public class SyncClient {
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
-		RequestEntity request = helper.deleteRequest(resourceUrl, uuid);
+		ClientHttpEntity request = helper.deleteRequest(resourceUrl, uuid);
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
@@ -163,7 +163,7 @@ public class SyncClient {
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
-		RequestEntity request = helper.updateRequest(resourceUrl, object);
+		ClientHttpEntity request = helper.updateRequest(resourceUrl, object);
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
@@ -178,14 +178,14 @@ public class SyncClient {
 		return headers;
 	}
 
-	private ResponseEntity exchange(ClientHelper helper, RequestEntity request, Class clazz) {
+	private ResponseEntity exchange(ClientHelper helper, ClientHttpEntity request, Class clazz) {
 		HttpHeaders headers = new HttpHeaders();
 		setRequestHeaders(helper, headers);
 		HttpEntity entity = new HttpEntity(request.getBody(), headers);
 		return restTemplate.exchange(request.getUrl(), request.getMethod(), entity, clazz);
 	}
 
-	private RequestEntity<RequestWrapper> sendRequest(CategoryEnum category, String destinationUrl, String clientName,
+	private ClientHttpEntity<RequestWrapper> sendRequest(CategoryEnum category, String destinationUrl, String clientName,
 			InnerRequest request) throws URISyntaxException {
 		ClientHelper clientHelper = ClientHelperFactory.createClient(clientName);
 		Class<?> clazz = clientHelper.resolveClassByCategory(category.getCategory());
@@ -197,7 +197,7 @@ public class SyncClient {
 		wrapper.setClientName(clientName);
 		wrapper.setRequest(request);
 
-		return new RequestEntity<>(wrapper, HttpMethod.POST, new URI(destinationUrl));
+		return new ClientHttpEntity<>(wrapper, HttpMethod.POST, new URI(destinationUrl));
 	}
 
 	private boolean shouldWrappMessage(String clientName, OpenMRSSyncInstance instance) {

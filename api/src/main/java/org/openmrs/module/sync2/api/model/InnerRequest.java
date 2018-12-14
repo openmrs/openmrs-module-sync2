@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.api.model;
 
+import org.openmrs.module.fhir.api.client.ClientHttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -18,7 +18,7 @@ public class InnerRequest implements Serializable {
 	public InnerRequest() {
 	}
 
-	public InnerRequest(RequestEntity<?> entity) {
+	public InnerRequest(ClientHttpEntity<?> entity) {
 		this.method = entity.getMethod();
 		this.url = entity.getUrl();
 		this.body = (entity.getBody() != null) ? entity.getBody().toString() : null;
