@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.api.service.impl;
 import org.openmrs.User;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
@@ -30,9 +31,10 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 	@Override
 	public ResponseEntity<String> getObject(RequestWrapper wrapper) {
 		RestTemplate restTemplate = prepareRestTemplate(wrapper.getClientName());
+		ClientHelper helper = ClientHelperFactory.createClient(wrapper.getClientName());
 		try {
 			RequestEntity<String> req = new RequestEntity<>(wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
-			return copyResponseWithContentType(restTemplate.exchange(req, String.class));
+			return copyResponseWithContentType(exchange(restTemplate, helper, req, String.class));
 		}
 		catch (HttpClientErrorException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
@@ -47,7 +49,7 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 			Object object = helper.convertToObject(wrapper.getRequest().getBody(), wrapper.getClazz());
 
 			RequestEntity req = new RequestEntity<>(object, wrapper.getRequest().getMethod(), wrapper.getRequest().getUrl());
-			ResponseEntity<String> res = restTemplate.exchange(req, String.class);
+			ResponseEntity<String> res = exchange(restTemplate, helper, req, String.class);
 
 			return new ResponseEntity<>(res.getBody(), res.getStatusCode());
 		}
@@ -62,11 +64,14 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 	@Override
 	public ResponseEntity<String> deleteObject(RequestWrapper wrapper) {
 		RestTemplate restTemplate = prepareRestTemplate(wrapper.getClientName());
+		ClientHelper helper = ClientHelperFactory.createClient(wrapper.getClientName());
+		HttpHeaders headers = new HttpHeaders();
+		setRequestHeaders(helper, headers);
 		try {
 			return restTemplate.exchange(
 					wrapper.getRequest().getUrl(),
 					wrapper.getRequest().getMethod(),
-					new HttpEntity<Object>(wrapper.getRequest().getBody()),
+					new HttpEntity<Object>(wrapper.getRequest().getBody(), headers),
 					String.class);
 		}
 		catch (HttpClientErrorException e) {
@@ -98,15 +103,27 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 
 	private RestTemplate prepareRestTemplate(String client) {
 		RestTemplate restTemplate = new RestTemplate();
+		ClientHelper helper = ClientHelperFactory.createClient(client);
+		restTemplate.setMessageConverters(helper.getCustomMessageConverter());
+		return restTemplate;
+	}
+
+	private HttpHeaders setRequestHeaders(ClientHelper clientHelper, HttpHeaders headers) {
 		AdministrationService adminService = Context.getAdministrationService();
 		String username = adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
 		String password = adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
+		for (SyncClientHttpRequestInterceptor interceptor :
+				clientHelper.getCustomInterceptors(username, password)) {
+			interceptor.addToHeaders(headers);
+		}
+		return headers;
+	}
 
-		ClientHelper helper = ClientHelperFactory.createClient(client);
-		restTemplate.setInterceptors(helper.getCustomInterceptors(username, password));
-		restTemplate.setMessageConverters(helper.getCustomMessageConverter());
-
-		return restTemplate;
+	private ResponseEntity exchange(RestTemplate restTemplate, ClientHelper helper, RequestEntity request, Class clazz) {
+		HttpHeaders headers = new HttpHeaders();
+		setRequestHeaders(helper, headers);
+		HttpEntity entity = new HttpEntity(request.getBody(), headers);
+		return restTemplate.exchange(request.getUrl(), request.getMethod(), entity, clazz);
 	}
 
 	private ResponseEntity<String> copyResponseWithContentType(ResponseEntity<?> response) {

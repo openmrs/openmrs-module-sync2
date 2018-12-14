@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
+import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.InnerRequest;
@@ -11,6 +12,8 @@ import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.sync2.client.RequestWrapperConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -113,8 +116,6 @@ public class SyncClient {
 	}
 
 	private void prepareRestTemplate(ClientHelper clientHelper) {
-		restTemplate.setInterceptors(clientHelper.getCustomInterceptors(this.username, this.password));
-
 		List<HttpMessageConverter<?>> converters = new ArrayList<>(clientHelper.getCustomMessageConverter());
 		converters.add(new RequestWrapperConverter());
 		restTemplate.setMessageConverters(converters);
@@ -130,10 +131,11 @@ public class SyncClient {
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
-		return exchange(request, clazz).getBody();
+		return exchange(helper, request, clazz).getBody();
 	}
 
-	private ResponseEntity<String> createObject(CategoryEnum category, String resourceUrl, String destinationUrl, Object object,
+	private ResponseEntity<String> createObject(CategoryEnum category, String resourceUrl, String destinationUrl,
+			Object object,
 			String clientName, OpenMRSSyncInstance instance) throws RestClientException, URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -141,10 +143,11 @@ public class SyncClient {
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
-		return exchange(request, String.class);
+		return exchange(helper, request, String.class);
 	}
 
-	private ResponseEntity<String> deleteObject(CategoryEnum category, String resourceUrl, String destinationUrl, String uuid,
+	private ResponseEntity<String> deleteObject(CategoryEnum category, String resourceUrl, String destinationUrl,
+			String uuid,
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -152,10 +155,11 @@ public class SyncClient {
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
-		return exchange(request, String.class);
+		return exchange(helper, request, String.class);
 	}
 
-	private ResponseEntity<String> updateObject(CategoryEnum category, String resourceUrl, String destinationUrl, Object object,
+	private ResponseEntity<String> updateObject(CategoryEnum category, String resourceUrl, String destinationUrl,
+			Object object,
 			String clientName, OpenMRSSyncInstance instance) throws URISyntaxException {
 		ClientHelper helper = ClientHelperFactory.createClient(clientName);
 
@@ -163,11 +167,22 @@ public class SyncClient {
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
-		return exchange(request, String.class);
+		return exchange(helper, request, String.class);
 	}
 
-	private ResponseEntity exchange(RequestEntity request, Class clazz) {
-		return restTemplate.exchange(request, clazz);
+	private HttpHeaders setRequestHeaders(ClientHelper clientHelper, HttpHeaders headers) {
+		for (SyncClientHttpRequestInterceptor interceptor :
+				clientHelper.getCustomInterceptors(this.username, this.password)) {
+			interceptor.addToHeaders(headers);
+		}
+		return headers;
+	}
+
+	private ResponseEntity exchange(ClientHelper helper, RequestEntity request, Class clazz) {
+		HttpHeaders headers = new HttpHeaders();
+		setRequestHeaders(helper, headers);
+		HttpEntity entity = new HttpEntity(request.getBody(), headers);
+		return restTemplate.exchange(request.getUrl(), request.getMethod(), entity, clazz);
 	}
 
 	private RequestEntity<RequestWrapper> sendRequest(CategoryEnum category, String destinationUrl, String clientName,

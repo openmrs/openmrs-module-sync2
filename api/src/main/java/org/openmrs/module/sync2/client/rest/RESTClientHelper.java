@@ -3,7 +3,8 @@ package org.openmrs.module.sync2.client.rest;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
-import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.SyncHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
@@ -80,9 +80,9 @@ public class RESTClientHelper implements ClientHelper {
 	}
 
 	@Override
-	public List<ClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
+	public List<SyncClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
 		return Arrays.asList(new BasicAuthInterceptor(username, password),
-				new HeaderClientHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
+				new SyncHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class RESTClientHelper implements ClientHelper {
 		// will be implemented.
 		// Please check also PatientResource1_9 or any other @Resource class which supports current platform version.
 		if (cat.getClazz().equals(Patient.class) && o instanceof SimpleObject) {
-			PatientResource1_9 resource = (PatientResource1_9 ) Context.getService(RestService.class)
+			PatientResource1_9 resource = (PatientResource1_9) Context.getService(RestService.class)
 					.getResourceBySupportedClass(Patient.class);
 			return resource.getPatient((SimpleObject) o);
 		} else {
