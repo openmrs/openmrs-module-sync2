@@ -1,6 +1,6 @@
 package org.openmrs.module.sync2.api.sync;
 
-import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.InnerRequest;
@@ -171,7 +171,7 @@ public class SyncClient {
 	}
 
 	private HttpHeaders setRequestHeaders(ClientHelper clientHelper, HttpHeaders headers) {
-		for (SyncClientHttpRequestInterceptor interceptor :
+		for (ClientHttpRequestInterceptor interceptor :
 				clientHelper.getCustomInterceptors(this.username, this.password)) {
 			interceptor.addToHeaders(headers);
 		}

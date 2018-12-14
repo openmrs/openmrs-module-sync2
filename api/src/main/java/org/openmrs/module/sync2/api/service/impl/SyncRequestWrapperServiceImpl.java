@@ -3,7 +3,7 @@ package org.openmrs.module.sync2.api.service.impl;
 import org.openmrs.User;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.RequestWrapper;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
@@ -112,7 +112,7 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 		AdministrationService adminService = Context.getAdministrationService();
 		String username = adminService.getGlobalProperty(LOCAL_USERNAME_PROPERTY);
 		String password = adminService.getGlobalProperty(LOCAL_PASSWORD_PROPERTY);
-		for (SyncClientHttpRequestInterceptor interceptor :
+		for (ClientHttpRequestInterceptor interceptor :
 				clientHelper.getCustomInterceptors(username, password)) {
 			interceptor.addToHeaders(headers);
 		}

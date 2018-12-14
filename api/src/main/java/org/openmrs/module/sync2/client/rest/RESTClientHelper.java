@@ -3,8 +3,8 @@ package org.openmrs.module.sync2.client.rest;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
-import org.openmrs.module.fhir.api.client.SyncClientHttpRequestInterceptor;
-import org.openmrs.module.fhir.api.client.SyncHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.BasicHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
@@ -80,9 +80,9 @@ public class RESTClientHelper implements ClientHelper {
 	}
 
 	@Override
-	public List<SyncClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
+	public List<ClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
 		return Arrays.asList(new BasicAuthInterceptor(username, password),
-				new SyncHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
+				new BasicHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Override
