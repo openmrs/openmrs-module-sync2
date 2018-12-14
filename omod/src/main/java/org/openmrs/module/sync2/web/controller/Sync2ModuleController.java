@@ -84,11 +84,6 @@ public class Sync2ModuleController {
 		return "/module/sync2/sync2AuditList";
 	}
 
-	@RequestMapping(value = "/module/sync2/configuration")
-	public String configuration() {
-		return "/module/sync2/sync2Configuration";
-	}
-
 	private String getFirstErrorCode(Errors errors) {
 		return errors.getErrorsCodes().get(SyncConstants.ZERO);
 	}
