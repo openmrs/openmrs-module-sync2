@@ -1,27 +1,19 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
+<%@ include file="template/localHeader.jsp" %>
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/sync2.js"/>
 <spring:htmlEscape defaultHtmlEscape="true"/>
-<ul id="menu">
-    <li class="first">
-        <a href="${pageContext.request.contextPath}/admin">
-            <spring:message code="admin.title.short"/>
-        </a>
-    </li>
-    <li class="second">
-        <a href="${pageContext.request.contextPath}/module/sync2/sync2.form">
-            <spring:message code="sync2.title"/>
-        </a>
-    </li>
-    <li class="active">
-        <a href="${pageContext.request.contextPath}/module/sync2/sync2Configuration.form">
-            <spring:message code="sync2.configuration.label"/>
-        </a>
-    </li>
-</ul>
+
 <h2>
     <h2><spring:message code="sync2.configuration.label" /></h2>
 </h2>
+<div id="message">
+    <c:if test="${not empty alertMessage}">
+        <span <c:if test="${success == true}">class="success-msg"</c:if>>
+            <spring:message code="${alertMessage}" />
+        </span>
+    </c:if>
+</div>
 <fieldset>
     <form action="importSyncConfiguration.form" method="POST" enctype="multipart/form-data">
         <span >

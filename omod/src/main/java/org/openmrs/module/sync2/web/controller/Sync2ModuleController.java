@@ -23,6 +23,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping(value = "/module/sync2")
 public class Sync2ModuleController {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(Sync2ModuleController.class);
@@ -34,12 +35,12 @@ public class Sync2ModuleController {
 	private static final String PULL_SUCCESS_MESSAGE = "sync2.sync.pull.success";
 	private static final String PULL_FAILURE_MESSAGE = "sync2.sync.pull.failure";
 
-	@RequestMapping(value = "/module/sync2/sync2")
+	@RequestMapping(value = "/sync2")
 	public void manage(ModelMap model) {
 		model.addAttribute(USER_MODEL, Context.getAuthenticatedUser());
 	}
 
-	@RequestMapping(value = "/module/sync2/manualPush")
+	@RequestMapping(value = "/manualPush")
 	public String manualPush(ModelMap model) {
 		try {
 			LOGGER.info("Start Local Feed Reader...");
@@ -56,10 +57,10 @@ public class Sync2ModuleController {
 			model.put(SUCCESS_MESSAGE, false);
 			model.put(ALERT_MESSAGE_MODEL, PUSH_FAILURE_MESSAGE);
 		}
-		return "/module/sync2/sync2";
+		return "/sync2";
 	}
 
-	@RequestMapping(value = "/module/sync2/manualPull")
+	@RequestMapping(value = "/manualPull")
 	public String manualPull(ModelMap model) {
 		try {
 			LOGGER.info("Start Parent Feed Reader...");
@@ -76,12 +77,12 @@ public class Sync2ModuleController {
 			model.put(SUCCESS_MESSAGE, false);
 			model.put(ALERT_MESSAGE_MODEL, PULL_FAILURE_MESSAGE);
 		}
-		return "/module/sync2/sync2";
+		return "/sync2";
 	}
 
-	@RequestMapping(value = "/module/sync2/auditList")
+	@RequestMapping(value = "/auditList")
 	public String auditList() {
-		return "/module/sync2/sync2AuditList";
+		return "/sync2AuditList";
 	}
 
 	private String getFirstErrorCode(Errors errors) {

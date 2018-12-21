@@ -33,6 +33,8 @@ public class Sync2ConfigurationController {
 	@Qualifier("messageSourceService")
 	private MessageSourceService messageSourceService;
 
+	private static final String ALERT_MESSAGE_MODEL = "alertMessage";
+	private static final String SUCCESS_MESSAGE = "success";
 	private static final String SAVE_CONFIG_ERROR = "sync2.configuration.json.save.fail";
 	private static final String SAVE_CONFIG_SUCCESS = "sync2.configuration.json.save.success";
 
@@ -56,11 +58,13 @@ public class Sync2ConfigurationController {
 			HttpSession session) {
 		try {
 			syncConfigurationService.saveConfiguration(json);
-			//InfoErrorMessageUtil.flashInfoMessage(session, SAVE_CONFIG_SUCCESS);
+			model.put(SUCCESS_MESSAGE, true);
+			model.put(ALERT_MESSAGE_MODEL, SAVE_CONFIG_SUCCESS);
 			return "/module/sync2/sync2";
 		} catch (Exception e) {
 			LOGGER.warn("Error during save:", e);
-			//session.setAttribute(UiCommonsConstants.SESSION_ATTRIBUTE_ERROR_MESSAGE, SAVE_CONFIG_ERROR);
+			model.put(SUCCESS_MESSAGE, false);
+			model.put(ALERT_MESSAGE_MODEL, SAVE_CONFIG_ERROR);
 		}
 		return "/module/sync2/sync2Configuration";
 	}
