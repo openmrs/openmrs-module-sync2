@@ -75,7 +75,7 @@ public class Sync2ConfigurationController {
 		try {
 			syncConfigurationService.saveConfiguration(json);
 			SyncMessageUtils.successMessage(model, SAVE_CONFIG_SUCCESS);
-			return "/module/sync2/sync2";
+			return "redirect:/module/sync2/sync2.form";
 		} catch (Exception e) {
 			LOGGER.warn("Error during save:", e);
 			SyncMessageUtils.errorMessage(model, SAVE_CONFIG_ERROR);
@@ -127,7 +127,7 @@ public class Sync2ConfigurationController {
 			SyncConfiguration syncConfiguration = parseJsonStringToSyncConfiguration(jsonContent);
 			syncConfigurationService.saveConfiguration(syncConfiguration);
 			SyncMessageUtils.successMessage(model, SAVE_CONFIG_SUCCESS);
-			return "/module/sync2/sync2";
+			return "redirect:/module/sync2/sync2.form";
 		} catch (SyncException e) {
 			LOGGER.warn("Error during import configuration:", e);
 			SyncMessageUtils.errorMessage(model, ERRORS_INVALID_FILE);

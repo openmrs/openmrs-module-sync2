@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * The Sync 2 module controller.
@@ -43,14 +44,20 @@ public class Sync2ModuleController {
 	private static final String PULL_FAILURE_MESSAGE = "sync2.sync.pull.failure";
 
 	/**
-	 * Sets the UI model attribute used to check if the parent instance URI is valid.
+	 * Sets the UI model attributes used to check if the parent instance URI is valid etc.
 	 * Notifies the user if mentioned URI is not valid.
 	 *
 	 * @param model injected the page model object
+	 * @param success injected the flag used to choose the type of alert message
+	 * @param alertMessage injected the message used to display an alert message (display the alert if the value isn't null)
 	 */
 	@RequestMapping(value = "/sync2")
-	public void manage(ModelMap model) {
+	public void manage(ModelMap model,
+			@RequestParam(value = SyncMessageUtils.SUCCESS_MESSAGE, required = false) boolean success,
+			@RequestParam(value = SyncMessageUtils.ALERT_MESSAGE_MODEL, required = false) String alertMessage) {
 		model.addAttribute(USER_MODEL, Context.getAuthenticatedUser());
+		model.addAttribute(SyncMessageUtils.SUCCESS_MESSAGE, success);
+		model.addAttribute(SyncMessageUtils.ALERT_MESSAGE_MODEL, alertMessage);
 
 		boolean emptyURI = parentInstanceUriIsEmpty();
 		model.addAttribute(ATTRIBUTE_EMPTY_URI, emptyURI);
