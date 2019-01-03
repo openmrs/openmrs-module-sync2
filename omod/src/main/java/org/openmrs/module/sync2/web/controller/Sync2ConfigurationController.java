@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -26,6 +25,9 @@ import java.util.Map;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJsonStringToSyncConfiguration;
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
 
+/**
+ * The Sync 2 configuration controller.
+ */
 @Controller
 public class Sync2ConfigurationController {
 
@@ -39,6 +41,14 @@ public class Sync2ConfigurationController {
 	@Autowired
 	private SyncConfigurationService syncConfigurationService;
 
+	/**
+	 * Sets the UI model attributes used to display the sync configuration and etc.
+	 *
+	 * @param model injected the page model object
+	 * @param success injected the flag used to choose the type of alert message
+	 * @param alertMessage injected the message used to display an alert message (display the alert if the value isn't null)
+	 * @return the redirect URL to sync2Configuration.jsp
+	 */
 	@RequestMapping(value = "/module/sync2/configuration")
 	public String get(ModelMap model,
 			@RequestParam(value = SyncMessageUtils.SUCCESS_MESSAGE, required = false) boolean success,
@@ -51,10 +61,17 @@ public class Sync2ConfigurationController {
 		return "/module/sync2/sync2Configuration";
 	}
 
+	/**
+	 * Saves the configuration (sent as JSON string) into the server.
+	 * Notifies the user about the result of this operation.
+	 *
+	 * @param model injected the page model object
+	 * @param json injected the JSON representation of the configuration
+	 * @return the redirect URL (if success to /module/sync2/sync2 if not then /module/sync2/configuration)
+	 */
 	@RequestMapping(value = "/module/sync2/saveConfiguration", method = RequestMethod.POST)
 	public String post(ModelMap model,
-			@RequestParam("json") String json,
-			HttpSession session) {
+			@RequestParam("json") String json) {
 		try {
 			syncConfigurationService.saveConfiguration(json);
 			SyncMessageUtils.successMessage(model, SAVE_CONFIG_SUCCESS);
@@ -66,6 +83,13 @@ public class Sync2ConfigurationController {
 		return "redirect:/module/sync2/configuration.form";
 	}
 
+	/**
+	 * Verifies if the sent string has valid JSON representation.
+	 *
+	 * @param json injected the JSON representation of the configuration
+	 * @return the Map which contains information about the result of validation,
+	 *  used by UI to display an appropriate message
+	 */
 	@ResponseBody
 	@RequestMapping("/module/sync2/verifyJson")
 	public Map<String, Boolean>  verifyJson(@RequestParam("json") String json) throws SyncException {
@@ -80,6 +104,14 @@ public class Sync2ConfigurationController {
 		return result;
 	}
 
+	/**
+	 * Saves the configuration (sent as JSON file) into the server.
+	 * Notifies the user about the result of this operation.
+	 *
+	 * @param file injected the JSON configuration file
+	 * @param model injected the page model object
+	 * @return the redirect URL (if success to /module/sync2/sync2 if not then /module/sync2/configuration)
+	 */
 	@RequestMapping(value = "/module/sync2/importSyncConfiguration", method = RequestMethod.POST)
 	public String saveConfiguration(@RequestParam(value = "file") MultipartFile file,
 			ModelMap model) throws SyncException, IOException {
