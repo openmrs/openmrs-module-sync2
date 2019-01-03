@@ -34,3 +34,20 @@
     background-color: indianred;
     padding: 20px;
 }
+
+.field-error {
+    color: #ff6666;
+    font-size: 1.1em;
+    font-weight:bold;
+}
+
+.title {
+    color: #363463;
+    font-size: 16px;
+}
+
+.button.disabled {
+    background: #EEE;
+    border: #cccccc 1px solid;
+    color: #CCC !important;
+}

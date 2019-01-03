@@ -16,6 +16,3 @@
         </a>
     </li>
 </ul>
-<h2>
-    <h2><spring:message code="sync2.title" /></h2>
-</h2>
