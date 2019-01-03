@@ -78,7 +78,7 @@ public class SyncConstants {
 
     public static final String SYNC_2_MERGE_BEHAVIOR = "sync2.mergeBehavior";
 
-    public static final String SYNC_2_DEFAULT_MERGE_BEHAVIOR = "sync2.conflictMergeBehaviour";
+    public static final String SYNC_2_DEFAULT_MERGE_BEHAVIOR = "sync2.restrictConflictMergeBehaviour";
 
     public static final String AUDIT_MESSAGE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
