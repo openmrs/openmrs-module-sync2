@@ -32,7 +32,7 @@ Welcome back <b>${user}</b>!
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
         </c:if>
-         <c:if test = "${emptyURI == true}">
+         <c:if test = "${emptyURI == false}">
              href = "${pageContext.request.contextPath}/module/sync2/manualPull.form"
          </c:if>>
         <spring:message code="sync2.sync.manual.pull.label"/>
@@ -42,7 +42,7 @@ Welcome back <b>${user}</b>!
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
         </c:if>
-         <c:if test = "${emptyURI == true}">
+         <c:if test = "${emptyURI == false}">
              href="${pageContext.request.contextPath}/module/sync2/manualPush.form"
          </c:if>>
         <spring:message code="sync2.sync.manual.push.label"/>
