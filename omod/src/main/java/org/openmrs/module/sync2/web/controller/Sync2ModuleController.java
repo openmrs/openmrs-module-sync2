@@ -25,6 +25,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * The Sync 2 module controller.
+ */
 @Controller
 @RequestMapping(value = "/module/sync2")
 public class Sync2ModuleController {
@@ -39,6 +42,12 @@ public class Sync2ModuleController {
 	private static final String PULL_SUCCESS_MESSAGE = "sync2.sync.pull.success";
 	private static final String PULL_FAILURE_MESSAGE = "sync2.sync.pull.failure";
 
+	/**
+	 * Sets the UI model attribute used to check if the parent instance URI is valid.
+	 * Notifies the user if mentioned URI is not valid.
+	 *
+	 * @param model injected the page model object
+	 */
 	@RequestMapping(value = "/sync2")
 	public void manage(ModelMap model) {
 		model.addAttribute(USER_MODEL, Context.getAuthenticatedUser());
@@ -50,6 +59,12 @@ public class Sync2ModuleController {
 		}
 	}
 
+	/**
+	 * Triggers the manual push operation.
+	 *
+	 * @param model injected the page model object
+	 * @return the redirect URL to /module/sync2/sync2
+	 */
 	@RequestMapping(value = "/manualPush")
 	public String manualPush(ModelMap model) {
 		try {
@@ -67,6 +82,12 @@ public class Sync2ModuleController {
 		return "/module/sync2/sync2";
 	}
 
+	/**
+	 * Triggers the manual pull operation.
+	 *
+	 * @param model injected the page model object
+	 * @return the redirect URL to /module/sync2/sync2
+	 */
 	@RequestMapping(value = "/manualPull")
 	public String manualPull(ModelMap model) {
 		try {
@@ -85,6 +106,11 @@ public class Sync2ModuleController {
 		return "/module/sync2/sync2";
 	}
 
+	/**
+	 * Redirects to the Sync2 AudiMessage page.
+	 *
+	 * @return the redirect URL
+	 */
 	@RequestMapping(value = "/auditList")
 	public String auditList() {
 		return "/module/sync2/sync2AuditList";
