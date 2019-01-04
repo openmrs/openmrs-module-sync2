@@ -76,7 +76,7 @@ public class Sync2ConfigurationController {
 			syncConfigurationService.saveConfiguration(json);
 			SyncMessageUtils.successMessage(model, SAVE_CONFIG_SUCCESS);
 			return "redirect:/module/sync2/sync2.form";
-		} catch (Exception e) {
+		} catch (SyncException e) {
 			LOGGER.warn("Error during save:", e);
 			SyncMessageUtils.errorMessage(model, SAVE_CONFIG_ERROR);
 		}
