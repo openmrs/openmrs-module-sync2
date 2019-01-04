@@ -1,0 +1,15 @@
+#message {
+    float: right;
+}
+
+.success-msg {
+    border: 2px solid green;
+    background-color: limegreen;
+    padding: 20px;
+}
+
+.failure-msg {
+    border: 2px solid darkred;
+    background-color: indianred;
+    padding: 20px;
+}
