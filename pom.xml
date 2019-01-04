@@ -203,8 +203,8 @@
 		<uiframeworkVersion>3.11.0</uiframeworkVersion>
 		<uicommonsVersion>2.3.0</uicommonsVersion>
 		<javaCompilerVersion>1.8</javaCompilerVersion>
-		<fhirVersion>1.16.0</fhirVersion>
-		<atomfeedVersion>1.0.8</atomfeedVersion>
+		<fhirVersion>1.17.0-SNAPSHOT</fhirVersion>
+		<atomfeedVersion>1.0.9-SNAPSHOT</atomfeedVersion>
 		<gsonVersion>2.8.1</gsonVersion>
 		<webservices.restVersion>2.23.0</webservices.restVersion>
 	</properties>
