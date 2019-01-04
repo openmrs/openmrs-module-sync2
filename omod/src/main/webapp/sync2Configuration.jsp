@@ -2,23 +2,15 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="template/localHeader.jsp" %>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
+<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/configuration.form"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/sync2.js"/>
 <spring:htmlEscape defaultHtmlEscape="true"/>
 
 <h2>
-    <h2><spring:message code="sync2.configuration.label" /></h2>
+    <spring:message code="sync2.configuration.label" />
 </h2>
-<div id="message">
-    <c:if test="${not empty alertMessage}">
-        <span <c:if test="${success == true}">class="success-msg"</c:if>
-                <c:if test="${success == false}">class="failure-msg"</c:if>>
-            <spring:message code="${alertMessage}"/>
-        </span>
-        <script>
-            jQuery('#message').fadeOut(5000);
-        </script>
-    </c:if>
-</div>
+<%@ include file="template/alertMessage.jsp" %>
+
 <fieldset>
     <form action="importSyncConfiguration.form" method="POST" enctype="multipart/form-data">
         <p>

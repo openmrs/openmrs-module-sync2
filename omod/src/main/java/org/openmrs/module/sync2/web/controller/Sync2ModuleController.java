@@ -10,7 +10,6 @@
 package org.openmrs.module.sync2.web.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.SyncMessageUtils;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
@@ -55,7 +54,6 @@ public class Sync2ModuleController {
 	public void manage(ModelMap model,
 			@RequestParam(value = SyncMessageUtils.SUCCESS_MESSAGE, required = false) boolean success,
 			@RequestParam(value = SyncMessageUtils.ALERT_MESSAGE_MODEL, required = false) String alertMessage) {
-		model.addAttribute(USER_MODEL, Context.getAuthenticatedUser());
 		model.addAttribute(SyncMessageUtils.SUCCESS_MESSAGE, success);
 		model.addAttribute(SyncMessageUtils.ALERT_MESSAGE_MODEL, alertMessage);
 

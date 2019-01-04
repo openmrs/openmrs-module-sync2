@@ -7,21 +7,9 @@
 <h2>
     <h2><spring:message code="sync2.title" /></h2>
 </h2>
-Welcome back <b>${user}</b>!
 <br/><br/>
-<div id="message">
-    <c:if test="${not empty alertMessage}">
-        <c:if test="${success == true}">
-            <span class="success-msg"><spring:message code="${alertMessage}" /></span>
-        </c:if>
-        <c:if test="${success == false}">
-            <span class="failure-msg"><spring:message code="${alertMessage}" /></span>
-        </c:if>
-        <script>
-            jQuery('#message').fadeOut(5000);
-        </script>
-    </c:if>
-</div>
+<%@ include file="template/alertMessage.jsp" %>
+
 <div id="apps">
     <a class="button"
         href="${pageContext.request.contextPath}/module/sync2/configuration.form">
