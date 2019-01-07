@@ -1,6 +1,6 @@
-jQuery(document).ready(function() {
+jQuery(document).ready(function($) {
 
-    $("#jsGrid").jsGrid({
+    jQuery("#jsGrid").jsGrid({
         height: "auto",
         width: "100%",
 
@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
                 var d = $.Deferred();
 
                 jQuery.ajax({
-                    url: openmrsContextPath+"/ws/rest/sync2/messages",
+                    url: openmrsContextPath + "/ws/rest/sync2/messages",
                     type: "GET",
                     dataType: "json",
                     data: filter

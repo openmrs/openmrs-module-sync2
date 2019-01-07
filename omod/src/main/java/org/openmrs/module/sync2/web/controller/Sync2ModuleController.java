@@ -111,16 +111,6 @@ public class Sync2ModuleController {
 		return "/module/sync2/sync2";
 	}
 
-	/**
-	 * Redirects to the Sync2 AudiMessage page.
-	 *
-	 * @return the redirect URL
-	 */
-	@RequestMapping(value = "/auditList")
-	public String auditList() {
-		return "/module/sync2/sync2AuditList";
-	}
-
 	private String getFirstErrorCode(Errors errors) {
 		return errors.getErrorsCodes().get(SyncConstants.ZERO);
 	}
