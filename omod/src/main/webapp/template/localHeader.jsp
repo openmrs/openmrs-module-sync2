@@ -15,4 +15,9 @@
             <spring:message code="sync2.configuration.label"/>
         </a>
     </li>
+    <li <c:if test='<%= request.getRequestURI().contains("/sync2AuditList") %>'>class="active"</c:if>>
+        <a href="${pageContext.request.contextPath}/module/sync2/auditList.form">
+            <spring:message code="sync2.audit.label"/>
+        </a>
+    </li>
 </ul>
