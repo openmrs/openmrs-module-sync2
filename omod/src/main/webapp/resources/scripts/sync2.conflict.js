@@ -1,10 +1,16 @@
 function conflictResolution() {
 
-    jQuery.getJSON('/' + OPENMRS_CONTEXT_PATH + '/sync2/AuditDetails/conflictResolution.action',
+	var contextPath = OPENMRS_CONTEXT_PATH;
+	var character = contextPath.charAt(0)
+	if (character != '/') {
+		contextPath = '/' + contextPath;
+	}
+
+    jQuery.getJSON( contextPath + '/sync2/AuditDetails/conflictResolution.action',
     {
-        conflictLogUuid:$('#retryLogUuid').text()
+        conflictLogUuid:jQuery('#retryLogUuid').text()
     }).success(function(data) {
-        window.location.replace('/' + OPENMRS_CONTEXT_PATH + data['url'])
+        window.location.replace( contextPath + data['url'])
     });
 }
 

@@ -61,6 +61,8 @@
         { id: "PUSH", name: "${ ui.message('sync2.log.operation.push') }" },
         { id: "PULL", name: "${ ui.message('sync2.log.operation.pull') }" }
     ];
+
+    var auditDetailsUrl = "details.page";
 </script>
 <% if (configurationValidationErrors.hasErrors()) { %>
     <h2><%= ui.message("sync2.error.validationError") %></h2>

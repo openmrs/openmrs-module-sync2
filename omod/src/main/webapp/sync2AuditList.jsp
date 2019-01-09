@@ -7,6 +7,7 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/jsGrid.min.js"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/jsGrid.css"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/theme.css"/>
+<openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
 <spring:htmlEscape defaultHtmlEscape="true"/>
 
 <script type="text/javascript">
@@ -55,13 +56,17 @@
         { id: "PUSH", name: "<spring:message code='sync2.log.operation.push' />" },
         { id: "PULL", name: "<spring:message code='sync2.log.operation.pull' />" }
     ];
+
+    var pageIndex = ${pageIndex};
+
+    var auditDetailsUrl = "${pageContext.request.contextPath}/module/sync2/auditDetails.form";
 </script>
 <fieldset>
 <c:choose>
     <c:when test="${configurationValidationErrors.hasErrors()}">
         <h2><spring:message code='sync2.error.validationError' /></h2>
         <c:forEach var="it" items="${configurationValidationErrors.getErrorsCodes()}">
-            <div style="margin-left: 15px"><spring:message code='${it}' /></div>
+            <div style="margin-left: 15px" class="field-error"><spring:message code='${it}' /></div>
         </c:forEach>
     </c:when>
     <c:otherwise>

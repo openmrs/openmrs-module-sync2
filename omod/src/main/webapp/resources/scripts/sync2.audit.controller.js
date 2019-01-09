@@ -59,17 +59,21 @@ jQuery(document).ready(function($) {
             var $row = this.rowByItem(args.item);
             var messageUuid = $row.children().first().text();
             var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
-            window.location.href="details.page?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            window.location.href = auditDetailsUrl + "?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
             $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", false);
         }
     });
 });
 
 function getPageIndex(){
-    var url = new URL(window.location.href);
-    var param = url.searchParams.get("pageIndex");
-	if (param == null) {
-		return 1;
-	}
-	return parseInt(param);
+    if (typeof pageIndex == 'undefined') {
+        var url = new URL(window.location.href);
+            var param = url.searchParams.get("pageIndex");
+            if (param == null) {
+                pageIndex = 1;
+            } else {
+                pageIndex = parseInt(param)
+            }
+    }
+    return pageIndex;
 }
