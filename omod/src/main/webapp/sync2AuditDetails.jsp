@@ -7,6 +7,8 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/sync2.conflict.js"/>
 <spring:htmlEscape defaultHtmlEscape="true"/>
 
+<%@ include file="template/alertMessage.jsp" %>
+
 <style>
 .label {
 	width: 20%;
@@ -16,6 +18,7 @@
 	var OPENMRS_CONTEXT_PATH = "${pageContext.request.contextPath}";
 	var AUDIT_DETAILS_BACK_PAGE = OPENMRS_CONTEXT_PATH + "/module/sync2/auditDetails.form";
 	var AUDIT_BACK_PAGE_INDEX = <%= request.getParameter("backPageIndex") %>;
+	var RETRY_URI = OPENMRS_CONTEXT_PATH + "/module/sync2/retry.form"
 </script>
 <fieldset>
 <table>

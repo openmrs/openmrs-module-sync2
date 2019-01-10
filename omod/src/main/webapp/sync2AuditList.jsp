@@ -10,6 +10,8 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
 <spring:htmlEscape defaultHtmlEscape="true"/>
 
+<%@ include file="template/alertMessage.jsp" %>
+
 <script type="text/javascript">
     var titles = [
         "<spring:message code='sync2.log.header.creatorInstanceId' />",

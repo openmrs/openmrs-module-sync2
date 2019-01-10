@@ -1,15 +1,19 @@
 function retry() {
 
-	var contextPath = OPENMRS_CONTEXT_PATH;
-	var character = contextPath.charAt(0)
-	if (character != '/') {
-		contextPath = '/' + contextPath;
+	var url = unifyUri(RETRY_URI) + "?retryLogUuid=" + jQuery('#retryLogUuid').text()
+
+	 if (AUDIT_BACK_PAGE_INDEX !== 'undefined') {
+		url = url + "&backPageIndex=" + AUDIT_BACK_PAGE_INDEX;
 	}
 
-    jQuery.getJSON(contextPath + '/sync2/AuditDetails/retry.action',
-    {
-        retryLogUuid:jQuery('#retryLogUuid').text()
-    }).success(function(data) {
-        window.location.replace(contextPath + data['url']);
-    });
+    window.location.replace(url);
+}
+
+function unifyUri(input) {
+	var uri = input;
+	var character = uri.charAt(0)
+	if (character != '/') {
+		uri = '/' + uri;
+	}
+	return uri;
 }

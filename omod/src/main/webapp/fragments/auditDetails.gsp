@@ -17,6 +17,7 @@
     if (Array.isArray(AUDIT_BACK_PAGE_INDEX)) {
         AUDIT_BACK_PAGE_INDEX = AUDIT_BACK_PAGE_INDEX[0];
     }
+    var RETRY_URI = OPENMRS_CONTEXT_PATH + "/sync2/retry.page"
 </script>
 
 <table>
