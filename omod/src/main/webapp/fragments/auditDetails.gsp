@@ -82,7 +82,7 @@
     <br />
     <% if (auditLog.nextMessageUuid != null) { %>
         <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
-            [messageUuid: auditLog.nextMessageUuid, backPage: param.backPage[0], backPageIndex: param.backPageIndex]) }">
+            [messageUuid: auditLog.nextMessageUuid, backPageIndex: param.backPageIndex]) }">
             <i class="icon-chevron-right"></i>
             ${ ui.message(messagesPrefix + '.nextMessage') }
         </a>

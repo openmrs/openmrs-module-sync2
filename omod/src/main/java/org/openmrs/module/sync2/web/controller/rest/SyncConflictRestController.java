@@ -28,7 +28,7 @@ public class SyncConflictRestController {
 
 	private static final String MESSAGE_UUID = "messageUuid=";
 
-	public static final String BACK_PAGE = "&backPage=auditList&backPageIndex=1";
+	private static final String BACK_PAGE = "&backPageIndex=1";
 
 	@Autowired
 	private SyncAuditService syncAuditService;

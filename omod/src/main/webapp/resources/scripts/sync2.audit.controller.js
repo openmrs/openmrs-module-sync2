@@ -59,10 +59,11 @@ jQuery(document).ready(function($) {
             var $row = this.rowByItem(args.item);
             var messageUuid = $row.children().first().text();
             var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
-            window.location.href = auditDetailsUrl + "?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            window.location.href = auditDetailsUrl + "?messageUuid=" + messageUuid + "&backPageIndex=" + pageIndex;
             $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", false);
         }
     });
+    jQuery("#jsGrid").jsGrid("_setPage", pageIndex);
 });
 
 function getPageIndex(){

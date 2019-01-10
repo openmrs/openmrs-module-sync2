@@ -95,15 +95,14 @@
 </fieldset>
 <fieldset>
 <a class="button cancel"
-	href="${pageContext.request.contextPath}/module/sync2/<%= request.getParameter("backPage") %>.form?
-		backPageIndex=<%= request.getParameter("backPageIndex") %>">
+	href="${pageContext.request.contextPath}/module/sync2/auditList.form?backPageIndex=<%= request.getParameter("backPageIndex") %>">
 	<spring:message code='general.cancel' />
 </a>
 <c:if test="${auditLog != null && !auditLog.success}">
 	<c:choose>
 		<c:when test="${auditLog.nextMessageUuid != null}">
 			<a class="button right" href="${pageContext.request.contextPath}/module/sync2/auditDetails.form?
-				messageUuid=${auditLog.nextMessageUuid}&backPage=<%= request.getParameter("backPage") %>
+				messageUuid=${auditLog.nextMessageUuid}
 				&backPageIndex=<%= request.getParameter("backPageIndex") %>">
 				<spring:message code='sync2.log.header.nextMessage' />
 			</a>
