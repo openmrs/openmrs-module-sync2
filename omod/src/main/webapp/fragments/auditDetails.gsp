@@ -11,6 +11,14 @@
 }
 </style>
 
+<script type="text/javascript">
+    var AUDIT_DETAILS_BACK_PAGE = OPENMRS_CONTEXT_PATH + "/sync2/details.page";
+    var AUDIT_BACK_PAGE_INDEX = ${param.backPageIndex};
+    if (Array.isArray(AUDIT_BACK_PAGE_INDEX)) {
+        AUDIT_BACK_PAGE_INDEX = AUDIT_BACK_PAGE_INDEX[0];
+    }
+</script>
+
 <table>
     <% if (auditLog != null) { %>
         <tr>

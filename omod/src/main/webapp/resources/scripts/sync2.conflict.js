@@ -1,17 +1,22 @@
 function conflictResolution() {
 
-	var contextPath = OPENMRS_CONTEXT_PATH;
-	var character = contextPath.charAt(0)
-	if (character != '/') {
-		contextPath = '/' + contextPath;
-	}
+    var contextPath = unifyUri(OPENMRS_CONTEXT_PATH);
 
-    jQuery.getJSON( contextPath + '/sync2/AuditDetails/conflictResolution.action',
-    {
-        conflictLogUuid:jQuery('#retryLogUuid').text()
-    }).success(function(data) {
-        window.location.replace( contextPath + data['url'])
-    });
+    var url = contextPath + '/module/sync2/conflictResolution.form?messageUuid=' + jQuery('#retryLogUuid').text();
+
+    if (AUDIT_BACK_PAGE_INDEX !== 'undefined') {
+        url = url + "&auditBackPage=" + unifyUri(AUDIT_DETAILS_BACK_PAGE) + "&backPageIndex=" + AUDIT_BACK_PAGE_INDEX;
+    }
+    window.location.href = url;
+}
+
+function unifyUri(input) {
+    var uri = input;
+    var character = uri.charAt(0)
+    if (character != '/') {
+        uri = '/' + uri;
+    }
+    return uri;
 }
 
 function setValueOfRadioButton(key, customValue) {

@@ -5,7 +5,12 @@
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/sync2.conflict.js"/>
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.css"/>
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.js"/>
+<openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
 <openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
+
+<a class="button cancel" onClick="history.back()">
+	<spring:message code='general.cancel' />
+</a>
 
 <h3>Conflicted object properties:</h3>
 <p><i>Choose one option for each field and click 'Apply changes'</i></p>
@@ -69,6 +74,11 @@
             };
             var postUrl = document.location.origin + "/openmrs/ws/rest/sync2/conflict/resolve?conflictUuid=" +
                 "${conflictUuid}";
+
+            if ("${auditBackPage}" !== "") {
+                postUrl = postUrl + "&auditBackPage=${auditBackPage}&backPageIndex=${backPageIndex}";
+            }
+
             jQuery.ajax({
                 type: "POST",
                 url: postUrl,

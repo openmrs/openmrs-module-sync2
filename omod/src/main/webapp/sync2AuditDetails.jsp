@@ -14,6 +14,8 @@
 </style>
 <script type="text/javascript">
 	var OPENMRS_CONTEXT_PATH = "${pageContext.request.contextPath}";
+	var AUDIT_DETAILS_BACK_PAGE = OPENMRS_CONTEXT_PATH + "/module/sync2/auditDetails.form";
+	var AUDIT_BACK_PAGE_INDEX = <%= request.getParameter("backPageIndex") %>;
 </script>
 <fieldset>
 <table>
