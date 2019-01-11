@@ -18,13 +18,8 @@ public class SyncConfigurationInstanceIdValidator implements SyncConfigurationVa
         if (StringUtils.isBlank(syncConfiguration.getGeneral().getLocalInstanceId())) {
             errors.addErrorCode(ERROR_CODE);
         }
-        if (parentInstanceUriIsEmpty()) {
+        if (SyncUtils.parentInstanceUriIsEmpty()) {
             errors.addErrorCode(PARENT_URI_ERROR);
         }
     }
-
-    private boolean parentInstanceUriIsEmpty() {
-        return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
-    }
-
 }

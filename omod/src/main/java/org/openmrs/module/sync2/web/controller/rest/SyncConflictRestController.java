@@ -73,12 +73,8 @@ public class SyncConflictRestController {
 	}
 
 	private String buildResolutionUrl(AuditMessage conflictMessage, String auditBackPage, Integer backPageIndex) {
-		if (StringUtils.isBlank(auditBackPage)) {
-			auditBackPage = DEFAULT_PAGE;
-		}
-		if (backPageIndex == null || backPageIndex < 1) {
-			backPageIndex = 1;
-		}
-		return auditBackPage + "?" + MESSAGE_UUID + conflictMessage.getUuid() + BACK_PAGE_INDEX + backPageIndex;
+		return (StringUtils.isBlank(auditBackPage) ? DEFAULT_PAGE : auditBackPage) +
+				"?" + MESSAGE_UUID + conflictMessage.getUuid() +
+				BACK_PAGE_INDEX + (backPageIndex == null ? 1 : backPageIndex);
 	}
 }

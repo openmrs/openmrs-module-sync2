@@ -1,6 +1,5 @@
 package org.openmrs.module.sync2.page.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
@@ -29,14 +28,10 @@ public class Sync2PageController {
 	 * @param ui injected the UiUtils object
 	 */
 	public void controller(PageModel model, HttpSession session, UiUtils ui) {
-		boolean emptyURI = parentInstanceUriIsEmpty();
+		boolean emptyURI = SyncUtils.parentInstanceUriIsEmpty();
 		model.addAttribute(ATTRIBUTE_EMPTY_URI, emptyURI);
 		if (emptyURI) {
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_URI_ERROR));
 		}
-	}
-
-	private boolean parentInstanceUriIsEmpty() {
-		return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
 	}
 }

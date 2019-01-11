@@ -34,10 +34,7 @@ public class Sync2AuditListController {
 		model.addAttribute(SyncMessageUtils.SUCCESS_MESSAGE, success);
 		model.addAttribute(SyncMessageUtils.ALERT_MESSAGE_MODEL, alertMessage);
 
-		if (backPageIndex == null) {
-			backPageIndex = 1;
-		}
-		model.addAttribute("pageIndex", backPageIndex);
+		model.addAttribute("pageIndex", backPageIndex == null ? 1: backPageIndex);
 		return "/module/sync2/sync2AuditList";
 	}
 

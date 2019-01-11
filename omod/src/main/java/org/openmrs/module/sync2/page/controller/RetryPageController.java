@@ -46,16 +46,11 @@ public class RetryPageController {
 	}
 
 	private String buildAuditListUri(Integer backPageIndex) {
-		if (backPageIndex == null) {
-			backPageIndex = 1;
-		}
-		return AUDIT_LIST_PAGE + "?pageIndex=" + backPageIndex;
+		return AUDIT_LIST_PAGE + "?pageIndex=" + (backPageIndex == null ? 1 : backPageIndex);
 	}
 
 	private String buildNewMessageUri(Integer backPageIndex, AuditMessage message) {
-		if (backPageIndex == null) {
-			backPageIndex = 1;
-		}
-		return AUDIT_PAGE + "?messageUuid=" + message.getUuid() + "&backPageIndex=" + backPageIndex;
+		return AUDIT_PAGE + "?messageUuid=" + message.getUuid() + "&backPageIndex=" +
+				(backPageIndex == null ? 1 : backPageIndex);
 	}
 }
