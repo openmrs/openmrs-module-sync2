@@ -44,6 +44,7 @@ public class AdminList extends AdministrationSectionExt {
 		
 		map.put("module/sync2/sync2.form", "sync2.title");
 		map.put("module/sync2/configuration.form", "sync2.configuration.label");
+		map.put("module/sync2/auditList.form", "sync2.audit.label");
 
 		return map;
 	}

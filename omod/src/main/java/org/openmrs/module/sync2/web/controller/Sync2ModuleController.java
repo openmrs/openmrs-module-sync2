@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.sync2.web.controller;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.SyncMessageUtils;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
@@ -57,7 +56,7 @@ public class Sync2ModuleController {
 		model.addAttribute(SyncMessageUtils.SUCCESS_MESSAGE, success);
 		model.addAttribute(SyncMessageUtils.ALERT_MESSAGE_MODEL, alertMessage);
 
-		boolean emptyURI = parentInstanceUriIsEmpty();
+		boolean emptyURI = SyncUtils.parentInstanceUriIsEmpty();
 		model.addAttribute(ATTRIBUTE_EMPTY_URI, emptyURI);
 		if (emptyURI) {
 			SyncMessageUtils.errorMessage(model, PARENT_URI_ERROR);
@@ -111,22 +110,8 @@ public class Sync2ModuleController {
 		return "/module/sync2/sync2";
 	}
 
-	/**
-	 * Redirects to the Sync2 AudiMessage page.
-	 *
-	 * @return the redirect URL
-	 */
-	@RequestMapping(value = "/auditList")
-	public String auditList() {
-		return "/module/sync2/sync2AuditList";
-	}
-
 	private String getFirstErrorCode(Errors errors) {
 		return errors.getErrorsCodes().get(SyncConstants.ZERO);
-	}
-
-	private boolean parentInstanceUriIsEmpty() {
-		return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
 	}
 
 }

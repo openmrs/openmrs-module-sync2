@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.web.controller.rest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
@@ -24,11 +25,11 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResour
 @RequestMapping(value = "/rest/sync2/conflict", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncConflictRestController {
 
-	private static final String PAGE = "/openmrs/sync2/details.page?";
+	private static final String DEFAULT_PAGE = "/openmrs/module/sync2/auditDetails.form";
 
 	private static final String MESSAGE_UUID = "messageUuid=";
 
-	public static final String BACK_PAGE = "&backPage=auditList&backPageIndex=1";
+	private static final String BACK_PAGE_INDEX = "&backPageIndex=";
 
 	@Autowired
 	private SyncAuditService syncAuditService;
@@ -39,7 +40,10 @@ public class SyncConflictRestController {
 	@RequestMapping(value = "/resolve", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<SimpleObject> resolve(@RequestParam("conflictUuid") String conflictUuid,
+			@RequestParam(value = "auditBackPage", required = false) String auditBackPage,
+			@RequestParam(value = "backPageIndex", required = false) Integer backPageIndex,
 			@RequestBody String json) {
+
 		AuditMessage conflictMessage = syncAuditService.getMessageByMergeConflictUuid(conflictUuid);
 		SimpleObject result = new SimpleObject();
 		try {
@@ -53,7 +57,7 @@ public class SyncConflictRestController {
 				syncAuditService.setNextAudit(conflictMessage, resultAudit);
 
 				if (resultAudit.getSuccess()) {
-					String conflictResolutionUrl = PAGE + MESSAGE_UUID + conflictMessage.getUuid() + BACK_PAGE;
+					String conflictResolutionUrl = buildResolutionUrl(conflictMessage, auditBackPage, backPageIndex);
 					result.put("url", conflictResolutionUrl);
 					return ResponseEntity.accepted().body(result);
 				} else {
@@ -66,5 +70,11 @@ public class SyncConflictRestController {
 		catch (IOException e) {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	private String buildResolutionUrl(AuditMessage conflictMessage, String auditBackPage, Integer backPageIndex) {
+		return (StringUtils.isBlank(auditBackPage) ? DEFAULT_PAGE : auditBackPage) +
+				"?" + MESSAGE_UUID + conflictMessage.getUuid() +
+				BACK_PAGE_INDEX + (backPageIndex == null ? 1 : backPageIndex);
 	}
 }

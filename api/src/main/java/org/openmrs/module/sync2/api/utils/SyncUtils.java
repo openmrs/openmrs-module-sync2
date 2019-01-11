@@ -379,4 +379,7 @@ public class SyncUtils {
 				SyncConstants.ATOMFEED_EVENT_HANDLER);
 	}
 
+	public static boolean parentInstanceUriIsEmpty() {
+		return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
+	}
 }

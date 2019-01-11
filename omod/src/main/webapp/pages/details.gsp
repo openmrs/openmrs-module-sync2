@@ -10,8 +10,8 @@
         { label: "${ ui.message("sync2.label")}",
                     link: "${ui.pageLink("sync2", "sync2")}"
                 },
-        { label: "${ ui.message(artifactId + '.' + param.backPage[0] + '.label') }",
-            link: "${ ui.pageLink(artifactId, param.backPage[0], [pageIndex: param.backPageIndex]) }"
+        { label: "${ ui.message(artifactId + '.auditList.label') }",
+            link: "${ ui.pageLink(artifactId, 'auditList', [pageIndex: param.backPageIndex]) }"
         },
         { label: "${ ui.message(artifactId + '.details.label') }" }
     ];
@@ -19,7 +19,7 @@
 
 <div id="apps">
     ${ ui.includeFragment("sync2", "auditDetails", [messageUuid: param.messageUuid, pageIndex: param.backPageIndex]) }
-    <a class="button cancel" href="${ ui.pageLink(artifactId, param.backPage[0], [pageIndex: param.backPageIndex]) }">
+    <a class="button cancel" href="${ ui.pageLink(artifactId, 'auditList', [pageIndex: param.backPageIndex]) }">
         ${ ui.message("general.cancel") }
     </a>
 </div>

@@ -11,11 +11,11 @@
 <%@ include file="template/alertMessage.jsp" %>
 
 <div id="apps">
-    <a class="button"
+    <a class="button big"
         href="${pageContext.request.contextPath}/module/sync2/configuration.form">
         <spring:message code="sync2.configuration.label"/>
     </a>
-    <a class="button ${emptyURI ? 'disabled' : ''}"
+    <a class="button big ${emptyURI ? 'disabled' : ''}"
         <c:if test = "${emptyURI == true}">
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
@@ -25,7 +25,7 @@
          </c:if>>
         <spring:message code="sync2.sync.manual.pull.label"/>
     </a>
-    <a class="button ${emptyURI ? 'disabled' : ''}"
+    <a class="button big ${emptyURI ? 'disabled' : ''}"
         <c:if test = "${emptyURI == true}">
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
@@ -35,7 +35,7 @@
          </c:if>>
         <spring:message code="sync2.sync.manual.push.label"/>
     </a>
-    <a class="button"
+    <a class="button big"
         href="${pageContext.request.contextPath}/module/sync2/auditList.form">
         <spring:message code="sync2.audit.list.label"/>
     </a>

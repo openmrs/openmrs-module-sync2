@@ -3,15 +3,22 @@
 }
 
 .button {
-    width: 150px;
-    height: 90px;
-    padding-top: 60px;
+    display: inline-block;
+    max-width: 150px;
+    max-height: 90px;
+    padding: 8px 20px;
     text-align: center;
     color: white !important;
     font-weight: bold;
     border-radius: 10px;
     background: #009384;
     text-decoration: none !important;
+}
+
+.big {
+    width: 150px !important;
+    height: 90px !important;
+    padding-top: 60px !important;
 }
 
 .button:hover {
@@ -34,4 +41,12 @@
     background: #EEE;
     border: #cccccc 1px solid;
     color: #CCC !important;
+}
+
+.right {
+    float: right;
+}
+
+.cancel {
+    background-color: #ff3d3d
 }

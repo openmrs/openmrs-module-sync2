@@ -1,6 +1,6 @@
-jQuery(document).ready(function() {
+jQuery(document).ready(function($) {
 
-    $("#jsGrid").jsGrid({
+    jQuery("#jsGrid").jsGrid({
         height: "auto",
         width: "100%",
 
@@ -18,7 +18,7 @@ jQuery(document).ready(function() {
                 var d = $.Deferred();
 
                 jQuery.ajax({
-                    url: openmrsContextPath+"/ws/rest/sync2/messages",
+                    url: openmrsContextPath + "/ws/rest/sync2/messages",
                     type: "GET",
                     dataType: "json",
                     data: filter
@@ -59,17 +59,22 @@ jQuery(document).ready(function() {
             var $row = this.rowByItem(args.item);
             var messageUuid = $row.children().first().text();
             var pageIndex = $("#jsGrid").jsGrid("option", "pageIndex");
-            window.location.href="details.page?messageUuid=" + messageUuid + "&backPage=auditList" + "&backPageIndex=" + pageIndex;
+            window.location.href = auditDetailsUrl + "?messageUuid=" + messageUuid + "&backPageIndex=" + pageIndex;
             $("#jsGrid").jsGrid("fieldOption", "uuid", "visible", false);
         }
     });
+    jQuery("#jsGrid").jsGrid("_setPage", pageIndex);
 });
 
 function getPageIndex(){
-    var url = new URL(window.location.href);
-    var param = url.searchParams.get("pageIndex");
-	if (param == null) {
-		return 1;
-	}
-	return parseInt(param);
+    if (typeof pageIndex == 'undefined') {
+        var url = new URL(window.location.href);
+            var param = url.searchParams.get("pageIndex");
+            if (param == null) {
+                pageIndex = 1;
+            } else {
+                pageIndex = parseInt(param)
+            }
+    }
+    return pageIndex;
 }
