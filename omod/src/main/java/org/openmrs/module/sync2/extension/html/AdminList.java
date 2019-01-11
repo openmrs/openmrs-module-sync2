@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.sync2.extension.html;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This class defines the links that will appear on the administration page under the "sync2.title"
@@ -40,10 +40,11 @@ public class AdminList extends AdministrationSectionExt {
 	 */
 	public Map<String, String> getLinks() {
 		
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 		
 		map.put("module/sync2/sync2.form", "sync2.title");
-		
+		map.put("module/sync2/configuration.form", "sync2.configuration.label");
+
 		return map;
 	}
 	

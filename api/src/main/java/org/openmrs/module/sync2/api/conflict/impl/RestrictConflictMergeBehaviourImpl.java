@@ -13,7 +13,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("sync2.conflictMergeBehaviour")
+@Component("sync2.restrictConflictMergeBehaviour")
 public class RestrictConflictMergeBehaviourImpl implements MergeBehaviour<SyncObject> {
 
 	private static final String UUID_KEY = "uuid";

@@ -19,18 +19,19 @@
     text-align: center;
 }
 
-#message {
-    float: right;
+.field-error {
+    color: #ff6666;
+    font-size: 1.1em;
+    font-weight:bold;
 }
 
-.success-msg {
-    border: 2px solid green;
-    background-color: limegreen;
-    padding: 20px;
+.title {
+    color: #363463;
+    font-size: 16px;
 }
 
-.failure-msg {
-    border: 2px solid darkred;
-    background-color: indianred;
-    padding: 20px;
+.button.disabled {
+    background: #EEE;
+    border: #cccccc 1px solid;
+    color: #CCC !important;
 }

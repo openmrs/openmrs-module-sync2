@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>sync2</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Sync2 Module</name>
 	<description>Module for Sync 2</description>
@@ -204,10 +203,10 @@
 		<uiframeworkVersion>3.11.0</uiframeworkVersion>
 		<uicommonsVersion>2.3.0</uicommonsVersion>
 		<javaCompilerVersion>1.8</javaCompilerVersion>
-		<fhirVersion>1.16.0-SNAPSHOT</fhirVersion>
-		<atomfeedVersion>1.0.8-SNAPSHOT</atomfeedVersion>
+		<fhirVersion>1.17.0-SNAPSHOT</fhirVersion>
+		<atomfeedVersion>1.0.9-SNAPSHOT</atomfeedVersion>
 		<gsonVersion>2.8.1</gsonVersion>
-		<webservices.restVersion>2.23.0-SNAPSHOT</webservices.restVersion>
+		<webservices.restVersion>2.23.0</webservices.restVersion>
 	</properties>
 
 	<distributionManagement>
