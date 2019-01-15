@@ -8,12 +8,13 @@ import org.openmrs.module.atomfeed.api.filter.GenericFeedFilterStrategy;
 import org.openmrs.module.atomfeed.api.service.TagService;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.helper.CategoryHelper;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -22,6 +23,9 @@ public class ParentAtomfeedFeedWorker implements FeedEventWorker {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParentAtomfeedFeedWorker.class);
 
 	SyncPullService pullService;
+
+	@Autowired
+	private CategoryHelper categoryHelper;
 
 	@Override
 	public void process(Event event) {
@@ -50,7 +54,7 @@ public class ParentAtomfeedFeedWorker implements FeedEventWorker {
 
 		if (shouldBeSynced) {
 			pullService.pullAndSaveObjectFromParent(
-					CategoryEnum.getByCategory(SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY)),
+					categoryHelper.getByCategory(SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.CATEGORY)),
 					SyncUtils.getLinks(event.getContent()),
 					SyncUtils.getValueOfAtomfeedEventTag(tags, AtomfeedTagContent.EVENT_ACTION)
 			);

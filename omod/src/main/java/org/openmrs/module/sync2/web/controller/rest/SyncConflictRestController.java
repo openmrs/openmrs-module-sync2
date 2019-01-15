@@ -1,14 +1,13 @@
 package org.openmrs.module.sync2.web.controller.rest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openmrs.module.sync2.api.helper.CategoryHelper;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 
 @Controller("sync2.SyncConflictRestController")
-@RequestMapping(value = "/rest/sync2/conflict", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/rest/sync2/conflict")
 public class SyncConflictRestController {
 
 	private static final String DEFAULT_PAGE = "/openmrs/module/sync2/auditDetails.form";
@@ -36,6 +35,9 @@ public class SyncConflictRestController {
 
 	@Autowired
 	private SyncPushService syncPushService;
+
+	@Autowired
+	private CategoryHelper categoryHelper;
 
 	@RequestMapping(value = "/resolve", method = RequestMethod.POST)
 	@ResponseBody
@@ -51,7 +53,7 @@ public class SyncConflictRestController {
 
 			try {
 				String uuid = extractUUIDFromResourceLinks(conflictMessage.getAvailableResourceUrlsAsMap());
-				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, CategoryEnum.getByCategory(
+				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, categoryHelper.getByCategory(
 						conflictMessage.getResourceName()),
 						conflictMessage.getAvailableResourceUrlsAsMap(), conflictMessage.getAction(), uuid);
 				syncAuditService.setNextAudit(conflictMessage, resultAudit);
@@ -59,7 +61,7 @@ public class SyncConflictRestController {
 				if (resultAudit.getSuccess()) {
 					String conflictResolutionUrl = buildResolutionUrl(conflictMessage, auditBackPage, backPageIndex);
 					result.put("url", conflictResolutionUrl);
-					return ResponseEntity.accepted().body(result);
+					return new ResponseEntity<SimpleObject>(result, HttpStatus.ACCEPTED);
 				} else {
 					return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 				}

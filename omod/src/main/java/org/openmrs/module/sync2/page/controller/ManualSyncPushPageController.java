@@ -1,8 +1,9 @@
 package org.openmrs.module.sync2.page.controller;
 
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.sync2.SyncConstants;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@OpenmrsProfile(modules = { "uicommons:*.*" })
 public class ManualSyncPushPageController {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LoadSyncConfigPageController.class);

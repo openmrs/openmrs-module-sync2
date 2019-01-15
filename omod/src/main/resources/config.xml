@@ -17,14 +17,11 @@
 
 	<!-- /Base Module Properties -->
 	
-	<require_version>${openmrsPlatformVersion}</require_version>
+	<require_version>2.0.5 - 2.0.*, 1.11.3, 1.9.10 - 1.9.*</require_version>
 
 	<require_modules>
 		<require_module version="${uiframeworkVersion}">
 			org.openmrs.module.uiframework
-		</require_module>
-		<require_module version="${uicommonsVersion}">
-			org.openmrs.module.uicommons
 		</require_module>
 		<require_module version="${fhirVersion}">
 			org.openmrs.module.fhir
@@ -36,18 +33,39 @@
 			org.openmrs.module.webservices.rest
 		</require_module>
 	</require_modules>
-	
+
+	<aware_of_modules>
+		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+		<require_module version="${uicommonsVersion}">
+			org.openmrs.module.uicommons
+		</require_module>
+	</aware_of_modules>
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.extension.html.AdminList</class>
 	</extension>
 
-	<aware_of_modules>
-		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
-	</aware_of_modules>
-	
-	
+	<conditionalResources>
+		<conditionalResource>
+			<path>/lib/jackson-core-asl*</path>
+			<openmrsVersion>1.9.* - 2.0.0</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/jackson-mapper-asl*</path>
+			<openmrsVersion>1.9.* - 2.0.0</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/sync2-api-2.0-${project.parent.version}.jar</path>
+			<openmrsVersion>2.0.* - 2.1.*</openmrsVersion>
+		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/sync2-api-1.9-${project.parent.version}.jar</path>
+			<openmrsVersion>1.9.* - 1.12.0</openmrsVersion>
+		</conditionalResource>
+	</conditionalResources>
+
 	<!-- Internationalization -->
 	<!-- All message codes should start with @MODULE_ID@.* -->
 	<messages>

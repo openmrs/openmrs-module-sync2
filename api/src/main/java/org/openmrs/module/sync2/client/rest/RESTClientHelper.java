@@ -7,8 +7,9 @@ import org.openmrs.module.fhir.api.client.BasicHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.client.ClientHttpEntity;
 import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
+import org.openmrs.module.sync2.api.helper.CategoryHelper;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.client.RestHttpMessageConverter;
 import org.openmrs.module.sync2.client.SimpleObjectMessageConverter;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
@@ -16,9 +17,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
@@ -27,17 +27,23 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
 
 public class RESTClientHelper implements ClientHelper {
 
-	public static final String VOIDED = "voided";
+	private static final String VOIDED = "voided";
+
+	private static final String ACCEPT_HEADER_NAME = "Accept";
+
+	private static final String APPLICATION_JSON_HEADER_VALUE = "application/json";
 
 	private final RestHttpMessageConverter restConverter = new RestHttpMessageConverter();
 
 	private final SimpleObjectMessageConverter simpleConverter = new SimpleObjectMessageConverter();
+
+	@Autowired
+	private CategoryHelper categoryHelper;
 
 	@Override
 	public ClientHttpEntity retrieveRequest(String url) throws URISyntaxException {
@@ -82,7 +88,7 @@ public class RESTClientHelper implements ClientHelper {
 	@Override
 	public List<ClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
 		return Arrays.asList(new BasicAuthInterceptor(username, password),
-				new BasicHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
+				new BasicHttpRequestInterceptor(ACCEPT_HEADER_NAME, APPLICATION_JSON_HEADER_VALUE));
 	}
 
 	@Override
@@ -134,8 +140,10 @@ public class RESTClientHelper implements ClientHelper {
 
 	@Override
 	public Object convertToOpenMrsObject(Object o, String category) throws NotSupportedException {
-		Optional<CategoryEnum> opt2 = Optional.ofNullable(CategoryEnum.getByCategory(category));
-		CategoryEnum cat = opt2.orElseThrow(() -> getNotSupportedCategory(category));
+		SyncCategory cat = categoryHelper.getByCategory(category);
+		if (cat == null) {
+			throw getNotSupportedCategory(category);
+		}
 
 		// This case should be removed as soon as
 		// @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8#getPerson()

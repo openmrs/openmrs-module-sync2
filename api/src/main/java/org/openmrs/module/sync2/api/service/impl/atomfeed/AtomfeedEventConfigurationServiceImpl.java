@@ -4,8 +4,8 @@ import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
 import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.mapper.EventConfigurationMapper;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.EventConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +22,7 @@ public class AtomfeedEventConfigurationServiceImpl implements EventConfiguration
 	private EventConfigurationMapper<FeedConfiguration> eventConfigurationMapper;
 
 	@Override
-	public EventConfiguration getEventConfigurationByCategory(CategoryEnum categoryEnum) {
+	public EventConfiguration getEventConfigurationByCategory(SyncCategory categoryEnum) {
 		FeedConfiguration feedConfiguration = feedConfigurationService
 				.getFeedConfigurationByCategory(categoryEnum.getCategory());
 		return eventConfigurationMapper.map(feedConfiguration);

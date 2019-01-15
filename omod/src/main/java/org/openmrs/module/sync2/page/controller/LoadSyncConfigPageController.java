@@ -1,10 +1,11 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.apache.commons.io.IOUtils;
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.messagesource.MessageSourceService;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.uicommons.UiCommonsConstants;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.SimpleObject;
@@ -32,6 +33,7 @@ import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.parseJso
 import static org.openmrs.module.sync2.api.utils.SyncConfigurationUtils.writeSyncConfigurationToJsonString;
 
 @Controller
+@OpenmrsProfile(modules = { "uicommons:*.*" })
 public class LoadSyncConfigPageController {
 
     private static final String SAVE_CONFIG_ERROR = "sync2.configuration.json.save.fail";

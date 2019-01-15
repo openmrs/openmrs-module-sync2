@@ -43,7 +43,8 @@ public class SyncUtilsTest {
         MockitoAnnotations.initMocks(this);
         Mockito.when(syncConfigurationServiceImpl.getSyncConfiguration()).thenReturn(
                 SyncConfigurationMother.creteInstance(true, true));
-        Mockito.when(syncConfigurationServiceImpl.getClassConfiguration(Mockito.any(), Mockito.any())).thenCallRealMethod();
+        Mockito.when(syncConfigurationServiceImpl.getClassConfiguration(Mockito.anyString(),
+                (SyncOperation) Mockito.any())).thenCallRealMethod();
 
         Mockito.when(administrationService.getGlobalProperty(SyncConstants.RESOURCE_PREFERRED_CLIENT,
                 SyncConstants.DEFAULT_SYNC_2_CLIENT)).thenReturn(GLOBAL_CLIENT);

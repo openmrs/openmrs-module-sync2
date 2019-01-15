@@ -2,8 +2,8 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.UnifyService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -16,7 +16,7 @@ import javax.transaction.NotSupportedException;
 public class UnifyServiceImpl implements UnifyService {
 
 	@Override
-	public SimpleObject unifyObject(Object object, CategoryEnum category, String clientName) throws NotSupportedException {
+	public SimpleObject unifyObject(Object object, SyncCategory category, String clientName) throws NotSupportedException {
 		Object result = null;
 
 		if (isObjectAlreadyUnified(object)) {

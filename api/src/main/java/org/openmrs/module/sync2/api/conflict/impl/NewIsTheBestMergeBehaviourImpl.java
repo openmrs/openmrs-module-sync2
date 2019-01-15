@@ -34,7 +34,7 @@ public class NewIsTheBestMergeBehaviourImpl implements MergeBehaviour<SyncObject
 
 	private MergeResult<SyncObject> resolveConflict(SyncObject source, SyncObject target) {
 		Class storedClass = SimpleObject.class;
-		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
+		MergeResult result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
 		Map<String, Object> sourceAuditInfo = source.getSimpleObject().get(AUDIT_INFO_KEY);
 		String sourceDateChangedStr = sourceAuditInfo != null ? (String) sourceAuditInfo.get(DATE_CHANGED_KEY) : null;
 

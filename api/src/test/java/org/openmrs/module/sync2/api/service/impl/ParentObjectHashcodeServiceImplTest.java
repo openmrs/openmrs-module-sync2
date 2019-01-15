@@ -33,7 +33,7 @@ public class ParentObjectHashcodeServiceImplTest {
 				.thenReturn(parentObjectHashcode);
 		Mockito.when(parentObjectHashcodeDao.getByObjectUuid(ParentObjectHashcodeMother.OBJECT_UUID))
 				.thenReturn(parentObjectHashcode);
-		Mockito.when(parentObjectHashcodeDao.save(Mockito.any())).thenReturn(parentObjectHashcode);
+		Mockito.when(parentObjectHashcodeDao.save((ParentObjectHashcode) Mockito.any())).thenReturn(parentObjectHashcode);
 	}
 
 	@Test

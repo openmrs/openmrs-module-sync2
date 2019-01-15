@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.page.controller;
 
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpSession;
  * The Sync 2 page controller.
  */
 @Controller
+@OpenmrsProfile(modules = { "uicommons:*.*" })
 public class Sync2PageController {
 
 	private static final String ATTRIBUTE_EMPTY_URI = "emptyURI";

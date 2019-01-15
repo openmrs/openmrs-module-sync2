@@ -1,7 +1,7 @@
 package org.openmrs.module.sync2.client.reader;
 
 import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 
 /**
  * <h1>LocalFeedReader</h1>
@@ -22,5 +22,5 @@ public interface LocalFeedReader {
 	 * @param category represents a type of object which is supported by synchronization.
 	 * @throws SyncException when event processing has failed.
 	 */
-	void readAndPushAllFeeds(CategoryEnum category) throws SyncException;
+	void readAndPushAllFeeds(SyncCategory category) throws SyncException;
 }

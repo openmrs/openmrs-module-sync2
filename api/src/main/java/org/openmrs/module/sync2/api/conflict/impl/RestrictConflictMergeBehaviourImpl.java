@@ -28,10 +28,10 @@ public class RestrictConflictMergeBehaviourImpl implements MergeBehaviour<SyncOb
 
 	private MergeResult<SyncObject> revolveConflict(SyncObject source, SyncObject target) {
 		Class storedClass = SimpleObject.class;
-		MergeResult<SyncObject> result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
+		MergeResult result = new MergeConflict<>(storedClass, source.getSimpleObject(), target.getSimpleObject());
 		String sourceHashCode = SyncHashcodeUtils.getHashcode(source.getSimpleObject());
 		String targetHashCode = SyncHashcodeUtils.getHashcode(target.getSimpleObject());
-		String objectUuid = (source.getSimpleObject() != null ) ? source.getSimpleObject().get(UUID_KEY) : null;
+		String objectUuid = (source.getSimpleObject() != null ) ? (String) source.getSimpleObject().get(UUID_KEY) : null;
 		ParentObjectHashcode previousHashCode = parentObjectHashcodeService.getByObjectUuid(objectUuid);
 
 		if (StringUtils.isNotBlank(sourceHashCode) && StringUtils.isNotBlank(targetHashCode)) {

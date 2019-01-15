@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.converter.AuditMessageToStringConverter;
 import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.dao.SyncAuditDao;
@@ -17,6 +16,7 @@ import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.audit.PaginatedAuditMessages;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
+import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -26,7 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,7 +140,7 @@ public class SyncAuditServiceImplTest {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setSuccess(true);
         
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
@@ -155,7 +155,7 @@ public class SyncAuditServiceImplTest {
         auditMessage.setSuccess(true);
     
     
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
@@ -169,7 +169,7 @@ public class SyncAuditServiceImplTest {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setSuccess(false);
         
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
@@ -182,7 +182,7 @@ public class SyncAuditServiceImplTest {
     public void saveAuditMessage_shouldNotFailedIfBooleanObjectIsNotSet() {
         AuditMessage auditMessage = new AuditMessage();
         
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(true);
         
@@ -195,7 +195,7 @@ public class SyncAuditServiceImplTest {
         auditMessage.setSuccess(false);
         
         
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(false);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
         
@@ -209,7 +209,7 @@ public class SyncAuditServiceImplTest {
         AuditMessage auditMessage = new AuditMessage();
         auditMessage.setSuccess(true);
     
-        when(dao.saveItem(any())).thenReturn(auditMessage);
+        when(dao.saveItem((AuditMessage) any())).thenReturn(auditMessage);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistSuccessAudit()).thenReturn(true);
         when(configurationService.getSyncConfiguration().getGeneral().isPersistFailureAudit()).thenReturn(false);
     
@@ -238,9 +238,9 @@ public class SyncAuditServiceImplTest {
     }
     
     private String prepareDummyAvailableResourcesUrls() {
-        Map<String, String> availableResourceUrls = new HashMap<>();
-        availableResourceUrls.put("fhir", "testUrl1");
+        Map<String, String> availableResourceUrls = new LinkedHashMap<>();
         availableResourceUrls.put("rest", "testUrl2");
+        availableResourceUrls.put("fhir", "testUrl1");
         try {
             return new ObjectMapper().writeValueAsString(availableResourceUrls);
         } catch (IOException ex) {

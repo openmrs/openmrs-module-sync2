@@ -30,7 +30,7 @@ public class MergeConflictServiceImplTest {
 
 		Mockito.when(mergeConflictDao.getById(MERGE_CONFLICT_ID)).thenReturn(mergeConflict);
 		Mockito.when(mergeConflictDao.getByUuid(MergeConflictMother.UUID)).thenReturn(mergeConflict);
-		Mockito.when(mergeConflictDao.save(Mockito.any())).thenReturn(mergeConflict);
+		Mockito.when(mergeConflictDao.save((MergeConflict) Mockito.any())).thenReturn(mergeConflict);
 	}
 
 	@Test

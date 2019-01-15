@@ -4,6 +4,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.helper.AllergyHelper;
 import org.openmrs.module.sync2.api.service.EventConfigurationService;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
@@ -54,6 +55,10 @@ public class ContextUtils {
 		String eventHandlerName = SyncUtils.getEventHandlerName();
 		return Context.getRegisteredComponent("sync2.parentFeedReader." + eventHandlerName, ParentFeedReader.class);
 	}
+
+	public static AllergyHelper getAllergyHelper() {
+        return getFirstRegisteredComponent(AllergyHelper.class);
+    }
 
     private ContextUtils() {}
 }

@@ -2,8 +2,8 @@ package org.openmrs.module.sync2.client.reader.atomfeed.impl;
 
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.configuration.SyncMethodConfiguration;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
 import org.openmrs.module.sync2.client.reader.atomfeed.ParentAtomfeedFeedWorker;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ParentAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader imp
 	}
 
 	@Override
-	public void pullAndProcessFeeds(CategoryEnum category) throws SyncException {
+	public void pullAndProcessFeeds(SyncCategory category) throws SyncException {
 		readAndProcessFeedByCategory(category.getCategory());
 	}
 }

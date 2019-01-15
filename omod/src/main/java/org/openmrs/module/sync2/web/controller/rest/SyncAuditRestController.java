@@ -4,17 +4,18 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.SyncModuleConfig;
-import org.openmrs.module.sync2.api.service.SyncAuditService;
+import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.InstanceId;
-import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.model.enums.Status;
-import org.openmrs.module.sync2.api.converter.StringToAuditMessageConverter;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller("sync2.SyncAuditRestController")
-@RequestMapping(value = "/rest/sync2", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/rest/sync2")
 public class SyncAuditRestController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(SyncAuditRestController.class);
@@ -63,7 +64,7 @@ public class SyncAuditRestController {
                 return NOT_FOUND_RESPONSE;
             } else {
                 LOGGER.debug("Get Single message reached by message uuid");
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+                return buildSuccessResponse(json);
             }
         }
     }
@@ -79,7 +80,7 @@ public class SyncAuditRestController {
             return new ResponseEntity<>(INVALID_JSON + "\n"
                     + ExceptionUtils.getFullStackTrace(ex), HttpStatus.BAD_REQUEST);
         }
-        
+
         if (syncAuditService.getMessageByUuid(auditMessage.getUuid()) != null) {
             return ENTITY_ALREADY_EXISTS_RESPONSE;
         } else if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
@@ -91,7 +92,7 @@ public class SyncAuditRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-    
+
     @RequestMapping(value = "/messages/{uuid}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> updateAuditMessage(@PathVariable String uuid, @RequestBody String auditMessageJson) {
@@ -118,13 +119,13 @@ public class SyncAuditRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-    
+
     @RequestMapping(value = "/messages/{uuid}", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<String> deleteAuditMessage(@PathVariable String uuid) {
         LOGGER.debug("Fetched POST request for deleting AuditMessage with {} uuid", uuid);
         AuditMessage alreadyExistingAuditMessage = syncAuditService.getMessageByUuid(uuid);
-    
+
         if (alreadyExistingAuditMessage == null) {
             return NOT_FOUND_RESPONSE;
         } else if (!Context.hasPrivilege(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)) {
@@ -136,7 +137,7 @@ public class SyncAuditRestController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
-    
+
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getMessagesList(
@@ -158,8 +159,14 @@ public class SyncAuditRestController {
         } else {
             String body = syncAuditService.getPaginatedMessages(pageIndex, pageSize, success,
                     operation, resource, creatorInstanceRegex);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(body);
+            return buildSuccessResponse(body);
         }
+    }
+
+    private ResponseEntity<String> buildSuccessResponse(String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<String>(json, headers, HttpStatus.OK);
     }
 
     private Boolean extractStatus(String enumValue) {

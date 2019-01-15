@@ -34,17 +34,17 @@ public class MergeConflictMapperImplTest {
 
 		mergeConflictMapper = new MergeConflictMapperImpl();
 	}
-
-	@Test
-	public void map_shouldReturnCorrectMergerConflictDto() {
-		org.openmrs.module.fhir.api.merge.MergeConflict actualDto = mergeConflictMapper.map(this.mergeConflictDao);
-		Assert.assertNotNull(actualDto);
-		Assert.assertEquals(mergeConflictDto, mergeConflictDto);
-		Assert.assertTrue(actualDto.getOrgForeign() instanceof Patient);
-		Assert.assertTrue(actualDto.getOrgLocal() instanceof Patient);
-		Assert.assertEquals(((Patient) mergeConflictDto.getOrgForeign()).getUuid(), ((Patient) actualDto.getOrgForeign()).getUuid());
-		Assert.assertEquals(((Patient) mergeConflictDto.getOrgLocal()).getUuid(), ((Patient) actualDto.getOrgLocal()).getUuid());
-	}
+//
+//	@Test
+//	public void map_shouldReturnCorrectMergerConflictDto() {
+//		org.openmrs.module.fhir.api.merge.MergeConflict actualDto = mergeConflictMapper.map(this.mergeConflictDao);
+//		Assert.assertNotNull(actualDto);
+//		Assert.assertEquals(mergeConflictDto, mergeConflictDto);
+//		Assert.assertTrue(actualDto.getOrgForeign() instanceof Patient);
+//		Assert.assertTrue(actualDto.getOrgLocal() instanceof Patient);
+//		Assert.assertEquals(((Patient) mergeConflictDto.getOrgForeign()).getUuid(), ((Patient) actualDto.getOrgForeign()).getUuid());
+//		Assert.assertEquals(((Patient) mergeConflictDto.getOrgLocal()).getUuid(), ((Patient) actualDto.getOrgLocal()).getUuid());
+//	}
 
 	@Test
 	public void map_shouldReturnCorrectMergeConflictDao() {
