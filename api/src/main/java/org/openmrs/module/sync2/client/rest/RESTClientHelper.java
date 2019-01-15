@@ -3,7 +3,9 @@ package org.openmrs.module.sync2.client.rest;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.BasicAuthInterceptor;
-import org.openmrs.module.fhir.api.client.HeaderClientHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.BasicHttpRequestInterceptor;
+import org.openmrs.module.fhir.api.client.ClientHttpEntity;
+import org.openmrs.module.fhir.api.client.ClientHttpRequestInterceptor;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
@@ -17,8 +19,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientR
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
@@ -40,35 +40,35 @@ public class RESTClientHelper implements ClientHelper {
 	private final SimpleObjectMessageConverter simpleConverter = new SimpleObjectMessageConverter();
 
 	@Override
-	public RequestEntity retrieveRequest(String url) throws URISyntaxException {
-		return new RequestEntity(HttpMethod.GET, new URI(url));
+	public ClientHttpEntity retrieveRequest(String url) throws URISyntaxException {
+		return new ClientHttpEntity(HttpMethod.GET, new URI(url));
 	}
 
 	@Override
-	public RequestEntity createRequest(String url, Object object) throws URISyntaxException {
+	public ClientHttpEntity createRequest(String url, Object object) throws URISyntaxException {
 		if (object instanceof SimpleObject) {
 			getRestResourceConverter().convertObject(url, object);
 		}
 
-		return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+		return new ClientHttpEntity<String>(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 	}
 
 	@Override
-	public RequestEntity deleteRequest(String url, String uuid) throws URISyntaxException {
+	public ClientHttpEntity deleteRequest(String url, String uuid) throws URISyntaxException {
 		url += "/" + uuid;
-		return new RequestEntity(uuid, HttpMethod.DELETE, new URI(url));
+		return new ClientHttpEntity<String>(uuid, HttpMethod.DELETE, new URI(url));
 	}
 
 	@Override
-	public RequestEntity updateRequest(String url, Object object) throws URISyntaxException {
+	public ClientHttpEntity updateRequest(String url, Object object) throws URISyntaxException {
 		if (object instanceof AuditMessage) {
 			url += "/" + ((AuditMessage) object).getUuid();
-			return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+			return new ClientHttpEntity<String>(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 		} else {
 			getRestResourceConverter().convertObject(url, object);
 			url += "/" + ((SimpleObject) object).get("uuid");
 		}
-		return new RequestEntity(convertToFormattedData(object), HttpMethod.POST, new URI(url));
+		return new ClientHttpEntity<String>(convertToFormattedData(object), HttpMethod.POST, new URI(url));
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class RESTClientHelper implements ClientHelper {
 	@Override
 	public List<ClientHttpRequestInterceptor> getCustomInterceptors(String username, String password) {
 		return Arrays.asList(new BasicAuthInterceptor(username, password),
-				new HeaderClientHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
+				new BasicHttpRequestInterceptor(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE));
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class RESTClientHelper implements ClientHelper {
 		// will be implemented.
 		// Please check also PatientResource1_9 or any other @Resource class which supports current platform version.
 		if (cat.getClazz().equals(Patient.class) && o instanceof SimpleObject) {
-			PatientResource1_9 resource = (PatientResource1_9 ) Context.getService(RestService.class)
+			PatientResource1_9 resource = (PatientResource1_9) Context.getService(RestService.class)
 					.getResourceBySupportedClass(Patient.class);
 			return resource.getPatient((SimpleObject) o);
 		} else {
