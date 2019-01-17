@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.api.service.impl;
 
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.filter.impl.PullFilterService;
 import org.openmrs.module.sync2.api.model.SyncCategory;
@@ -28,7 +29,7 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResour
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
 
-@Component("sync2.syncPullService")
+@Component(value = SyncConstants.SYNC_PULL_SERVICE_BEAN)
 public class SyncPullServiceImpl extends AbstractSynchronizationService implements SyncPullService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPullServiceImpl.class);

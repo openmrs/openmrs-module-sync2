@@ -1,13 +1,14 @@
 package org.openmrs.module.sync2.api.helper.impl;
 
 import org.openmrs.module.fhir.api.util.FHIRConstants;
+import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.helper.CategoryHelper;
 import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.springframework.stereotype.Component;
 
-@Component(value = "sync2.categoryHelper")
+@Component(value = SyncConstants.SYNC_CATEGORY_HELPER)
 public class CategoryHelperImpl implements CategoryHelper {
 
 	@Override

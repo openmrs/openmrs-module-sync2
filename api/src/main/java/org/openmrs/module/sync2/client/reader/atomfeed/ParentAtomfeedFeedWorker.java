@@ -11,10 +11,10 @@ import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.helper.CategoryHelper;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.service.SyncPullService;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -22,15 +22,11 @@ public class ParentAtomfeedFeedWorker implements FeedEventWorker {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ParentAtomfeedFeedWorker.class);
 
-	SyncPullService pullService;
-
-	@Autowired
-	private CategoryHelper categoryHelper;
-
 	@Override
 	public void process(Event event) {
 		LOGGER.info("Started feed event processing (id: {})", event.getId());
-		pullService = Context.getRegisteredComponent("sync2.syncPullService", SyncPullService.class);
+		SyncPullService pullService = ContextUtils.getSyncPullService();
+		CategoryHelper categoryHelper = ContextUtils.getCategoryHelper();
 		List tags = event.getCategories();
 
 		TagService tagService = Context.getRegisteredComponent(SyncConstants.TAG_SERVICE_BEAN, TagService.class);

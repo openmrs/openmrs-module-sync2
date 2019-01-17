@@ -30,7 +30,7 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResour
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
 
-@Component("sync2.syncPushService")
+@Component(value = SyncConstants.SYNC_PUSH_SERVICE_BEAN)
 public class SyncPushServiceImpl extends AbstractSynchronizationService implements SyncPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPushService.class);
 

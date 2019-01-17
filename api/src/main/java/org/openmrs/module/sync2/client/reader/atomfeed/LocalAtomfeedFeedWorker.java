@@ -1,15 +1,14 @@
 package org.openmrs.module.sync2.client.reader.atomfeed;
 
 import org.ict4h.atomfeed.client.domain.Event;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.client.FeedEventWorker;
 import org.openmrs.module.sync2.api.helper.CategoryHelper;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.service.SyncPushService;
+import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -17,13 +16,11 @@ public class LocalAtomfeedFeedWorker implements FeedEventWorker {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalAtomfeedFeedWorker.class);
 
-	@Autowired
-	private CategoryHelper categoryHelper;
-
 	@Override
 	public void process(Event event) {
 		LOGGER.info("Started local feed event processing (id: {})", event.getId());
-		SyncPushService pushService = Context.getRegisteredComponent("sync2.syncPushService", SyncPushService.class);
+		SyncPushService pushService = ContextUtils.getSyncPushService();
+		CategoryHelper categoryHelper = ContextUtils.getCategoryHelper();
 		List tags = event.getCategories();
 
 		pushService.readAndPushObjectToParent(
