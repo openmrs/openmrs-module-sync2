@@ -87,9 +87,9 @@ public class SyncAuditRestController {
             return MISSING_PRIVILEGE_RESPONSE;
         } else {
             auditMessage.setId(null);
-            syncAuditService.saveAuditMessageDuringSync(auditMessage);
-            LOGGER.info("Created AuditMessage with {} uuid", auditMessage.getUuid());
-            return new ResponseEntity<>(HttpStatus.OK);
+            AuditMessage message = syncAuditService.saveAuditMessageDuringSync(auditMessage);
+            LOGGER.info("Created AuditMessage with {} uuid", message.getUuid());
+            return buildSuccessResponse(syncAuditService.getJsonMessage(message));
         }
     }
 
@@ -114,9 +114,9 @@ public class SyncAuditRestController {
             return MISSING_PRIVILEGE_RESPONSE;
         } else {
             auditMessage.setId(alreadyExistingAuditMessage.getId());
-            syncAuditService.saveAuditMessageDuringSync(auditMessage);
-            LOGGER.info("Updated AuditMessage with {} uuid", auditMessage.getUuid());
-            return new ResponseEntity<>(HttpStatus.OK);
+            AuditMessage message = syncAuditService.saveAuditMessageDuringSync(auditMessage);
+            LOGGER.info("Updated AuditMessage with {} uuid", message.getUuid());
+            return buildSuccessResponse(syncAuditService.getJsonMessage(message));
         }
     }
 
@@ -132,9 +132,9 @@ public class SyncAuditRestController {
             return MISSING_PRIVILEGE_RESPONSE;
         } else {
             alreadyExistingAuditMessage.setVoided(true);
-            syncAuditService.saveAuditMessage(alreadyExistingAuditMessage);
+            AuditMessage message = syncAuditService.saveAuditMessage(alreadyExistingAuditMessage);
             LOGGER.info("Deleted AuditMessage with {} uuid", alreadyExistingAuditMessage.getUuid());
-            return new ResponseEntity<>(HttpStatus.OK);
+            return buildSuccessResponse(syncAuditService.getJsonMessage(message));
         }
     }
 
