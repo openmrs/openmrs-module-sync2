@@ -21,9 +21,9 @@
 	var RETRY_URI = OPENMRS_CONTEXT_PATH + "/module/sync2/retry.form"
 </script>
 <fieldset>
-<table>
-	<c:choose>
-		<c:when test="${auditLog != null}">
+<c:choose>
+	<c:when test="${auditLog != null}">
+		<table>
 			<tr>
 				<th class="label"><spring:message code='sync2.log.header.details.creatorInstanceId' /></th>
 				<td>${ auditLog.creatorInstanceId }</td>
@@ -52,7 +52,8 @@
 			<tr>
 				<th class="label"><spring:message code='sync2.log.header.availableResourceUrls' /></th>
 				<td>
-					<textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.availableResourceUrls }</textarea>
+					<textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>
+					${ auditLog.availableResourceUrls }</textarea>
 				</td>
 			</tr>
 			<tr>
@@ -89,42 +90,42 @@
 					<textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
 				</td>
 			</tr>
-		</c:when>
-		<c:otherwise>
-			<tr>
-				<th><spring:message code='sync2.log.header.details.messageNotFound' /></th>
-			</tr>
-		</c:otherwise>
-	</c:choose>
-</table>
-</fieldset>
-<fieldset>
+		</table>
+		</fieldset>
+		<fieldset>
+		<c:if test="${auditLog != null && !auditLog.success}">
+			<c:choose>
+				<c:when test="${auditLog.nextMessageUuid != null}">
+					<a class="button right" href="${pageContext.request.contextPath}/module/sync2/auditDetails.form?
+						messageUuid=${auditLog.nextMessageUuid}
+						&backPageIndex=<%= request.getParameter("backPageIndex") %>">
+						<spring:message code='sync2.log.header.nextMessage' />
+					</a>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${localInstanceId.equals(auditLog.creatorInstanceId)}">
+						<a class="button confirm right" onClick="retry();">
+							<spring:message code='sync2.log.header.retry' />
+						</a>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+		</c:if>
+
+		<c:if test="${auditLog.mergeConflictUuid != null && auditLog.nextMessageUuid == null}">
+			<a class="button confirm right" onClick="conflictResolution();">
+				<spring:message code='sync2.conflict.resolution.title' />
+			</a>
+		</c:if>
+</c:when>
+	<c:otherwise>
+		<tr>
+			<th><spring:message code='sync2.log.header.details.messageNotFound' /></th>
+		</tr>
+	</c:otherwise>
+</c:choose>
 <a class="button cancel"
 	href="${pageContext.request.contextPath}/module/sync2/auditList.form?backPageIndex=<%= request.getParameter("backPageIndex") %>">
 	<spring:message code='general.cancel' />
 </a>
-<c:if test="${auditLog != null && !auditLog.success}">
-	<c:choose>
-		<c:when test="${auditLog.nextMessageUuid != null}">
-			<a class="button right" href="${pageContext.request.contextPath}/module/sync2/auditDetails.form?
-				messageUuid=${auditLog.nextMessageUuid}
-				&backPageIndex=<%= request.getParameter("backPageIndex") %>">
-				<spring:message code='sync2.log.header.nextMessage' />
-			</a>
-		</c:when>
-		<c:otherwise>
-			<c:if test="${localInstanceId.equals(auditLog.creatorInstanceId)}">
-				<a class="button confirm right" onClick="retry();">
-					<spring:message code='sync2.log.header.retry' />
-				</a>
-			</c:if>
-		</c:otherwise>
-	</c:choose>
-</c:if>
-
-<c:if test="${auditLog.mergeConflictUuid != null && auditLog.nextMessageUuid == null}">
-	<a class="button confirm right" onClick="conflictResolution();">
-		<spring:message code='sync2.conflict.resolution.title' />
-	</a>
-</c:if>
 </fieldset>

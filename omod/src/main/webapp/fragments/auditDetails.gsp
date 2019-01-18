@@ -20,91 +20,89 @@
     var RETRY_URI = OPENMRS_CONTEXT_PATH + "/sync2/retry.page"
 </script>
 
-<table>
-    <% if (auditLog != null) { %>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".details.creatorInstanceId") }</th>
-            <td>${ auditLog.creatorInstanceId }</td>
-        </tr>
-        <span id="retryLogUuid" hidden>${auditLog.uuid}</span>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".resource") }</th>
-            <td>${ auditLog.resourceName }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".timestamp") }</th>
-            <td>${ auditLog.timestamp }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".parentUrl") }</th>
-            <td>${ auditLog.parentUrl }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".localUrl") }</th>
-            <td>${ auditLog.localUrl }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".usedUrl") }</th>
-            <td>${ auditLog.usedResourceUrl }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".availableResourceUrls") }</th>
-            <td>
-                <textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.availableResourceUrls }</textarea>
-            </td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".status") }</th>
-            <td>
-                <%=
-                auditLog.success
-                    ? ui.message(messagesPrefix + ".details.status.success")
-                    : (auditLog.mergeConflictUuid == null
-                        ? ui.message(messagesPrefix + ".details.status.failure")
-                        : ui.message(messagesPrefix + ".details.status.conflict"))
-                %>
-            </td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".operation") }</th>
-            <td>${ auditLog.operation }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".action") }</th>
-            <td>${ auditLog.action }</td>
-        </tr>
-        <tr>
-            <th class="label">${ ui.message(messagesPrefix + ".message") }</th>
-            <td>
-                <textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
-            </td>
-        </tr>
+<% if (auditLog != null) { %>
+    <table>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".details.creatorInstanceId") }</th>
+                <td>${ auditLog.creatorInstanceId }</td>
+            </tr>
+            <span id="retryLogUuid" hidden>${auditLog.uuid}</span>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".resource") }</th>
+                <td>${ auditLog.resourceName }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".timestamp") }</th>
+                <td>${ auditLog.timestamp }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".parentUrl") }</th>
+                <td>${ auditLog.parentUrl }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".localUrl") }</th>
+                <td>${ auditLog.localUrl }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".usedUrl") }</th>
+                <td>${ auditLog.usedResourceUrl }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".availableResourceUrls") }</th>
+                <td>
+                    <textarea rows="4" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.availableResourceUrls }</textarea>
+                </td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".status") }</th>
+                <td>
+                    <%=
+                    auditLog.success
+                        ? ui.message(messagesPrefix + ".details.status.success")
+                        : (auditLog.mergeConflictUuid == null
+                            ? ui.message(messagesPrefix + ".details.status.failure")
+                            : ui.message(messagesPrefix + ".details.status.conflict"))
+                    %>
+                </td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".operation") }</th>
+                <td>${ auditLog.operation }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".action") }</th>
+                <td>${ auditLog.action }</td>
+            </tr>
+            <tr>
+                <th class="label">${ ui.message(messagesPrefix + ".message") }</th>
+                <td>
+                    <textarea rows="1" style="width:100%; color: #999999; background-color: #eeeeee;" readonly>${ auditLog.details }</textarea>
+                </td>
+            </tr>
+    </table>
 
-        <% } else { %>
-        <tr>
-            <th>${ ui.message(messagesPrefix + '.details.messageNotFound') }</th>
-        </tr>
+    <% if (auditLog != null && !auditLog.success) { %>
+        <br />
+        <% if (auditLog.nextMessageUuid != null) { %>
+            <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
+                [messageUuid: auditLog.nextMessageUuid, backPageIndex: param.backPageIndex]) }">
+                <i class="icon-chevron-right"></i>
+                ${ ui.message(messagesPrefix + '.nextMessage') }
+            </a>
+        <% } else if (localInstanceId.equals(auditLog.creatorInstanceId)) {  %>
+            <a class="button confirm right" onClick="retry();">
+                <i class="icon-retweet"></i>
+                ${ ui.message(messagesPrefix + '.retry') }
+            </a>
+        <% } %>
     <% } %>
-</table>
+    <% if (auditLog.mergeConflictUuid != null && auditLog.nextMessageUuid == null) { %>
+        <a class="button confirm right" onClick="conflictResolution();">
+            <i class="icon-wrench"></i>
+            ${ ui.message('sync2.conflict.resolution.title') }
+        </a>
+    <% } %>
 
-<% if (auditLog != null && !auditLog.success) { %>
-    <br />
-    <% if (auditLog.nextMessageUuid != null) { %>
-        <a class="button right" href="${ ui.pageLink(detailViewProvider, "details",
-            [messageUuid: auditLog.nextMessageUuid, backPageIndex: param.backPageIndex]) }">
-            <i class="icon-chevron-right"></i>
-            ${ ui.message(messagesPrefix + '.nextMessage') }
-        </a>
-    <% } else if (localInstanceId.equals(auditLog.creatorInstanceId)) {  %>
-        <a class="button confirm right" onClick="retry();">
-            <i class="icon-retweet"></i>
-            ${ ui.message(messagesPrefix + '.retry') }
-        </a>
-    <% } %>
-<% } %>
-<% if (auditLog.mergeConflictUuid != null && auditLog.nextMessageUuid == null) { %>
-    <a class="button confirm right" onClick="conflictResolution();">
-        <i class="icon-wrench"></i>
-        ${ ui.message('sync2.conflict.resolution.title') }
-    </a>
+<% } else { %>
+    <th>${ ui.message(messagesPrefix + '.details.messageNotFound') }</th>
 <% } %>
