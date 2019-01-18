@@ -2,12 +2,14 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
 import org.openmrs.module.sync2.SyncConstants;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.service.UnifyService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.NotSupportedException;
@@ -28,7 +30,12 @@ public class UnifyServiceImpl implements UnifyService {
 			if (SyncConstants.FHIR_CLIENT.equals(clientName)) {
 				FHIRClientHelper helper = new FHIRClientHelper();
 				result = helper.convertToOpenMrsObject(object, category.getCategory());
-				result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
+				try {
+					result = ConversionUtil.convertToRepresentation(result, Representation.FULL);
+				} catch (ConversionException e) {
+					throw new SyncException("Conversion error occurred. Check if date format (" + ConversionUtil.DATE_FORMAT +
+							") is corrected.", e);
+				}
 			} else if (AuditMessage.class.isAssignableFrom(category.getClazz())) {
 				result = ConversionUtil.convertToRepresentation(object, Representation.FULL);
 			} else {

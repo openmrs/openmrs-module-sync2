@@ -1,16 +1,5 @@
 package org.openmrs.module.sync2.client.rest.impl;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
-
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Attributable;
 import org.openmrs.api.PersonService;
@@ -20,6 +9,17 @@ import org.openmrs.module.sync2.client.rest.RestResourceConverter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.stereotype.Component;
+
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 
 @Component("sync2.RestResourceConverter")
 public class RestResourceConverterImpl implements RestResourceConverter {
@@ -131,6 +131,7 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 	private void convertPersonResource(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
 		simpleObject.remove("preferredAddress");
+		convertPersonAddress(simpleObject);
 		List<Map> attributes = (List<Map>) simpleObject.get("attributes");
 		if (attributes != null) {
 			//Represent all attribute values that are instances of Attributable as uuid strings
@@ -156,7 +157,14 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 			}
 		}
 	}
-	
+
+	private void convertPersonAddress(Map<String, Object> simpleObject) {
+		Object addresses = simpleObject.get("addresses");
+		if (addresses instanceof List && ((List) addresses).isEmpty()) {
+			simpleObject.remove("addresses");
+		}
+	}
+
 	private void convertObservation(Map<String, Object> simpleObject) {
 		Map concept = (Map<String, Object>) simpleObject.get("concept");
 		simpleObject.remove("concept");
