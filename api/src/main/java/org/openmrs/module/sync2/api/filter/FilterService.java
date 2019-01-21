@@ -1,8 +1,8 @@
 package org.openmrs.module.sync2.api.filter;
 
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 
 public interface FilterService {
 
-    boolean shouldBeSynced(CategoryEnum category, Object object, String action);
+    boolean shouldBeSynced(SyncCategory category, Object object, String action);
 }

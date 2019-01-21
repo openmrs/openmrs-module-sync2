@@ -11,6 +11,7 @@ import org.mockito.Spy;
 import org.openmrs.module.atomfeed.api.model.FeedConfiguration;
 import org.openmrs.module.atomfeed.api.service.FeedConfigurationService;
 import org.openmrs.module.sync2.api.mapper.impl.AtomfeedEventConfigurationMapperImpl;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
 import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 
@@ -41,7 +42,7 @@ public class AtomfeedEventConfigurationServiceImplTest {
 	public void test() {
 		EventConfiguration expected = new EventConfiguration(createLinkTemplates());
 		EventConfiguration actual = atomFeedEventConfigurationService.getEventConfigurationByCategory(
-				CategoryEnum.PATIENT);
+				new SyncCategory(CategoryEnum.PATIENT.getCategory(), CategoryEnum.PATIENT.getClazz()));
 
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expected, actual);

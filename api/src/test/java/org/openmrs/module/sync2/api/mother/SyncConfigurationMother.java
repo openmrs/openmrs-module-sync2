@@ -43,7 +43,8 @@ public abstract class SyncConfigurationMother {
 	private static SyncConfiguration createInstance() {
 		SyncConfiguration configuration = new SyncConfiguration();
 		GeneralConfiguration general = new GeneralConfiguration("", "defaultAddress",
-				SAMPLE_LOCAL_INSTANCE_ID, false, false, new LinkedHashMap<>());
+				SAMPLE_LOCAL_INSTANCE_ID, false, false,
+				new LinkedHashMap<String, ClientConfiguration>());
 		configuration.setGeneral(general);
 
 		ClassConfiguration locationClass = new ClassConfiguration("Location",

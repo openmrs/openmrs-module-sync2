@@ -10,10 +10,10 @@ import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.conflict.ConflictDetection;
 import org.openmrs.module.sync2.api.exceptions.MergeConflictException;
 import org.openmrs.module.sync2.api.mapper.MergeConflictMapper;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.SyncObject;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.configuration.EventConfiguration;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.MergeConflictService;
@@ -61,7 +61,7 @@ public abstract class AbstractSynchronizationService {
 
     protected abstract List<String> determineActionsBasingOnSyncType(Object localObj, Object parentObj);
 
-    protected abstract AuditMessage synchronizeObject(CategoryEnum category, Map<String, String> resourceLinks,
+    protected abstract AuditMessage synchronizeObject(SyncCategory category, Map<String, String> resourceLinks,
             String action, String clientName, String uuid);
 
     protected abstract SyncOperation getOperation();
@@ -72,7 +72,7 @@ public abstract class AbstractSynchronizationService {
 
     protected abstract String getFailedSynchronizationMessage();
 
-    protected AuditMessage initSynchronization(CategoryEnum category, Map<String, String> resourceLinks,
+    protected AuditMessage initSynchronization(SyncCategory category, Map<String, String> resourceLinks,
             String action, String clientName) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
         logInitialInfo(category, action, resourceLinks, clientName);
@@ -92,7 +92,7 @@ public abstract class AbstractSynchronizationService {
         return base;
     }
 
-    protected List<AuditMessage> synchronizeObject(CategoryEnum category, String uuid) {
+    protected List<AuditMessage> synchronizeObject(SyncCategory category, String uuid) {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
 
         EventConfiguration configuration = ContextUtils.getEventConfigurationService().getEventConfigurationByCategory(
@@ -151,7 +151,7 @@ public abstract class AbstractSynchronizationService {
         return oldObject;
     }
 
-    protected Object pullData(CategoryEnum category, String action, String clientName, String uuid,
+    protected Object pullData(SyncCategory category, String action, String clientName, String uuid,
             String pullUrl, OpenMRSSyncInstance instance) {
         Object pulledObject;
         if (isDeleteAction(action)) {
@@ -167,12 +167,12 @@ public abstract class AbstractSynchronizationService {
                 || action.equalsIgnoreCase(ACTION_RETIRED);
     }
 
-    private void logInitialInfo(CategoryEnum category, String action, Map<String, String> resourceLinks, String clientName) {
+    private void logInitialInfo(SyncCategory category, String action, Map<String, String> resourceLinks, String clientName) {
         getLogger().info(String.format(INITIAL_INFO_FORMAT,
                 this.getClass().getSimpleName(), category, getBaseResourceUrl(resourceLinks, clientName), action));
     }
 
-    private AuditMessage prepareAuditMessage(CategoryEnum category, String clientName,
+    private AuditMessage prepareAuditMessage(SyncCategory category, String clientName,
             Map<String, String> resourceLinks, String action) {
         AuditMessage auditMessage = prepareBaseAuditMessage(getOperation().getValue(), clientName);
         auditMessage.setResourceName(category.getCategory());
@@ -191,7 +191,7 @@ public abstract class AbstractSynchronizationService {
         return mappedResourceLinks;
     }
 
-    private List<String> determineActions(CategoryEnum category, String restUrl) {
+    private List<String> determineActions(SyncCategory category, String restUrl) {
         String localPullUrl = SyncUtils.getFullUrl(SyncUtils.getLocalBaseUrl(), restUrl);
         String parentPullUrl = SyncUtils.getFullUrl(SyncUtils.getParentBaseUrl(SyncConstants.REST_CLIENT), restUrl);
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.client.ClientHttpEntity;
@@ -15,7 +16,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.core.convert.support.ConversionServiceFactory;
 import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
@@ -26,7 +27,6 @@ import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESS
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.createDefaultGson;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RESTClientHelper.class, Context.class, ContextUtils.class })
@@ -41,7 +41,10 @@ public class RESTClientHelperTest {
 	@Before
 	public void setUp() throws Exception {
 		PowerMockito.mockStatic(ContextUtils.class);
-		when(ContextUtils.getConversionService()).thenReturn(new DefaultConversionService());
+		PowerMockito.when(ContextUtils.getConversionService()).thenReturn(
+				ConversionServiceFactory.createDefaultConversionService());
+
+		MockitoAnnotations.initMocks(this);
 		restClientHelper = PowerMockito.spy(new RESTClientHelper());
 		PowerMockito.doReturn(new RestResourceConverterImpl()).when(restClientHelper, "getRestResourceConverter");
 	}

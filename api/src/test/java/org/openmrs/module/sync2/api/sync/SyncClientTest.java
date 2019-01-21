@@ -15,9 +15,9 @@ import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.fhir.api.helper.FHIRClientHelper;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.configuration.GeneralConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.SyncConfiguration;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -26,10 +26,10 @@ import org.openmrs.module.sync2.client.rest.RESTClientHelper;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.core.convert.support.DefaultConversionService;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -57,19 +57,17 @@ public class SyncClientTest {
     private static final String REST_CLIENT_KEY = "rest";
     private static final String FHIR_RESOURCE_LINK = "openmrs/ws/fhir/Patient/";
     private static final String REST_RESOURCE_LINK = "openmrs/ws/rest/v1/patient/";
-    private static final CategoryEnum PATIENT_CATEGORY = CategoryEnum.getByCategory("patient");
-    private static final CategoryEnum VISIT_CATEGORY = CategoryEnum.getByCategory("visit");
+    private static final SyncCategory PATIENT_CATEGORY = new SyncCategory("patient", Patient.class);
+    private static final SyncCategory VISIT_CATEGORY = new SyncCategory("visit", Visit.class);
     private static final String PARENT_ADDRESS = "http://localhost:8080/";
     private static final String PARENT_FEED_LOCATION = "http://localhost:8080/openmrs";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String SYNC_ENDPOINT = "openmrs/ws/rest/sync2";
-
     private static final String REST_FULL_RESOURCE_URL = PARENT_ADDRESS + REST_RESOURCE_LINK + PATIENT_UUID;
     private static final String FHIR_FULL_RESOURCE_URL = PARENT_ADDRESS + FHIR_RESOURCE_LINK + PATIENT_UUID;
 
     private static final String PARENT_DESTINATION_URL = PARENT_ADDRESS + SYNC_ENDPOINT;
-
     public static final String LOCAL_INSTANCE_ID = "LocalId";
 
     private AdministrationService administrationServiceMock;
@@ -84,9 +82,6 @@ public class SyncClientTest {
 
     @Before
     public void setUp() throws Exception {
-        mockStatic(ContextUtils.class);
-        when(ContextUtils.getConversionService()).thenReturn(new DefaultConversionService());
-
         mockStatic(SyncUtils.class);
         when(SyncUtils.getParentBaseUrl(Mockito.anyString())).thenReturn(PARENT_FEED_LOCATION);
 
@@ -135,7 +130,7 @@ public class SyncClientTest {
                         FHIR_CLIENT_KEY, PARENT);
         whenNew(SyncClient.class).withNoArguments().thenReturn(syncClient);
     }
-    
+
     @Test
     public void pullDataFromParent_shouldCallRestClient() {
         SyncClient resourceManager = new SyncClient();
@@ -143,7 +138,7 @@ public class SyncClientTest {
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, REST_CLIENT_KEY,
                 REST_FULL_RESOURCE_URL, PARENT);
 
-        assertThat(pulledObject, is(expectedPatient));
+        assertThat((Patient) pulledObject, is(expectedPatient));
     }
 
     @Test
@@ -153,7 +148,7 @@ public class SyncClientTest {
         Object pulledObject = resourceManager.pullData(PATIENT_CATEGORY, FHIR_CLIENT_KEY,
                 FHIR_FULL_RESOURCE_URL, PARENT);
 
-        assertThat(pulledObject, is(expectedPatient));
+        assertThat((Patient) pulledObject, is(expectedPatient));
     }
 
     private Patient createPatient() {
@@ -166,8 +161,8 @@ public class SyncClientTest {
         patientIdentifier.setPreferred(true);
         patientIdentifier.setVoided(false);
 
-        Set<PatientIdentifier> patientIdentifierList = new TreeSet<>();
-            patientIdentifierList.add(patientIdentifier);
+        Set<PatientIdentifier> patientIdentifierList = new HashSet<>();
+        patientIdentifierList.add(patientIdentifier);
 
         patient.setIdentifiers(patientIdentifierList);
         patient.setGender("M");
@@ -184,13 +179,11 @@ public class SyncClientTest {
         personName.setFamilyName2(null);
         personName.setVoided(false);
 
-        Set<PersonName> personNameSet = new TreeSet<>();
+        Set<PersonName> personNameSet = new HashSet<>();
         personNameSet.add(personName);
         patient.setNames(personNameSet);
 
         patient.setVoided(false);
-        patient.setDeathdateEstimated(false);
-        patient.setBirthtime(new Date());
 
         return patient;
     }
@@ -234,7 +227,6 @@ public class SyncClientTest {
         Order order = new org.openmrs.Order();
         order.setUuid("orderId");
         order.setDateCreated(new Date());
-        order.setDateActivated(new Date());
         order.setDateChanged(new Date());
         Set<Order> orders = new TreeSet<>();
         orders.add(order);

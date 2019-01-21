@@ -100,16 +100,21 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
         return dao.getAllCreatorIds();
     }
 
+    @Override
+    public AuditMessage getMessageByMergeConflictUuid(String uuid) throws APIException {
+        return dao.getMessageByMergeConflictUuid(uuid);
+    }
+
+    @Override
+    public String getJsonMessage(AuditMessage message) throws APIException, JsonParseException {
+        return serializeResultsWithAuditMessage(message);
+    }
+
     private <T> String serializeResultsWithAuditMessage(T results) {
         GsonBuilder gsonBuilder = new GsonBuilder().serializeNulls();
         gsonBuilder.registerTypeAdapter(AuditMessage.class, new AuditMessageSerializer());
         Gson gson = gsonBuilder.create();
 
         return gson.toJson(results);
-    }
-
-    @Override
-    public AuditMessage getMessageByMergeConflictUuid(String uuid) throws APIException {
-        return dao.getMessageByMergeConflictUuid(uuid);
     }
 }

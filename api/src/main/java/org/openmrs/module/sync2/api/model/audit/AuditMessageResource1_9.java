@@ -18,8 +18,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for {@link AuditMessage}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/auditmessage", supportedClass = AuditMessage.class, supportedOpenmrsVersions = {
-		"2.0.*", "2.1.*", "2.2.*" })
-public class AuditMessageResource2_0 extends DataDelegatingCrudResource<AuditMessage> {
+		"1.9.*", "1.10.*", "1.11", "1.12", "2.0.*", "2.1.*", "2.2.*" })
+public class AuditMessageResource1_9 extends DataDelegatingCrudResource<AuditMessage> {
 
 	/**
 	 * @see org.openmrs.module.sync2.web.controller.rest.SyncAuditRestController

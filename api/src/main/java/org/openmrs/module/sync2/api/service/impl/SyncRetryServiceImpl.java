@@ -2,13 +2,13 @@ package org.openmrs.module.sync2.api.service.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
+import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.helper.CategoryHelper;
+import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPullService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
 import org.openmrs.module.sync2.api.service.SyncRetryService;
-import org.openmrs.module.sync2.api.exceptions.SyncException;
-import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.utils.SyncConfigurationUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,9 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     @Autowired
     private SyncAuditService syncAuditService;
 
+    @Autowired
+    private CategoryHelper categoryHelper;
+
     @Override
     public AuditMessage retryMessage(AuditMessage message) throws APIException {
         SyncConfigurationUtils.checkIfConfigurationIsValid();
@@ -49,7 +52,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
         AuditMessage newMessage =
                 syncPushService.readAndPushObjectToParent(
-                        CategoryEnum.getByCategory(message.getResourceName()),
+                        categoryHelper.getByCategory(message.getResourceName()),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
                         message.getLinkType(),
@@ -65,7 +68,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
 
         AuditMessage newMessage =
                 syncPullService.pullAndSaveObjectFromParent(
-                        CategoryEnum.getByCategory(message.getResourceName()),
+                        categoryHelper.getByCategory(message.getResourceName()),
                         message.getAvailableResourceUrlsAsMap(),
                         message.getAction(),
                         message.getLinkType(),

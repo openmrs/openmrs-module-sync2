@@ -64,7 +64,7 @@ public class SyncAuditDaoImpl implements SyncAuditDao {
                 .add(Restrictions.isNotNull(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID))
                 .setProjection(Projections.distinct(
                         Projections.property(SyncConstants.AUDIT_MESSAGE_CREATOR_INSTANCE_ID)));
-        return new HashSet<>(Collections.checkedList(selectCriteria.list(), String.class));
+        return new HashSet<String>(Collections.checkedList(selectCriteria.list(), String.class));
     }
 
     public Long getCountOfMessages() {

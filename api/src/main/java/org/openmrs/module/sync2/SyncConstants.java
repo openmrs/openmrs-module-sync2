@@ -86,5 +86,11 @@ public class SyncConstants {
 
     public static final String ATOMFEED_EVENT_HANDLER = "atomfeed";
 
+    public static final String SYNC_PUSH_SERVICE_BEAN = "sync2.syncPushService";
+
+    public static final String SYNC_PULL_SERVICE_BEAN = "sync2.syncPullService";
+
+    public static final String SYNC_CATEGORY_HELPER = "sync2.categoryHelper";
+
     private SyncConstants() {}
 }

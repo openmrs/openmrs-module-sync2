@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractAtomfeedFeedReader {
 
@@ -38,9 +38,13 @@ public abstract class AbstractAtomfeedFeedReader {
 
 	protected void readAndProcessFeedsForCategory(String category) throws SyncException {
 		SyncConfigurationUtils.checkIfConfigurationIsValid();
-		List<ClassConfiguration> confClasses = getSyncMethodConf().getClasses()
-				.stream().filter(conf -> conf.getCategory().equals(category))
-				.collect(Collectors.toList());
+		List<ClassConfiguration> confClasses = new LinkedList<>();
+
+		for (ClassConfiguration conf : getSyncMethodConf().getClasses()) {
+			if (conf.getCategory().equalsIgnoreCase(category)) {
+				confClasses.add(conf);
+			}
+		}
 
 		if (confClasses.isEmpty()) {
 			throw new SyncException("There's no AtomFeed configuration for category " + category);

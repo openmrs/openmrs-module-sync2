@@ -83,7 +83,7 @@ public class Sync2ModuleController {
 			LOGGER.error("Error during pushing objects: ", e);
 			SyncMessageUtils.errorMessage(model, PUSH_FAILURE_MESSAGE);
 		}
-		return "/module/sync2/sync2";
+		return "redirect:/module/sync2/sync2.form";
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class Sync2ModuleController {
 			LOGGER.error("Error during reading feeds: ", e);
 			SyncMessageUtils.errorMessage(model, PULL_FAILURE_MESSAGE);
 		}
-		return "/module/sync2/sync2";
+		return "redirect:/module/sync2/sync2.form";
 	}
 
 	private String getFirstErrorCode(Errors errors) {

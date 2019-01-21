@@ -1,5 +1,6 @@
 package org.openmrs.module.sync2.page.controller;
 
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncRetryService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@OpenmrsProfile(modules = { "uicommons:*.*" })
 public class RetryPageController {
 	private static final String BACK_PAGE_INDEX = "backPageIndex";
 

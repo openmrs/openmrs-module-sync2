@@ -1,8 +1,6 @@
 package org.openmrs.module.sync2.api.model.enums;
 
-import org.openmrs.Allergy;
 import org.openmrs.Cohort;
-
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
@@ -43,8 +41,7 @@ public enum CategoryEnum {
 	USER("user", User.class),
 	PROGRAM("program", Program.class),
 	PRIVILEGE("privilege", Privilege.class),
-	AUDIT_MESSAGE("audit_message", AuditMessage.class),
-	ALLERGY(FHIRConstants.CATEGORY_ALLERGY, Allergy.class);
+	AUDIT_MESSAGE("audit_message", AuditMessage.class);
 
 	private static final Map<String, CategoryEnum> MAP;
 
@@ -85,7 +82,6 @@ public enum CategoryEnum {
 		MAP.put(PROGRAM.getCategory(), PROGRAM);
 		MAP.put(PRIVILEGE.getCategory(), PRIVILEGE);
 		MAP.put(AUDIT_MESSAGE.getCategory(), AUDIT_MESSAGE);
-		MAP.put(ALLERGY.getCategory(), ALLERGY);
 	}
 
 	public static CategoryEnum getByCategory(String category) {

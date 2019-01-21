@@ -3,11 +3,11 @@ package org.openmrs.module.sync2.api.service.impl;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
 import org.openmrs.module.sync2.api.filter.impl.PushFilterService;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.SyncObject;
-import org.openmrs.module.sync2.api.model.enums.CategoryEnum;
-import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
+import org.openmrs.module.sync2.api.model.enums.SyncOperation;
 import org.openmrs.module.sync2.api.service.ParentObjectHashcodeService;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncPushService;
@@ -30,7 +30,7 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResour
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
 
-@Component("sync2.syncPushService")
+@Component(value = SyncConstants.SYNC_PUSH_SERVICE_BEAN)
 public class SyncPushServiceImpl extends AbstractSynchronizationService implements SyncPushService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncPushService.class);
 
@@ -49,7 +49,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     private static final String FAILED_SYNC_MESSAGE = "Problem with pushing to parent";
 
     @Override
-    public AuditMessage readAndPushObjectToParent(CategoryEnum category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(SyncCategory category, Map<String, String> resourceLinks,
                                                 String action, String clientName, String uuid) {
 
         AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, clientName);
@@ -94,7 +94,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public AuditMessage mergeForcePush(Object merged, CategoryEnum category, Map<String, String> resourceLinks,
+    public AuditMessage mergeForcePush(Object merged, SyncCategory category, Map<String, String> resourceLinks,
             String action, String uuid) {
 
         AuditMessage auditMessage = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
@@ -115,12 +115,12 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public List<AuditMessage> readAndPushObjectToParent(CategoryEnum category, String uuid) {
+    public List<AuditMessage> readAndPushObjectToParent(SyncCategory category, String uuid) {
         return synchronizeObject(category, uuid);
     }
 
     @Override
-    public void readAndPushObjectsToParent(CategoryEnum category) throws SyncException {
+    public void readAndPushObjectsToParent(SyncCategory category) throws SyncException {
         LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
         localFeedReader.readAndPushAllFeeds(category);
     }
@@ -131,7 +131,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    protected AuditMessage synchronizeObject(CategoryEnum category, Map<String, String> resourceLinks, String action,
+    protected AuditMessage synchronizeObject(SyncCategory category, Map<String, String> resourceLinks, String action,
             String clientName, String uuid) {
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }
@@ -157,18 +157,18 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     }
 
     @Override
-    public AuditMessage readAndPushObjectToParent(CategoryEnum category, Map<String, String> resourceLinks,
+    public AuditMessage readAndPushObjectToParent(SyncCategory category, Map<String, String> resourceLinks,
             String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
         String uuid = extractUUIDFromResourceLinks(resourceLinks);
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }
 
-    private Object getLocalObject(CategoryEnum category, String action, String clientName, String uuid, String localPull) {
+    private Object getLocalObject(SyncCategory category, String action, String clientName, String uuid, String localPull) {
         return pullData(category, action, clientName, uuid, localPull, CHILD);
     }
 
-    private AuditMessage forcePush(Object merged, CategoryEnum category, Map<String, String> resourceLinks,
+    private AuditMessage forcePush(Object merged, SyncCategory category, Map<String, String> resourceLinks,
             String action, String clientName, OpenMRSSyncInstance instance) {
         AuditMessage message = initSynchronization(category, resourceLinks, action, SyncConstants.REST_CLIENT);
         try {
