@@ -6,7 +6,8 @@
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.css"/>
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.js"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
-<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
+<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm"
+	redirect="/module/sync2/conflictResolution.form?messageUuid=${messageUuid}" />
 
 <a class="button cancel" onClick="history.back()">
 	<spring:message code='general.cancel' />
