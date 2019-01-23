@@ -22,7 +22,7 @@
             <br/><br/>
             <input id="json-file" type="file" name="file" accept=".json"/>
         </p>
-        <input type="submit" id="import-button" class="confirm right" value="<spring:message code='sync2.configuration.import.label'/>" disabled="disabled"/>
+        <input type="submit" id="import-button" class="confirm" value="<spring:message code='sync2.configuration.import.label'/>" disabled="disabled"/>
     </form>
 </fieldset>
 <br/>
@@ -44,6 +44,6 @@
             <textarea id="json-field" class="required" name="json" rows="15" cols="80">${configuration}</textarea>
         </p>
         <input type="button" value="<spring:message code='general.cancel'/>" onclick="javascript:window.location='${pageContext.request.contextPath}/module/sync2/sync2.form'" />
-        <input type="submit" class="confirm right" id="save-button" value="<spring:message code='general.save'/>" />
+        <input type="submit" class="confirm" id="save-button" value="<spring:message code='general.save'/>" />
     </form>
 </fieldset>
