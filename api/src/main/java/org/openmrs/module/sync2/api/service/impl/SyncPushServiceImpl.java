@@ -63,16 +63,15 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
             SyncObject localObj = new SyncObject(getLocalObject(category, action, clientName, uuid, localPull));
             localObj.setSimpleObject(unifyService.unifyObject(localObj.getBaseObject(), category, clientName));
             SyncObject parentObj = new SyncObject(syncClient.pullData(category, clientName, parentPull, PARENT));
-            parentObj.setSimpleObject(isDeleteAction(action) ? null :
-                    unifyService.unifyObject(parentObj.getBaseObject(), category, clientName));
+            parentObj.setSimpleObject(unifyService.unifyObject(parentObj.getBaseObject(), category, clientName));
 
             shouldSynchronize = pushFilterService.shouldBeSynced(category, localObj.getBaseObject(), action)
                     && localObj.getBaseObject() != null
-                    && shouldSynchronize(localObj.getSimpleObject(), parentObj.getSimpleObject());
+                    && shouldSynchronize(localObj.getSimpleObject(), parentObj.getSimpleObject(), action);
 
             if (shouldSynchronize) {
                 String hashCode = null;
-                if (!isDeleteAction(action)) {
+                if (!SyncUtils.isDeleteAction(action)) {
                     localObj.setBaseObject(detectAndResolveConflict(
                             localObj, parentObj, auditMessage).getBaseObject());
                     hashCode = SyncHashcodeUtils.getHashcode(

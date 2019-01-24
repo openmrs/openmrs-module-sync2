@@ -35,9 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.openmrs.module.sync2.SyncConstants.FHIR_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.RESOURCE_PREFERRED_CLIENT;
-import static org.openmrs.module.sync2.SyncConstants.REST_CLIENT;
 import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.CHILD;
 
 public class SyncUtils {
@@ -230,16 +227,16 @@ public class SyncUtils {
 	}
 
 	public static String getGlobalPreferredClient() {
-		return Context.getAdministrationService().getGlobalProperty(RESOURCE_PREFERRED_CLIENT,
+		return Context.getAdministrationService().getGlobalProperty(SyncConstants.RESOURCE_PREFERRED_CLIENT,
 				SyncConstants.DEFAULT_SYNC_2_CLIENT);
 	}
 
 	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
 		for (String client : resourceLinks.keySet()) {
 			switch (client) {
-				case REST_CLIENT:
+				case SyncConstants.REST_CLIENT:
 					return extractUUIDFromRestResource(resourceLinks.get(client));
-				case FHIR_CLIENT:
+				case SyncConstants.FHIR_CLIENT:
 					return extractUUIDFromFHIRResource(resourceLinks.get(client));
 				default:
 			}
@@ -381,5 +378,18 @@ public class SyncUtils {
 
 	public static boolean parentInstanceUriIsEmpty() {
 		return StringUtils.isBlank(SyncUtils.getParentBaseUrl(null));
+	}
+
+	public static boolean isDeleteAction(String action) {
+		return action.equalsIgnoreCase(SyncConstants.ACTION_VOIDED) || action.equalsIgnoreCase(SyncConstants.ACTION_DELETED)
+				|| action.equalsIgnoreCase(SyncConstants.ACTION_RETIRED);
+	}
+
+	public static boolean isUpdateAction(String action) {
+		return action.equalsIgnoreCase(SyncConstants.ACTION_UPDATED);
+	}
+
+	public static boolean isCreateAction(String action) {
+		return action.equalsIgnoreCase(SyncConstants.ACTION_CREATED);
 	}
 }

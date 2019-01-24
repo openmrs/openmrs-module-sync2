@@ -19,16 +19,17 @@ public class ConflictDetectionImpl implements ConflictDetection {
 	@Override
 	public boolean detectConflict(SimpleObject currentObject, SimpleObject newObject) {
 		boolean conflictDetect = false;
-		String currentHashCode = SyncHashcodeUtils.getHashcode(currentObject);
-		String newHashCode = SyncHashcodeUtils.getHashcode(newObject);
-		String objectUuid = currentObject.get(UUID_KEY);
-		ParentObjectHashcode previousHashCode = parentObjectHashcodeService.getByObjectUuid(objectUuid);
-		if (previousHashCode != null
-				&& (!previousHashCode.getHashcode().equalsIgnoreCase(newHashCode)
+		if (currentObject != null && newObject != null) {
+			String currentHashCode = SyncHashcodeUtils.getHashcode(currentObject);
+			String newHashCode = SyncHashcodeUtils.getHashcode(newObject);
+			String objectUuid = currentObject.get(UUID_KEY);
+			ParentObjectHashcode previousHashCode = parentObjectHashcodeService.getByObjectUuid(objectUuid);
+			if (previousHashCode != null
+					&& (!previousHashCode.getHashcode().equalsIgnoreCase(newHashCode)
 					|| !previousHashCode.getHashcode().equalsIgnoreCase(currentHashCode))) {
-			conflictDetect = true;
+				conflictDetect = true;
+			}
 		}
-
 		return conflictDetect;
 	}
 

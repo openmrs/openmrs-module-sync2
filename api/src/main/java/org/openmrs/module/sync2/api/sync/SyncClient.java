@@ -101,8 +101,11 @@ public class SyncClient {
 			}
 		}
 		catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
-					e.getStatusCode().value(), e.getResponseBodyAsString()), e);
+			if (!e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				throw new SyncException(String.format("Object posting error. Code: %d. Details: \n%s",
+						e.getStatusCode().value(), e.getResponseBodyAsString()), e);
+			}
+			LOGGER.error(e.getMessage(), e);
 		}
 		catch (URISyntaxException e) {
 			LOGGER.error(e.getMessage());
@@ -155,7 +158,7 @@ public class SyncClient {
 		if (shouldWrappMessage(clientName, instance)) {
 			request = sendRequest(category, destinationUrl, clientName, new InnerRequest(request));
 		}
-		return exchange(helper, request, String.class);
+		return exchange(helper, request, null);
 	}
 
 	private ResponseEntity<String> updateObject(SyncCategory category, String resourceUrl, String destinationUrl,
