@@ -37,7 +37,7 @@
         <p>
             <label for="json-field">
                 <span class="title">
-                    <spring:message code="sync2.configuration.json.label"/> (<spring:message code="emr.formValidation.messages.requiredField.label"/>)
+                    <spring:message code="sync2.configuration.json.label"/> (<spring:message code="sync2.field.required"/>)
                 </span>
             </label>
             <br/>
