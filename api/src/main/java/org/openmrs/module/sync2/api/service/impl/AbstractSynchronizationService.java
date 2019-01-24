@@ -126,12 +126,18 @@ public abstract class AbstractSynchronizationService {
     }
 
     protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject, String action) {
-        if (newObject == null && (SyncUtils.isDeleteAction(action) || SyncUtils.isUpdateAction(action))) {
-            return false;
-        } else if (oldObject != null && newObject != null && SyncUtils.isCreateAction(action)) {
+        if (isWrongUpdateOrDeleteAction(newObject, action) || isWrongCreateAction(oldObject, newObject, action)) {
             return false;
         }
         return oldObject == null || newObject == null || areDifferentObjects(oldObject, newObject);
+    }
+
+    private boolean isWrongCreateAction(SimpleObject oldObject, SimpleObject newObject, String action) {
+        return oldObject != null && newObject != null && SyncUtils.isCreateAction(action);
+    }
+
+    private boolean isWrongUpdateOrDeleteAction(SimpleObject newObject, String action) {
+        return newObject == null && (SyncUtils.isDeleteAction(action) || SyncUtils.isUpdateAction(action));
     }
 
     private boolean areDifferentObjects(SimpleObject oldObject, SimpleObject newObject) {
