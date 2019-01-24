@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/template/header.jsp"%>
 <%@ include file="template/localHeader.jsp" %>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/sync2.css"/>
-<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/auditList.page"/>
+<openmrs:require anyPrivilege="Sync2 Audit Privilege" otherwise="/login.htm" redirect="/module/sync2/sync2.form"/>
 
 <h2>
     <h2><spring:message code="sync2.title" /></h2>

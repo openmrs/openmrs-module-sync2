@@ -53,6 +53,7 @@ public class ConflictResolutionController {
 		AuditMessage message = syncAuditService.getMessageByUuid(messageUuid);
 		String conflictUuid = message.getMergeConflictUuid();
 
+		model.addAttribute(MESSAGE_UUID, messageUuid);
 		model.addAttribute(CONFLICT_UUID_MODEL_ATTR, conflictUuid);
 		model.addAttribute(CONFLICT_UUID, conflictUuid);
 		model.addAttribute(AUDIT_BACK_PAGE, auditBackPage);

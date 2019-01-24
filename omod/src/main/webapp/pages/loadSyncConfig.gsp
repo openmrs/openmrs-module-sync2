@@ -41,7 +41,7 @@
     <p>
         <label for="json-field">
             <span class="title">
-                ${ui.message("sync2.configuration.json.label")} (${ ui.message("emr.formValidation.messages.requiredField.label") })
+                ${ui.message("sync2.configuration.json.label")} (${ ui.message("sync2.field.required") })
             </span>
         </label>
         <textarea id="json-field" class="required" name="json" rows="15" cols="80">${configuration}</textarea>

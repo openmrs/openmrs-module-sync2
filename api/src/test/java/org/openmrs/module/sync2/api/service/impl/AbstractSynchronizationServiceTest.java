@@ -51,29 +51,79 @@ public class AbstractSynchronizationServiceTest {
 	}
 
 	@Test
-	public void shouldSynchronize_shouldReturnTrueIfNewObjectIsNull() {
+	public void shouldSynchronize_shouldReturnTrueIfCrateAndNewObjectIsNull() {
 		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
-		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, null));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_CREATED));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_UPDATED));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_VOIDED));
 	}
 
 	@Test
 	public void shouldSynchronize_shouldReturnTrueIfOldObjectIsNull() {
 		SimpleObject newObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
-		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(null, newObject));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(null, newObject,
+				SyncConstants.ACTION_CREATED));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(null, newObject,
+				SyncConstants.ACTION_UPDATED));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(null, newObject,
+				SyncConstants.ACTION_VOIDED));
 	}
 
 	@Test
 	public void shouldSynchronize_shouldReturnFalseIfObjectsAreEquals() {
 		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
 		SimpleObject newObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
-		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_CREATED));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_UPDATED));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_VOIDED));
 	}
 
 	@Test
-	public void shouldSynchronize_shouldReturnTrueIfObjectsAreNotEquals() {
+	public void shouldSynchronize_shouldReturnTrueIfUpdateOrVoidedAndObjectsAreNotEquals() {
 		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
 		SimpleObject newObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE_2);
-		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, newObject));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_UPDATED));
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_VOIDED));
+	}
+
+	@Test
+	public void shouldSynchronize_shouldReturnFalseIfUpdateOrDeleteAndNewObjectIsNull() {
+		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_UPDATED));
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_DELETED));
+	}
+
+	@Test
+	public void shouldSynchronize_shouldReturnTrueIfCreateAndNewObjectIsNull() {
+		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, null,
+				SyncConstants.ACTION_CREATED));
+	}
+
+	@Test
+	public void shouldSynchronize_shouldReturnFalseIfCreateAndObjectsAreNotNull() {
+		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
+		SimpleObject newObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE_2);
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_CREATED));
+	}
+
+	@Test
+	public void shouldSynchronize_shouldReturnTrueIfCreateAndObjectsAreNull() {
+		SimpleObject oldObject = null;
+		SimpleObject newObject = null;
+		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_CREATED));
 	}
 
 	private Patient createPatientInstance(boolean voided) {

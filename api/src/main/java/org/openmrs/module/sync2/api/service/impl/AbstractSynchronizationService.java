@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.openmrs.module.sync2.SyncConstants.ACTION_CREATED;
-import static org.openmrs.module.sync2.SyncConstants.ACTION_DELETED;
-import static org.openmrs.module.sync2.SyncConstants.ACTION_RETIRED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_UPDATED;
 import static org.openmrs.module.sync2.SyncConstants.ACTION_VOIDED;
 import static org.openmrs.module.sync2.SyncConstants.AUDIT_MESSAGE_UUID_FIELD_NAME;
@@ -127,11 +125,26 @@ public abstract class AbstractSynchronizationService {
         return result;
     }
 
-    protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject) {
+    protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject, String action) {
+        if (isWrongUpdateOrDeleteAction(newObject, action) || isWrongCreateAction(oldObject, newObject, action)) {
+            return false;
+        }
+        return oldObject == null || newObject == null || areDifferentObjects(oldObject, newObject);
+    }
+
+    private boolean isWrongCreateAction(SimpleObject oldObject, SimpleObject newObject, String action) {
+        return oldObject != null && newObject != null && SyncUtils.isCreateAction(action);
+    }
+
+    private boolean isWrongUpdateOrDeleteAction(SimpleObject newObject, String action) {
+        return newObject == null && (SyncUtils.isDeleteAction(action) || SyncUtils.isUpdateAction(action));
+    }
+
+    private boolean areDifferentObjects(SimpleObject oldObject, SimpleObject newObject) {
         String localHashCode = SyncHashcodeUtils.getHashcode(oldObject);
         String pulledHashCode = SyncHashcodeUtils.getHashcode(newObject);
-        return oldObject == null || newObject == null || (StringUtils.isNotBlank(localHashCode) && StringUtils.isNotBlank(pulledHashCode)
-            && !localHashCode.equalsIgnoreCase(pulledHashCode));
+        return (StringUtils.isNotBlank(localHashCode) && StringUtils.isNotBlank(pulledHashCode)
+                && !localHashCode.equalsIgnoreCase(pulledHashCode));
     }
 
     protected SyncObject detectAndResolveConflict(SyncObject oldObject, SyncObject newObject, AuditMessage auditMessage)
@@ -154,17 +167,12 @@ public abstract class AbstractSynchronizationService {
     protected Object pullData(SyncCategory category, String action, String clientName, String uuid,
             String pullUrl, OpenMRSSyncInstance instance) {
         Object pulledObject;
-        if (isDeleteAction(action)) {
+        if (SyncUtils.isDeleteAction(action)) {
             pulledObject = uuid;
         } else {
             pulledObject = syncClient.pullData(category, clientName, pullUrl, instance);
         }
         return pulledObject;
-    }
-
-    protected boolean isDeleteAction(String action) {
-        return action.equalsIgnoreCase(ACTION_VOIDED) || action.equalsIgnoreCase(ACTION_DELETED)
-                || action.equalsIgnoreCase(ACTION_RETIRED);
     }
 
     private void logInitialInfo(SyncCategory category, String action, Map<String, String> resourceLinks, String clientName) {

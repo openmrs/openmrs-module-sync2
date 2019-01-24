@@ -71,8 +71,7 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 			return restTemplate.exchange(
 					wrapper.getRequest().getUrl(),
 					wrapper.getRequest().getMethod(),
-					new HttpEntity<Object>(wrapper.getRequest().getBody(), headers),
-					String.class);
+					new HttpEntity<>(null, headers), null);
 		}
 		catch (HttpClientErrorException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
