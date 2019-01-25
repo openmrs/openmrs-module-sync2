@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/template/include.jsp" %>
 <%@ include file="/WEB-INF/template/header.jsp" %>
 <%@ include file="template/localHeader.jsp" %>
+<openmrs:htmlInclude file="/moduleResources/sync2/scripts/jquery-1.12.4.min.js"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/styles/conflictResolution.css"/>
 <openmrs:htmlInclude file="/moduleResources/sync2/scripts/sync2.conflict.js"/>
 <openmrs:htmlInclude file="/moduleResources/fhir/jquery.json-viewer.css"/>
