@@ -52,7 +52,8 @@ public class SyncConflictRestController {
 			SimpleObject entity = SimpleObject.parseJson(json);
 
 			try {
-				String uuid = extractUUIDFromResourceLinks(conflictMessage.getAvailableResourceUrlsAsMap());
+				String uuid = extractUUIDFromResourceLinks(conflictMessage.getAvailableResourceUrlsAsMap(),
+						conflictMessage.getResourceName());
 				AuditMessage resultAudit = syncPushService.mergeForcePush(entity, categoryHelper.getByCategory(
 						conflictMessage.getResourceName()),
 						conflictMessage.getAvailableResourceUrlsAsMap(), conflictMessage.getAction(), uuid);

@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 
 public class AtomfeedEventConfigurationServiceImplTest {
 
+	public static final String ADDRESS_UUID = "cd6c9ae2-f689-46f1-abff-7feab13c270E";
+
 	@Spy
 	private AtomfeedEventConfigurationMapperImpl eventConfigurationMapper;
 
@@ -33,14 +35,16 @@ public class AtomfeedEventConfigurationServiceImplTest {
 		MockitoAnnotations.initMocks(this);
 
 		FeedConfiguration feedConfiguration = new FeedConfiguration();
-		feedConfiguration.setLinkTemplates(createLinkTemplates());
+		feedConfiguration.setLinkTemplates(createPatientLinkTemplates());
 		Mockito.when(feedConfigurationService.getFeedConfigurationByCategory(CategoryEnum.PATIENT.getCategory()))
 				.thenReturn(feedConfiguration);
+
+
 	}
 
 	@Test
-	public void test() {
-		EventConfiguration expected = new EventConfiguration(createLinkTemplates());
+	public void getEventConfigurationByCategory_shouldReturnCorrectConfiguration() {
+		EventConfiguration expected = new EventConfiguration(createPatientLinkTemplates());
 		EventConfiguration actual = atomFeedEventConfigurationService.getEventConfigurationByCategory(
 				new SyncCategory(CategoryEnum.PATIENT.getCategory(), CategoryEnum.PATIENT.getClazz()));
 
@@ -49,7 +53,58 @@ public class AtomfeedEventConfigurationServiceImplTest {
 
 	}
 
-	private LinkedHashMap<String, String> createLinkTemplates() {
+	@Test
+	public void extractUuidFromResourceLinks_shouldExtractUuidBasedOnLinkTemplate() {
+		String category = CategoryEnum.PERSON_ADDRESS.getCategory();
+		Mockito.when(feedConfigurationService.getFeedConfigurationByCategory(category))
+				.thenReturn(createPersonAddressFeedConfiguration(true));
+
+		String uuid = atomFeedEventConfigurationService.extractUuidFromResourceLinks(
+				createResourceLinks(true), category);
+
+		Assert.assertNotNull(uuid);
+		Assert.assertEquals(ADDRESS_UUID, uuid);
+	}
+
+	@Test
+	public void extractUuidFromResourceLinks_shouldExtractUuidBasedOnResourceLink() {
+		String category = CategoryEnum.PERSON_ADDRESS.getCategory();
+		Mockito.when(feedConfigurationService.getFeedConfigurationByCategory(category))
+				.thenReturn(createPersonAddressFeedConfiguration(false));
+
+		String uuid = atomFeedEventConfigurationService.extractUuidFromResourceLinks(
+				createResourceLinks(false), category);
+
+		Assert.assertNotNull(uuid);
+		Assert.assertEquals(ADDRESS_UUID, uuid);
+	}
+
+	private LinkedHashMap<String, String> createResourceLinks(boolean includeRestTemplate) {
+		LinkedHashMap<String, String> linkTemplate = new LinkedHashMap<>();
+		if (includeRestTemplate) {
+			linkTemplate.put("rest", "/ws/rest/v1/person/testParentUuid/address/" + ADDRESS_UUID + "?v=full");
+		}
+		linkTemplate.put("other", "/ws/other/cd6c9Ae2-f689-46f1-abff-7feab13C2701/address/sasd/" +
+				ADDRESS_UUID + "/dsa?dsad/sa");
+		return linkTemplate;
+	}
+
+	private FeedConfiguration createPersonAddressFeedConfiguration(boolean includeRestTemplate) {
+		FeedConfiguration feedConfiguration = new FeedConfiguration();
+		feedConfiguration.setLinkTemplates(createPersonAddressLinkTemplates(includeRestTemplate));
+		return feedConfiguration;
+	}
+
+	private LinkedHashMap<String, String> createPersonAddressLinkTemplates(boolean includeRestTemplate) {
+		LinkedHashMap<String, String> linkTemplate = new LinkedHashMap<>();
+		if (includeRestTemplate) {
+			linkTemplate.put("rest", "/ws/rest/v1/person/{parent-uuid}/address/{uuid}?v=full");
+		}
+		linkTemplate.put("other", "/ws/other/address/sasd/uuid/dsa?dsad/sa");
+		return linkTemplate;
+	}
+
+	private LinkedHashMap<String, String> createPatientLinkTemplates() {
 		LinkedHashMap<String, String> linkTemplate = new LinkedHashMap<>();
 		linkTemplate.put("rest", "/ws/rest/v1/patient/{uuid}?v=full");
 		linkTemplate.put("fhir", "/ws/fhir/Patient/{uuid}");

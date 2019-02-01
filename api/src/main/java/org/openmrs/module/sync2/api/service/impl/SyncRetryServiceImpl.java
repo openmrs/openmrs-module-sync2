@@ -48,7 +48,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     }
 
     private AuditMessage retryPush(AuditMessage message) {
-        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap());
+        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap(), message.getResourceName());
 
         AuditMessage newMessage =
                 syncPushService.readAndPushObjectToParent(
@@ -64,7 +64,7 @@ public class SyncRetryServiceImpl implements SyncRetryService {
     }
 
     private AuditMessage retryPull(AuditMessage message) {
-        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap());
+        String uuid = extractUUIDFromResourceLinks(message.getAvailableResourceUrlsAsMap(), message.getResourceName());
 
         AuditMessage newMessage =
                 syncPullService.pullAndSaveObjectFromParent(
