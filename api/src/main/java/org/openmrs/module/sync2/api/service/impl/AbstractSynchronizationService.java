@@ -44,6 +44,8 @@ import static org.openmrs.module.sync2.api.utils.SyncUtils.prettySerialize;
 
 public abstract class AbstractSynchronizationService {
 
+    private static final String VOIDED_KEY = "voided";
+
     protected SyncClient syncClient = new SyncClient();
 
     @Autowired
@@ -126,7 +128,8 @@ public abstract class AbstractSynchronizationService {
     }
 
     protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject, String action) {
-        if (isWrongUpdateOrDeleteAction(newObject, action) || isWrongCreateAction(oldObject, newObject, action)) {
+        if (isWrongUpdateOrDeleteAction(newObject, action) || isWrongCreateAction(oldObject, newObject, action) ||
+            isUpdateOnVoidedObject(oldObject, action)) {
             return false;
         }
         return oldObject == null || newObject == null || areDifferentObjects(oldObject, newObject);
@@ -138,6 +141,11 @@ public abstract class AbstractSynchronizationService {
 
     private boolean isWrongUpdateOrDeleteAction(SimpleObject newObject, String action) {
         return newObject == null && (SyncUtils.isDeleteAction(action) || SyncUtils.isUpdateAction(action));
+    }
+
+    private boolean isUpdateOnVoidedObject(SimpleObject object, String action) {
+        return SyncUtils.isUpdateAction(action) && object != null &&
+                object.containsKey(VOIDED_KEY) && (boolean) object.get(VOIDED_KEY);
     }
 
     private boolean areDifferentObjects(SimpleObject oldObject, SimpleObject newObject) {

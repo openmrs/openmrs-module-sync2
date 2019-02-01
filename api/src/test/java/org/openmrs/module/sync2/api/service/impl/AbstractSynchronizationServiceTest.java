@@ -19,6 +19,8 @@ public class AbstractSynchronizationServiceTest {
 
 	private static final String TEST_VALUE_2 = "test value2";
 
+	public static final String VOIDED_KEY = "voided";
+
 	private AbstractSynchronizationService abstractSynchronizationService;
 
 	@Before
@@ -124,6 +126,15 @@ public class AbstractSynchronizationServiceTest {
 		SimpleObject newObject = null;
 		Assert.assertTrue(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
 				SyncConstants.ACTION_CREATED));
+	}
+
+	@Test
+	public void shouldSynchronize_shouldReturnTrueIfUpdateOnVoidedOldObject() {
+		SimpleObject oldObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE);
+		oldObject.put(VOIDED_KEY, true);
+		SimpleObject newObject = SimpleObjectMother.createInstance(TEST_UUID, TEST_VALUE_2);
+		Assert.assertFalse(abstractSynchronizationService.shouldSynchronize(oldObject, newObject,
+				SyncConstants.ACTION_UPDATED));
 	}
 
 	private Patient createPatientInstance(boolean voided) {
