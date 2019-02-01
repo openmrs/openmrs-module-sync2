@@ -62,6 +62,7 @@
         var foreignObj = jsonToDotNotation(foreignObjJson, null, {});
 
         compareObj(localObj, foreignObj, "objectMergeTable");
+        compareObj(foreignObj, localObj, "objectMergeTable");
 
         var form = document.getElementById('objectMergeForm');
         form.addEventListener("submit", function(e) {

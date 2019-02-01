@@ -53,8 +53,11 @@ function jsonToDotNotation(obj, current, dotNotatedObj) {
 
 function compareObj(localObj, foreignObj, objectMergeTableId) {
     for(var i in foreignObj) {
-        if(typeof foreignObj[i] === 'object') {
-            compareObj (localObj[i], foreignObj[i]);
+        if (containsStopWord(i)) {
+            continue;
+        }
+        if (typeof foreignObj[i] === 'object') {
+            compareObj (localObj[i], foreignObj[i], objectMergeTableId);
         } else {
             if(foreignObj[i] !== localObj[i]) {
                 appendFieldValueChoice(i, localObj[i], foreignObj[i], objectMergeTableId);
@@ -63,7 +66,22 @@ function compareObj(localObj, foreignObj, objectMergeTableId) {
     }
 };
 
+function containsStopWord(key) {
+    var STOP_WORDS = ["links", "auditInfo"];
+    for(var wordIndex in STOP_WORDS) {
+        if (key.includes(STOP_WORDS[wordIndex])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function appendFieldValueChoice(key, value1, value2, objectMergeTableId) {
+    var element =  document.getElementById(key);
+    if (typeof(element) != 'undefined' && element != null)
+    {
+      return;
+    }
     var fieldChoice =
         `<tr>
             <td>
