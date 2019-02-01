@@ -54,7 +54,7 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 			return new ResponseEntity<>(res.getBody(), res.getStatusCode());
 		}
 		catch (HttpClientErrorException e) {
-			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+			return new ResponseEntity<>(e.getMessage() + " : " + e.getResponseBodyAsString(), e.getStatusCode());
 		}
 		catch (ClassNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
