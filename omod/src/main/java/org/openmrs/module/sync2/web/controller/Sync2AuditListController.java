@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.web.controller;
 
 import org.openmrs.module.sync2.SyncMessageUtils;
+import org.openmrs.module.sync2.api.model.enums.Resources;
 import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
@@ -22,6 +23,8 @@ public class Sync2AuditListController {
 
 	private static final String CREATOR_IDS = "creatorIds";
 
+	private static final String RESOURCES_INFO = "resourcesInfo";
+
 	@RequestMapping(value = "/auditList")
 	public String get(ModelMap model,
 			@RequestParam(value = SyncMessageUtils.SUCCESS_MESSAGE, required = false) boolean success,
@@ -33,6 +36,7 @@ public class Sync2AuditListController {
 		model.addAttribute(LOCAL_INSTANCE_ID, SyncUtils.getLocalInstanceId());
 		model.addAttribute(SyncMessageUtils.SUCCESS_MESSAGE, success);
 		model.addAttribute(SyncMessageUtils.ALERT_MESSAGE_MODEL, alertMessage);
+		model.addAttribute(RESOURCES_INFO, Resources.values());
 
 		model.addAttribute("pageIndex", backPageIndex == null ? 1: backPageIndex);
 		return "/module/sync2/sync2AuditList";

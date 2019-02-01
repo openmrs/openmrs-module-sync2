@@ -9,6 +9,7 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
+import org.openmrs.PersonAddress;
 import org.openmrs.Privilege;
 import org.openmrs.Program;
 import org.openmrs.Provider;
@@ -17,31 +18,32 @@ import org.openmrs.TestOrder;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.module.fhir.api.util.FHIRConstants;
+import org.openmrs.module.sync2.SyncCategoryConstants;
 import org.openmrs.module.sync2.api.model.audit.AuditMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public enum CategoryEnum {
-	LOCATION(FHIRConstants.CATEGORY_LOCATION, Location.class),
-	OBSERVATION(FHIRConstants.CATEGORY_OBSERVATION, Obs.class),
-	ENCOUNTER(FHIRConstants.CATEGORY_ENCOUNTER, Encounter.class),
-	VISIT(FHIRConstants.CATEGORY_VISIT, Visit.class),
-	PROVIDER(FHIRConstants.CATEGORY_PROVIDER, Provider.class),
-	DRUG_ORDER(FHIRConstants.CATEGORY_DRUG_ORDER, DrugOrder.class),
-	TEST_ORDER(FHIRConstants.CATEGORY_TEST_ORDER, TestOrder.class),
-	FORM("form", Form.class),
-	PATIENT_PROGRAM("patient_program", PatientProgram.class),
-	PERSON(FHIRConstants.CATEGORY_PERSON, Person.class),
-	PATIENT(FHIRConstants.CATEGORY_PATIENT, Patient.class),
-	RELATIONSHIP("relationship", Relationship.class),
-	COHORT(FHIRConstants.CATEGORY_COHORT, Cohort.class),
-	VISIT_TYPE("visit_type", VisitType.class),
-	USER("user", User.class),
-	PROGRAM("program", Program.class),
-	PRIVILEGE("privilege", Privilege.class),
-	AUDIT_MESSAGE("audit_message", AuditMessage.class);
+	LOCATION(SyncCategoryConstants.CATEGORY_LOCATION, Location.class),
+	OBSERVATION(SyncCategoryConstants.CATEGORY_OBSERVATION, Obs.class),
+	ENCOUNTER(SyncCategoryConstants.CATEGORY_ENCOUNTER, Encounter.class),
+	VISIT(SyncCategoryConstants.CATEGORY_VISIT, Visit.class),
+	PROVIDER(SyncCategoryConstants.CATEGORY_PROVIDER, Provider.class),
+	DRUG_ORDER(SyncCategoryConstants.CATEGORY_DRUG_ORDER, DrugOrder.class),
+	TEST_ORDER(SyncCategoryConstants.CATEGORY_TEST_ORDER, TestOrder.class),
+	FORM(SyncCategoryConstants.CATEGORY_FORM, Form.class),
+	PATIENT_PROGRAM(SyncCategoryConstants.CATEGORY_PATIENT_PROGRAM, PatientProgram.class),
+	PERSON(SyncCategoryConstants.CATEGORY_PERSON, Person.class),
+	PATIENT(SyncCategoryConstants.CATEGORY_PATIENT, Patient.class),
+	RELATIONSHIP(SyncCategoryConstants.CATEGORY_RELATIONSHIP, Relationship.class),
+	COHORT(SyncCategoryConstants.CATEGORY_COHORT, Cohort.class),
+	VISIT_TYPE(SyncCategoryConstants.CATEGORY_VISIT_TYPE, VisitType.class),
+	USER(SyncCategoryConstants.CATEGORY_USER, User.class),
+	PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, Program.class),
+	PRIVILEGE(SyncCategoryConstants.CATEGORY_PRIVILEGE, Privilege.class),
+	AUDIT_MESSAGE(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE, AuditMessage.class),
+	PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, PersonAddress.class);
 
 	private static final Map<String, CategoryEnum> MAP;
 
@@ -82,9 +84,15 @@ public enum CategoryEnum {
 		MAP.put(PROGRAM.getCategory(), PROGRAM);
 		MAP.put(PRIVILEGE.getCategory(), PRIVILEGE);
 		MAP.put(AUDIT_MESSAGE.getCategory(), AUDIT_MESSAGE);
+		MAP.put(PERSON_ADDRESS.getCategory(), PERSON_ADDRESS);
 	}
 
 	public static CategoryEnum getByCategory(String category) {
 		return MAP.get(category);
+	}
+
+	private static class Constants {
+
+
 	}
 }

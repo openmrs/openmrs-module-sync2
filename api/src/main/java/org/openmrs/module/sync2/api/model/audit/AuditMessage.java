@@ -1,9 +1,5 @@
 package org.openmrs.module.sync2.api.model.audit;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
-
 import org.hibernate.annotations.Persister;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.openmrs.BaseOpenmrsData;
@@ -11,8 +7,13 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.rest.resource.RestResource;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
+import java.util.Objects;
+
 @Persister(impl = SingleTableEntityPersister.class)
-public class AuditMessage extends BaseOpenmrsData implements RestResource {
+public class AuditMessage extends BaseOpenmrsData implements RestResource, Serializable {
 
     private static final long serialVersionUID = 6106269076155338045L;
 
