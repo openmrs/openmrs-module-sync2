@@ -17,10 +17,82 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Concept",
+        "category" : "concept",
+        "openMrsClass" : "org.openmrs.Concept",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Cohort",
+        "category" : "cohort",
+        "openMrsClass" : "org.openmrs.Cohort",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Visit Type",
+        "category" : "visittype",
+        "openMrsClass" : "org.openmrs.VisitType",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Person",
+        "category" : "person",
+        "openMrsClass" : "org.openmrs.Person",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Provider",
+        "category" : "provider",
+        "openMrsClass" : "org.openmrs.Provider",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "User",
+        "category" : "user",
+        "openMrsClass" : "org.openmrs.User",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Patient",
+        "category" : "patient",
+        "openMrsClass" : "org.openmrs.Patient",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "PersonAddress",
+        "category" : "person_address",
+        "openMrsClass" : "org.openmrs.PersonAddress",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Relationship",
+        "category" : "relationship",
+        "openMrsClass" : "org.openmrs.Relationship",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Drug",
+        "category" : "drug",
+        "openMrsClass" : "org.openmrs.Drug",
+        "enabled" : false
+      },
+      {
         "classTitle" : "Allergy",
         "category" : "allergy",
         "openMrsClass" : "org.openmrs.Allergy",
         "enabled" : true
+      },
+      {
+        "classTitle" : "Form",
+        "category" : "form",
+        "openMrsClass" : "org.openmrs.Form",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Order",
+        "category" : "order",
+        "openMrsClass" : "org.openmrs.Order",
+        "enabled" : false
       },
       {
         "classTitle" : "Observation",
@@ -41,81 +113,15 @@
         "enabled" : false
       },
       {
-        "classTitle" : "Provider",
-        "category" : "provider",
-        "openMrsClass" : "org.openmrs.Provider",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Drug",
-        "category" : "drug",
-        "openMrsClass" : "org.openmrs.Drug",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Form",
-        "category" : "form",
-        "openMrsClass" : "org.openmrs.Form",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Order",
-        "category" : "order",
-        "openMrsClass" : "org.openmrs.Order",
+        "classTitle" : "Program",
+        "category" : "program",
+        "openMrsClass": "org.openmrs.Program",
         "enabled" : false
       },
       {
         "classTitle" : "Program Enrollment",
         "category" : "programenrollment",
         "openMrsClass" : "org.openmrs.PatientProgram",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Person",
-        "category" : "person",
-        "openMrsClass" : "org.openmrs.Person",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Patient",
-        "category" : "patient",
-        "openMrsClass" : "org.openmrs.Patient",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Relationship",
-        "category" : "relationship",
-        "openMrsClass" : "org.openmrs.Relationship",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Cohort",
-        "category" : "cohort",
-        "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Visit Type",
-        "category" : "visittype",
-        "openMrsClass" : "org.openmrs.VisitType",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Concept",
-        "category" : "concept",
-        "openMrsClass" : "org.openmrs.Concept",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "User",
-        "category" : "user",
-        "openMrsClass" : "org.openmrs.User",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Program",
-        "category" : "program",
-        "openMrsClass": "org.openmrs.Program",
         "enabled" : false
       },
       {
@@ -143,10 +149,82 @@
         "enabled" : true
       },
       {
+        "classTitle" : "Concept",
+        "category" : "concept",
+        "openMrsClass" : "org.openmrs.Concept",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Cohort",
+        "category" : "cohort",
+        "openMrsClass" : "org.openmrs.Cohort",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Visit Type",
+        "category" : "visittype",
+        "openMrsClass" : "org.openmrs.VisitType",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Person",
+        "category" : "person",
+        "openMrsClass" : "org.openmrs.Person",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Provider",
+        "category" : "provider",
+        "openMrsClass" : "org.openmrs.Provider",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "User",
+        "category" : "user",
+        "openMrsClass" : "org.openmrs.User",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Patient",
+        "category" : "patient",
+        "openMrsClass" : "org.openmrs.Patient",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "PersonAddress",
+        "category" : "person_address",
+        "openMrsClass" : "org.openmrs.PersonAddress",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Relationship",
+        "category" : "relationship",
+        "openMrsClass" : "org.openmrs.Relationship",
+        "enabled" : false
+      },
+      {
+        "classTitle" : "Drug",
+        "category" : "drug",
+        "openMrsClass" : "org.openmrs.Drug",
+        "enabled" : false
+      },
+      {
         "classTitle" : "Allergy",
         "category" : "allergy",
         "openMrsClass" : "org.openmrs.Allergy",
         "enabled" : true
+      },
+      {
+        "classTitle" : "Form",
+        "category" : "form",
+        "openMrsClass" : "org.openmrs.Form",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "Order",
+        "category" : "order",
+        "openMrsClass" : "org.openmrs.Order",
+        "enabled" : false
       },
       {
         "classTitle" : "Observation",
@@ -167,93 +245,15 @@
         "enabled" : false
       },
       {
-        "classTitle" : "Provider",
-        "category" : "provider",
-        "openMrsClass" : "org.openmrs.Provider",
+        "classTitle" : "Program",
+        "category" : "program",
+        "openMrsClass": "org.openmrs.Program",
         "enabled" : false
-      },
-      {
-        "classTitle" : "Drug",
-        "category" : "drug",
-        "openMrsClass" : "org.openmrs.Drug",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Form",
-        "category" : "form",
-        "openMrsClass" : "org.openmrs.Form",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Order",
-        "category" : "order",
-        "openMrsClass" : "org.openmrs.Order",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "DrugOrder",
-        "category" : "drug_order",
-        "openMrsClass" : "org.openmrs.DrugOrder",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "TestOrder",
-        "category" : "test_order",
-        "openMrsClass" : "org.openmrs.TestOrder",
-        "enabled" : true
       },
       {
         "classTitle" : "Program Enrollment",
         "category" : "programenrollment",
         "openMrsClass" : "org.openmrs.PatientProgram",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Person",
-        "category" : "person",
-        "openMrsClass" : "org.openmrs.Person",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Patient",
-        "category" : "patient",
-        "openMrsClass" : "org.openmrs.Patient",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Relationship",
-        "category" : "relationship",
-        "openMrsClass" : "org.openmrs.Relationship",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Cohort",
-        "category" : "cohort",
-        "openMrsClass" : "org.openmrs.Cohort",
-        "enabled" : true
-      },
-      {
-        "classTitle" : "Visit Type",
-        "category" : "visittype",
-        "openMrsClass" : "org.openmrs.VisitType",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Concept",
-        "category" : "concept",
-        "openMrsClass" : "org.openmrs.Concept",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "User",
-        "category" : "user",
-        "openMrsClass" : "org.openmrs.User",
-        "enabled" : false
-      },
-      {
-        "classTitle" : "Program",
-        "category" : "program",
-        "openMrsClass": "org.openmrs.Program",
         "enabled" : false
       },
       {
