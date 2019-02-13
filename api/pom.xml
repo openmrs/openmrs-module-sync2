@@ -32,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>atomfeed-api</artifactId>
+			<artifactId>atomfeed-omod</artifactId>
 			<scope>provided</scope>
 			<version>${atomfeedVersion}</version>
 		</dependency>
