@@ -11,7 +11,7 @@ Install latest Docker.
 
 To create or update a sync server (parent or child) run:
 ```bash
-mvn openmrs-sdk:build-distro -Ddir=docker
+mvn openmrs-sdk:build-distro -Ddistro=openmrs-distro.properties -Ddir=docker
 cd docker
 docker-compose up --build
 ```
@@ -19,6 +19,13 @@ The `--build` flag forces to rebuild a docker image, if you are updating the ser
 
 You can adjust ports in the .env file.
 If you want to remote debug add `DEBUG=True` in the .env file.
+
+If you want to use legacy OpenMRS (OpenMRS version 1.11.7) you can use "openmrs-legacy-distro.properties" as below
+```bash
+mvn openmrs-sdk:build-distro -Ddistro=openmrs-legacy-distro.properties -Ddir=docker
+cd docker
+docker-compose up --build
+```
 
 Test servers
 ------------
