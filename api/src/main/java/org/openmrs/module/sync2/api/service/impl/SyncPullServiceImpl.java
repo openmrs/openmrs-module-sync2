@@ -138,7 +138,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
     public AuditMessage pullAndSaveObjectFromParent(SyncCategory category, Map<String, String> resourceLinks,
                                                   String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
-        String uuid = extractUUIDFromResourceLinks(resourceLinks, category.getCategory());
+        String uuid = extractUUIDFromResourceLinks(resourceLinks, category.getCategory(), clientName);
         return pullAndSaveObjectFromParent(category, resourceLinks, action, clientName, uuid);
     }
 

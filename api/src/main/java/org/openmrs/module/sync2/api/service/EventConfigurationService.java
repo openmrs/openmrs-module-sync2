@@ -9,5 +9,5 @@ public interface EventConfigurationService {
 
 	EventConfiguration getEventConfigurationByCategory(SyncCategory categoryEnum);
 
-	String extractUuidFromResourceLinks(Map<String, String> eventResourceLinks, String eventCategory);
+	String extractUuidFromResourceLinks(Map<String, String> eventResourceLinks, String eventCategory, String preferredClient);
 }

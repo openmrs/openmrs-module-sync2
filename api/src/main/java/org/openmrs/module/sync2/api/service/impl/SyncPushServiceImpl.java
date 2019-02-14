@@ -159,7 +159,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
     public AuditMessage readAndPushObjectToParent(SyncCategory category, Map<String, String> resourceLinks,
             String action) {
         String clientName = SyncUtils.selectAppropriateClientName(resourceLinks, category.getCategory(), getOperation());
-        String uuid = extractUUIDFromResourceLinks(resourceLinks, category.getCategory());
+        String uuid = extractUUIDFromResourceLinks(resourceLinks, category.getCategory(), clientName);
         return readAndPushObjectToParent(category, resourceLinks, action, clientName, uuid);
     }
 

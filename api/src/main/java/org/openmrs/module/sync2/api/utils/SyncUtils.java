@@ -232,9 +232,10 @@ public class SyncUtils {
 				SyncConstants.DEFAULT_SYNC_2_CLIENT);
 	}
 
-	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks, String category) {
+	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks, String category,
+			String preferredClient) {
 		EventConfigurationService eventConfigurationService = ContextUtils.getEventConfigurationService();
-		String uuid = eventConfigurationService.extractUuidFromResourceLinks(resourceLinks, category);
+		String uuid = eventConfigurationService.extractUuidFromResourceLinks(resourceLinks, category, preferredClient);
 
 		if (StringUtils.isBlank(uuid)) {
 			LOGGER.error("Couldn't find any supported client to extract uuid from.");

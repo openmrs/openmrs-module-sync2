@@ -39,19 +39,30 @@ public class AtomfeedEventConfigurationServiceImpl implements EventConfiguration
 	}
 
 	@Override
-	public String extractUuidFromResourceLinks(Map<String, String> eventResourceLinks, String eventCategory) {
-		String uuid;
-		uuid = extractBasedOnLinkTemplates(eventResourceLinks, eventCategory);
+	public String extractUuidFromResourceLinks(Map<String, String> eventResourceLinks, String eventCategory,
+			String preferredClient) {
+		String uuid = extractBasedOnLinkTemplates(eventResourceLinks, eventCategory, preferredClient);
 		if (StringUtils.isBlank(uuid)) {
-			uuid = extractBasedOnResourceLinks(eventResourceLinks);
+			uuid = extractBasedOnResourceLinks(eventResourceLinks, preferredClient);
 		}
 		return uuid;
 	}
 
-	private String extractBasedOnLinkTemplates(Map<String, String> eventResourceLinks, String eventCategory) {
+	private String extractBasedOnLinkTemplates(Map<String, String> eventResourceLinks, String eventCategory,
+			String preferredClient) {
 		String uuid = null;
 		Map<String, String> linkTemplates = feedConfigurationService.getFeedConfigurationByCategory(eventCategory)
 				.getLinkTemplates();
+		if (eventResourceLinks.containsKey(preferredClient)) {
+			uuid = extractUuidBasedOnTemplate(eventResourceLinks.get(preferredClient), linkTemplates.get(preferredClient));
+		} else {
+			uuid = extractFromFirstMatchingTemplates(eventResourceLinks, linkTemplates);
+		}
+		return uuid;
+	}
+
+	private String extractFromFirstMatchingTemplates(Map<String, String> eventResourceLinks, Map<String, String> linkTemplates) {
+		String uuid = null;
 		for (String clientTemplate : linkTemplates.keySet()) {
 			if (eventResourceLinks.containsKey(clientTemplate)) {
 				uuid = extractUuidBasedOnTemplate(eventResourceLinks.get(clientTemplate), linkTemplates.get(clientTemplate));
@@ -69,7 +80,7 @@ public class AtomfeedEventConfigurationServiceImpl implements EventConfiguration
 
 		String[] resourceLinkSplits = StringUtils.split(resourceLink, "/");
 		String uuid = null;
-		if (resourceLinkSplits.length == linkTemplateSplits.length) {
+		if (resourceLinkSplits.length == linkTemplateSplits.length && positionOfObjectUuid < resourceLinkSplits.length) {
 			uuid = resourceLinkSplits[positionOfObjectUuid];
 			uuid = getOnlyUuidValue(uuid, linkTemplateSplits[positionOfObjectUuid]);
 		}
@@ -94,14 +105,33 @@ public class AtomfeedEventConfigurationServiceImpl implements EventConfiguration
 		return result;
 	}
 
-	private String extractBasedOnResourceLinks(Map<String, String> eventResourceLinks) {
+	private String extractBasedOnResourceLinks(Map<String, String> eventResourceLinks, String preferredClient) {
+		String uuid = null;
+		if (eventResourceLinks.containsKey(preferredClient)) {
+			uuid = extractUsingPattern(eventResourceLinks.get(preferredClient));
+		} else {
+			uuid = extractFirstMatchingFromLinks(eventResourceLinks);
+		}
+		return uuid;
+	}
+
+	private String extractFirstMatchingFromLinks(Map<String, String> eventResourceLinks) {
 		String uuid = null;
 		for (String link : eventResourceLinks.values()) {
-			Pattern pattern = Pattern.compile(UUID_PATTERN, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(link);
-			while (matcher.find()) {
-				uuid = matcher.group();
+			uuid = extractUsingPattern(link);
+			if (StringUtils.isNotBlank(uuid)) {
+				break;
 			}
+		}
+		return uuid;
+	}
+
+	private String extractUsingPattern(String link) {
+		String uuid = null;
+		Pattern pattern = Pattern.compile(UUID_PATTERN, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(link);
+		while (matcher.find()) {
+			uuid = matcher.group();
 		}
 		return uuid;
 	}
