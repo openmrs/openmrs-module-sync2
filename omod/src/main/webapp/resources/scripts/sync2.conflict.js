@@ -67,7 +67,7 @@ function compareObj(localObj, foreignObj, objectMergeTableId) {
 };
 
 function containsStopWord(key) {
-    var STOP_WORDS = ["links", "auditInfo"];
+    var STOP_WORDS = ["links"];
     for(var wordIndex in STOP_WORDS) {
         if (key.includes(STOP_WORDS[wordIndex])) {
             return true;
