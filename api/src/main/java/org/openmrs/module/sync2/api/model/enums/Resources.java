@@ -25,7 +25,8 @@ public enum Resources {
     VISIT_TYPE(SyncCategoryConstants.CATEGORY_VISIT_TYPE, SyncCategoryConstants.VISIT_TYPE_LABEL),
     USER(SyncCategoryConstants.CATEGORY_USER, SyncCategoryConstants.USER_LABEL),
     PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, SyncCategoryConstants.PROGRAM_LABEL),
-    PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, SyncCategoryConstants.PERSON_NAME_LABEL);
+    PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, SyncCategoryConstants.PERSON_NAME_LABEL),
+    PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, SyncCategoryConstants.PATIENT_IDENTIFIER_LABEL);
 
     private final String name;
 

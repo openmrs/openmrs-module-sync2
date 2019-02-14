@@ -90,5 +90,9 @@ public class SyncCategoryConstants {
 
     public static final String PERSON_NAME_LABEL = "sync2.log.resource.person_name";
 
+    public static final String CATEGORY_PATIENT_IDENTIFIER = "patient_identifier";
+
+    public static final String PATIENT_IDENTIFIER_LABEL = "sync2.log.resource.patient_identifier";
+
     private SyncCategoryConstants() {}
 }

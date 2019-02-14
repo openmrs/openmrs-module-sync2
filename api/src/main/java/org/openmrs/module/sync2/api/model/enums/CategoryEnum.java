@@ -7,6 +7,7 @@ import org.openmrs.Form;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
@@ -45,7 +46,8 @@ public enum CategoryEnum {
 	PRIVILEGE(SyncCategoryConstants.CATEGORY_PRIVILEGE, Privilege.class),
 	AUDIT_MESSAGE(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE, AuditMessage.class),
 	PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, PersonAddress.class),
-	PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, PersonName.class);
+	PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, PersonName.class),
+	PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, PatientIdentifier.class);
 
 	private static final Map<String, CategoryEnum> MAP;
 
@@ -68,26 +70,9 @@ public enum CategoryEnum {
 
 	static {
 		MAP = new HashMap<>();
-		MAP.put(LOCATION.getCategory(), LOCATION);
-		MAP.put(OBSERVATION.getCategory(), OBSERVATION);
-		MAP.put(ENCOUNTER.getCategory(), ENCOUNTER);
-		MAP.put(VISIT.getCategory(), VISIT);
-		MAP.put(PROVIDER.getCategory(), PROVIDER);
-		MAP.put(DRUG_ORDER.getCategory(), DRUG_ORDER);
-		MAP.put(TEST_ORDER.getCategory(), TEST_ORDER);
-		MAP.put(FORM.getCategory(), FORM);
-		MAP.put(PATIENT_PROGRAM.getCategory(), PATIENT_PROGRAM);
-		MAP.put(PERSON.getCategory(), PERSON);
-		MAP.put(PATIENT.getCategory(), PATIENT);
-		MAP.put(RELATIONSHIP.getCategory(), RELATIONSHIP);
-		MAP.put(COHORT.getCategory(), COHORT);
-		MAP.put(VISIT_TYPE.getCategory(), VISIT_TYPE);
-		MAP.put(USER.getCategory(), USER);
-		MAP.put(PROGRAM.getCategory(), PROGRAM);
-		MAP.put(PRIVILEGE.getCategory(), PRIVILEGE);
-		MAP.put(AUDIT_MESSAGE.getCategory(), AUDIT_MESSAGE);
-		MAP.put(PERSON_ADDRESS.getCategory(), PERSON_ADDRESS);
-		MAP.put(PERSON_NAME.getCategory(), PERSON_NAME);
+		for (CategoryEnum category : CategoryEnum.values()) {
+			MAP.put(category.getCategory(), category);
+		}
 	}
 
 	public static CategoryEnum getByCategory(String category) {
