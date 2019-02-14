@@ -24,7 +24,8 @@ public enum Resources {
     RELATIONSHIP(SyncCategoryConstants.CATEGORY_RELATIONSHIP, SyncCategoryConstants.RELATIONSHIP_LABEL),
     VISIT_TYPE(SyncCategoryConstants.CATEGORY_VISIT_TYPE, SyncCategoryConstants.VISIT_TYPE_LABEL),
     USER(SyncCategoryConstants.CATEGORY_USER, SyncCategoryConstants.USER_LABEL),
-    PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, SyncCategoryConstants.PROGRAM_LABEL);
+    PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, SyncCategoryConstants.PROGRAM_LABEL),
+    PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, SyncCategoryConstants.PERSON_NAME_LABEL);
 
     private final String name;
 

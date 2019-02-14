@@ -86,5 +86,9 @@ public class SyncCategoryConstants {
 
     public static final String PROGRAM_LABEL = "sync2.log.resource.program";
 
+    public static final String CATEGORY_PERSON_NAME = "person_name";
+
+    public static final String PERSON_NAME_LABEL = "sync2.log.resource.person_name";
+
     private SyncCategoryConstants() {}
 }

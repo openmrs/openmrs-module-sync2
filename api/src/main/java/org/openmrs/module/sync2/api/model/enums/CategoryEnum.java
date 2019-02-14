@@ -10,6 +10,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonName;
 import org.openmrs.Privilege;
 import org.openmrs.Program;
 import org.openmrs.Provider;
@@ -43,7 +44,8 @@ public enum CategoryEnum {
 	PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, Program.class),
 	PRIVILEGE(SyncCategoryConstants.CATEGORY_PRIVILEGE, Privilege.class),
 	AUDIT_MESSAGE(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE, AuditMessage.class),
-	PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, PersonAddress.class);
+	PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, PersonAddress.class),
+	PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, PersonName.class);
 
 	private static final Map<String, CategoryEnum> MAP;
 
@@ -85,6 +87,7 @@ public enum CategoryEnum {
 		MAP.put(PRIVILEGE.getCategory(), PRIVILEGE);
 		MAP.put(AUDIT_MESSAGE.getCategory(), AUDIT_MESSAGE);
 		MAP.put(PERSON_ADDRESS.getCategory(), PERSON_ADDRESS);
+		MAP.put(PERSON_NAME.getCategory(), PERSON_NAME);
 	}
 
 	public static CategoryEnum getByCategory(String category) {
