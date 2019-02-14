@@ -65,6 +65,18 @@
         "enabled" : true
       },
       {
+        "classTitle" : "PersonName",
+        "category" : "person_name",
+        "openMrsClass" : "org.openmrs.PersonName",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "PatientIdentifier",
+        "category" : "patient_identifier",
+        "openMrsClass" : "org.openmrs.PatientIdentifier",
+        "enabled" : true
+      },
+      {
         "classTitle" : "Relationship",
         "category" : "relationship",
         "openMrsClass" : "org.openmrs.Relationship",
@@ -194,6 +206,18 @@
         "classTitle" : "PersonAddress",
         "category" : "person_address",
         "openMrsClass" : "org.openmrs.PersonAddress",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "PersonName",
+        "category" : "person_name",
+        "openMrsClass" : "org.openmrs.PersonName",
+        "enabled" : true
+      },
+      {
+        "classTitle" : "PatientIdentifier",
+        "category" : "patient_identifier",
+        "openMrsClass" : "org.openmrs.PatientIdentifier",
         "enabled" : true
       },
       {
