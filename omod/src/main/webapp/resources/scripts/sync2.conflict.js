@@ -32,6 +32,7 @@ function changeValueOfJsonKey(obj, current, pathKey, pathValue) {
         } else {
             if(newKey == pathKey) {
                 obj[key] = pathValue;
+                break;
             }
         }
     }
@@ -52,22 +53,42 @@ function jsonToDotNotation(obj, current, dotNotatedObj) {
 }
 
 function compareObj(localObj, foreignObj, objectMergeTableId) {
+    compareObjectForeign(localObj, foreignObj, objectMergeTableId);
+    compareObjectLocal(localObj, foreignObj, objectMergeTableId);
+};
+
+function compareObjectForeign(localObj, foreignObj, objectMergeTableId) {
     for(var i in foreignObj) {
         if (containsStopWord(i)) {
             continue;
         }
         if (typeof foreignObj[i] === 'object') {
-            compareObj (localObj[i], foreignObj[i], objectMergeTableId);
+            compareObjectForeign(localObj[i], foreignObj[i], objectMergeTableId);
         } else {
             if(foreignObj[i] !== localObj[i]) {
                 appendFieldValueChoice(i, localObj[i], foreignObj[i], objectMergeTableId);
             }
         }
     }
-};
+}
+
+function compareObjectLocal(localObj, foreignObj, objectMergeTableId) {
+    for(var i in localObj) {
+        if (containsStopWord(i)) {
+            continue;
+        }
+        if (typeof localObj[i] === 'object') {
+            compareObjectLocal(localObj[i], foreignObj[i], objectMergeTableId);
+        } else {
+            if(foreignObj[i] !== localObj[i]) {
+                appendFieldValueChoice(i, localObj[i], foreignObj[i], objectMergeTableId);
+            }
+        }
+    }
+}
 
 function containsStopWord(key) {
-    var STOP_WORDS = ["links"];
+    var STOP_WORDS = ["links", "display"];
     for(var wordIndex in STOP_WORDS) {
         if (key.includes(STOP_WORDS[wordIndex])) {
             return true;
