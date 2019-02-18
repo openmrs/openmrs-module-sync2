@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static org.openmrs.module.sync2.SyncConstants.LOCAL_PASSWORD_PROPERTY;
@@ -52,8 +53,7 @@ public class SyncRequestWrapperServiceImpl implements SyncRequestWrapperService 
 			ResponseEntity<String> res = exchange(restTemplate, helper, req, String.class);
 
 			return new ResponseEntity<>(res.getBody(), res.getStatusCode());
-		}
-		catch (HttpClientErrorException e) {
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			return new ResponseEntity<>(e.getMessage() + " : " + e.getResponseBodyAsString(), e.getStatusCode());
 		}
 		catch (ClassNotFoundException e) {
