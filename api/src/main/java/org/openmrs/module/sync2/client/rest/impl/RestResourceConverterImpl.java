@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
 import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
@@ -49,21 +50,24 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 				case CATEGORY_PERSON:
 					convertPersonResource(simpleObject);
 					break;
+				case CATEGORY_ENCOUNTER:
+					convertEncounterResource(simpleObject);
+					break;
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean deepCompareSimpleObject(AbstractMap<String, Object> from, AbstractMap<String, Object> dest) {
 		boolean equals = true;
-		
+
 		for (Map.Entry<String, Object> entry : from.entrySet()) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 			if (STOP_WORDS.contains(key)) {
 				continue;
 			}
-			
+
 			if (!dest.containsKey(key)) {
 				equals = false;
 			} else {
@@ -78,18 +82,18 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 					equals = false;
 				}
 			}
-			
+
 			if (!equals) {
 				break;
 			}
 		}
-		
+
 		return equals;
 	}
-	
+
 	public boolean deepCompareList(List<Object> from, List<Object> dest) {
 		boolean equals = true;
-		
+
 		if (from.size() != dest.size()) {
 			equals = false;
 		} else {
@@ -105,10 +109,10 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 				}
 			}
 		}
-		
+
 		return equals;
 	}
-	
+
 	private String getCategoryFromUrl(String url) {
 		String category = "";
 		if (url.contains(URL_DELIMITER)) {
@@ -123,11 +127,11 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		}
 		return category;
 	}
-	
+
 	private void convertPatient(Map<String, Object> simpleObject) {
 		convertPersonResource((Map<String, Object>) simpleObject.get("person"));
 	}
-	
+
 	private void convertPersonResource(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
 		simpleObject.remove("preferredAddress");
@@ -170,13 +174,22 @@ public class RestResourceConverterImpl implements RestResourceConverter {
 		simpleObject.remove("concept");
 		simpleObject.put("concept", concept.get("uuid"));
 	}
-	
+
 	private void convertVisit(Map<String, Object> simpleObject) {
 		simpleObject.remove("preferredName");
 	}
-	
+
 	private void convertForm(SimpleObject simpleObject) {
 		simpleObject.remove("formFields");
 		simpleObject.remove("resources");
+	}
+
+	private void convertEncounterResource(SimpleObject simpleObject) {
+		if (simpleObject.containsKey("visit")) {
+			Object visit = simpleObject.get("visit");
+			if (visit instanceof Map) {
+				((Map<String, Object>) visit).remove("encounters");
+			}
+		}
 	}
 }
