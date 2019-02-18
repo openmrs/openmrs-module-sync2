@@ -1,43 +1,52 @@
 package org.openmrs.module.sync2.api.model.enums;
 
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ALLERGY;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_COHORT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_DRUG_ORDER;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_ENCOUNTER;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_FORM;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_LOCATION;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_OBSERVATION;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PATIENT;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PERSON;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_PRIVILEGE;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_TEST_ORDER;
-import static org.openmrs.module.sync2.SyncCategoryConstants.CATEGORY_VISIT;
+import org.openmrs.module.sync2.SyncCategoryConstants;
 
 public enum Resources {
 
-    ALL(""),
-    PATIENT(CATEGORY_PATIENT),
-    VISIT(CATEGORY_VISIT),
-    ENCOUNTER(CATEGORY_ENCOUNTER),
-    OBSERVATION(CATEGORY_OBSERVATION),
-    LOCATION(CATEGORY_LOCATION),
-    PRIVILEGE(CATEGORY_PRIVILEGE),
-    AUDIT_MESSAGE(CATEGORY_AUDIT_MESSAGE),
-    PERSON(CATEGORY_PERSON),
-    ALLERGY(CATEGORY_ALLERGY),
-    FORM(CATEGORY_FORM),
-    COHORT(CATEGORY_COHORT),
-    DRUG_ORDER(CATEGORY_DRUG_ORDER),
-    TEST_ORDER(CATEGORY_TEST_ORDER);
+    ALL(SyncCategoryConstants.ALL, SyncCategoryConstants.ALL_LABEL),
+    PATIENT(SyncCategoryConstants.CATEGORY_PATIENT, SyncCategoryConstants.PATIENT_LABEL),
+    VISIT(SyncCategoryConstants.CATEGORY_VISIT, SyncCategoryConstants.VISIT_LABEL),
+    ENCOUNTER(SyncCategoryConstants.CATEGORY_ENCOUNTER, SyncCategoryConstants.ENCOUNTER_LABEL),
+    OBSERVATION(SyncCategoryConstants.CATEGORY_OBSERVATION, SyncCategoryConstants.OBSERVATION_LABEL),
+    LOCATION(SyncCategoryConstants.CATEGORY_LOCATION, SyncCategoryConstants.LOCATION_LABEL),
+    PRIVILEGE(SyncCategoryConstants.CATEGORY_PRIVILEGE, SyncCategoryConstants.PRIVILEGE_LABEL),
+    AUDIT_MESSAGE(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE, SyncCategoryConstants.AUDIT_MESSAGE_LABEL),
+    PERSON(SyncCategoryConstants.CATEGORY_PERSON, SyncCategoryConstants.PERSON_LABEL),
+    ALLERGY(SyncCategoryConstants.CATEGORY_ALLERGY, SyncCategoryConstants.ALLERGY_LABEL),
+    FORM(SyncCategoryConstants.CATEGORY_FORM, SyncCategoryConstants.FORM_LABEL),
+    COHORT(SyncCategoryConstants.CATEGORY_COHORT, SyncCategoryConstants.COHORT_LABEL),
+    DRUG_ORDER(SyncCategoryConstants.CATEGORY_DRUG_ORDER, SyncCategoryConstants.DRUG_ORDER_LABEL),
+    TEST_ORDER(SyncCategoryConstants.CATEGORY_TEST_ORDER, SyncCategoryConstants.TEST_ORDER_LABEL),
+    PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, SyncCategoryConstants.PERSON_ADDRESS_LABEL),
+    PROVIDER(SyncCategoryConstants.CATEGORY_PROVIDER, SyncCategoryConstants.PROVIDER_LABEL),
+    PATIENT_PROGRAM(SyncCategoryConstants.CATEGORY_PATIENT_PROGRAM, SyncCategoryConstants.PATIENT_PROGRAM_LABEL),
+    RELATIONSHIP(SyncCategoryConstants.CATEGORY_RELATIONSHIP, SyncCategoryConstants.RELATIONSHIP_LABEL),
+    VISIT_TYPE(SyncCategoryConstants.CATEGORY_VISIT_TYPE, SyncCategoryConstants.VISIT_TYPE_LABEL),
+    USER(SyncCategoryConstants.CATEGORY_USER, SyncCategoryConstants.USER_LABEL),
+    PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, SyncCategoryConstants.PROGRAM_LABEL),
+    PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, SyncCategoryConstants.PERSON_NAME_LABEL),
+    PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, SyncCategoryConstants.PATIENT_IDENTIFIER_LABEL);
 
     private final String name;
 
-    Resources(String name) {
+    private final String messageKey;
+
+    Resources(String name, String messageKey) {
         this.name = name;
+        this.messageKey = messageKey;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public String getMessageKey() {
+        return messageKey;
+    }
+
+    private static class Constants {
+
+
     }
 }

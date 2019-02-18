@@ -31,20 +31,9 @@
     ];
 
     var syncResourceName = [
-        { id: "ALL", name: "<spring:message code='sync2.log.resource.all' />" },
-        { id: "patient", name: "<spring:message code='sync2.log.resource.patient' />" },
-        { id: "location", name: "<spring:message code='sync2.log.resource.location' />" },
-        { id: "encounter", name: "<spring:message code='Encounter.title' />" },
-        { id: "visit", name: "<spring:message code='Encounter.visit' />" },
-        { id: "observation", name: "<spring:message code='Obs.title' />" },
-        { id: "privilege", name: "<spring:message code='sync2.log.resource.privilege' />" },
-        { id: "audit_message", name: "<spring:message code='sync2.log.resource.auditMessage' />" },
-        { id: "person", name: "<spring:message code='sync2.log.resource.person' />" },
-        { id: "allergy", name: "<spring:message code='sync2.log.resource.allergy' />" },
-        { id: "form", name: "<spring:message code='sync2.log.resource.form' />" },
-        { id: "cohort", name: "<spring:message code='sync2.log.resource.cohort' />" },
-        { id: "drug_order", name: "<spring:message code='sync2.log.resource.drug_order' />" },
-        { id: "test_order", name: "<spring:message code='sync2.log.resource.test_order' />" }
+        <c:forEach var="it" items="${resourcesInfo}">
+            { id: "${it.name}", name: "<spring:message code='${it.messageKey}' />"},
+        </c:forEach>
     ];
 
     var syncStatus = [

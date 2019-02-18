@@ -22,6 +22,7 @@ import org.openmrs.module.sync2.api.model.configuration.ClientConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
 import org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance;
 import org.openmrs.module.sync2.api.model.enums.SyncOperation;
+import org.openmrs.module.sync2.api.service.EventConfigurationService;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -231,19 +232,16 @@ public class SyncUtils {
 				SyncConstants.DEFAULT_SYNC_2_CLIENT);
 	}
 
-	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks) {
-		for (String client : resourceLinks.keySet()) {
-			switch (client) {
-				case SyncConstants.REST_CLIENT:
-					return extractUUIDFromRestResource(resourceLinks.get(client));
-				case SyncConstants.FHIR_CLIENT:
-					return extractUUIDFromFHIRResource(resourceLinks.get(client));
-				default:
-			}
+	public static String extractUUIDFromResourceLinks(Map<String, String> resourceLinks, String category,
+			String preferredClient) {
+		EventConfigurationService eventConfigurationService = ContextUtils.getEventConfigurationService();
+		String uuid = eventConfigurationService.extractUuidFromResourceLinks(resourceLinks, category, preferredClient);
+
+		if (StringUtils.isBlank(uuid)) {
+			LOGGER.error("Couldn't find any supported client to extract uuid from.");
 		}
 
-		LOGGER.error("Couldn't find any supported client to extract uuid from.");
-		return null;
+		return uuid;
 	}
 
 	public static boolean compareLocalAndPulled(String clientName, String category, Object from, Object dest) {
@@ -262,18 +260,6 @@ public class SyncUtils {
 		}
 
 		return result;
-	}
-
-	private static String extractUUIDFromRestResource(String link) {
-		String[] tokens = link.split("/");
-		// todo throw custom sync2 exception if tokens.length != 6
-		return tokens[5].split("\\?")[0];
-	}
-
-	private static String extractUUIDFromFHIRResource(String link) {
-		String[] tokens = link.split("/");
-		// todo throw custom sync2 exception if tokens.length != 5
-		return tokens[4];
 	}
 
 	public static <T> String prettySerialize(Map<T, T> map) {
