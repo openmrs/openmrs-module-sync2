@@ -128,8 +128,9 @@ public abstract class AbstractSynchronizationService {
     }
 
     protected boolean shouldSynchronize(SimpleObject oldObject, SimpleObject newObject, String action) {
-        if (isWrongUpdateOrDeleteAction(newObject, action) || isWrongCreateAction(oldObject, newObject, action) ||
-            isUpdateOnVoidedObject(oldObject, action)) {
+        if (isWrongDeleteAction(newObject, action) || isWrongUpdateAction(oldObject, action) ||
+                isWrongCreateAction(oldObject, newObject, action) ||
+                isUpdateOnVoidedObject(oldObject, action)) {
             return false;
         }
         return oldObject == null || newObject == null || areDifferentObjects(oldObject, newObject);
@@ -139,8 +140,12 @@ public abstract class AbstractSynchronizationService {
         return oldObject != null && newObject != null && SyncUtils.isCreateAction(action);
     }
 
-    private boolean isWrongUpdateOrDeleteAction(SimpleObject newObject, String action) {
-        return newObject == null && (SyncUtils.isDeleteAction(action) || SyncUtils.isUpdateAction(action));
+    private boolean isWrongDeleteAction(SimpleObject newObject, String action) {
+        return newObject == null && SyncUtils.isDeleteAction(action);
+    }
+
+    private boolean isWrongUpdateAction(SimpleObject oldObject, String action) {
+        return oldObject == null && SyncUtils.isUpdateAction(action);
     }
 
     private boolean isUpdateOnVoidedObject(SimpleObject object, String action) {
