@@ -15,8 +15,10 @@ import org.openmrs.module.atomfeed.api.service.XMLParseService;
 import org.openmrs.module.atomfeed.api.service.impl.XMLParseServiceImpl;
 import org.openmrs.module.fhir.api.helper.ClientHelper;
 import org.openmrs.module.fhir.api.merge.MergeBehaviour;
+import org.openmrs.module.sync2.SyncCategoryConstants;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncException;
+import org.openmrs.module.sync2.api.model.SyncCategory;
 import org.openmrs.module.sync2.api.model.configuration.ClassConfiguration;
 import org.openmrs.module.sync2.api.model.configuration.ClientConfiguration;
 import org.openmrs.module.sync2.api.model.enums.AtomfeedTagContent;
@@ -28,6 +30,8 @@ import org.openmrs.module.sync2.client.ClientHelperFactory;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -377,5 +381,14 @@ public class SyncUtils {
 
 	public static boolean isCreateAction(String action) {
 		return action.equalsIgnoreCase(SyncConstants.ACTION_CREATED);
+	}
+
+	public static boolean isUnauthorizedException(Throwable e) {
+		return e.getCause() instanceof HttpClientErrorException &&
+				((HttpClientErrorException) e.getCause()).getStatusCode().equals(HttpStatus.UNAUTHORIZED);
+	}
+
+	public static boolean isAuditMessageCategory(SyncCategory category) {
+		return category.getCategory().equalsIgnoreCase(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE);
 	}
 }

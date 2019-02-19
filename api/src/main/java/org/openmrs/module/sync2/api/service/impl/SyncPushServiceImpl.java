@@ -83,7 +83,11 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
 
             auditMessage = successfulMessage(auditMessage);
         } catch (Error | Exception e) {
-            auditMessage = failedMessage(auditMessage, e);
+            if (SyncUtils.isAuditMessageCategory(category) && SyncUtils.isUnauthorizedException(e)) {
+                shouldSynchronize = false;
+            } else {
+                auditMessage = failedMessage(auditMessage, e);
+            }
         } finally {
             if (shouldSynchronize) {
                 auditMessage = syncAuditService.saveAuditMessageDuringSync(auditMessage);
