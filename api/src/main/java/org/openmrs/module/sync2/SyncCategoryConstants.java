@@ -74,7 +74,7 @@ public class SyncCategoryConstants {
 
     public static final String RELATIONSHIP_LABEL = "sync2.log.resource.relationship";
 
-    public static final String CATEGORY_VISIT_TYPE = "visit_type";
+    public static final String CATEGORY_VISIT_TYPE = "visittype";
 
     public static final String VISIT_TYPE_LABEL = "sync2.log.resource.visit_type";
 
