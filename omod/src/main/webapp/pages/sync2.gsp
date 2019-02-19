@@ -1,5 +1,5 @@
 <%
-    ui.decorateWith("appui", "standardEmrPage", [ title: ui.message("sync2.configuration.label") ])
+    ui.decorateWith("appui", "standardEmrPage", [ title: ui.message("sync2.title") ])
     if (context.hasPrivilege("Load Sync2 config")) {
 %>
 
