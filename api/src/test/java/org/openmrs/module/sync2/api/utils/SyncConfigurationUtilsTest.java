@@ -87,7 +87,7 @@ public class SyncConfigurationUtilsTest {
 
     @Test
     public void shouldWriteSyncConfigurationToJsonString() throws SyncException {
-        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION) + '\n';
+        String result = writeSyncConfigurationToJsonString(EXPECTED_CONFIGURATION) + System.getProperty("line.separator");
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
 
         Assert.assertEquals(expected, result);
@@ -101,7 +101,7 @@ public class SyncConfigurationUtilsTest {
         writeSyncConfigurationToJsonFile(EXPECTED_CONFIGURATION, path);
 
         String expected = readResourceFile(SAMPLE_SYNC_CONFIGURATION_PATH);
-        String result = readResourceFileAbsolutePath(path) + '\n';
+        String result = readResourceFileAbsolutePath(path) + System.getProperty("line.separator");
 
         Assert.assertEquals(expected, result);
     }

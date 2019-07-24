@@ -17,7 +17,7 @@ public class SimpleObjectSerializationUtilsTest {
 		SimpleObject simpleObject = SimpleObjectMother.createInstanceWithDateChanged(
 				TEST_DATE_CHANGE, true, false);
 		String actual = SimpleObjectSerializationUtils.serialize(simpleObject);
-		actual += '\n';
+		actual += System.getProperty("line.separator");
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expected, actual);
 	}
