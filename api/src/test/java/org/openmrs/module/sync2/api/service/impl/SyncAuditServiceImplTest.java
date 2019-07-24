@@ -296,7 +296,7 @@ public class SyncAuditServiceImplTest {
         Resource resource = new ClassPathResource(filename);
         String json;
         try(InputStream is = resource.getInputStream()) {
-            json = IOUtils.toString(is);
+            json = IOUtils.toString(is, "UTF-8");
         }
 
         return json;

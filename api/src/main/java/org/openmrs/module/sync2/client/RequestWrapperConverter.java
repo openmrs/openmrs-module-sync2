@@ -42,7 +42,7 @@ public class RequestWrapperConverter extends AbstractHttpMessageConverter<Reques
 	protected RequestWrapper readInternal(Class<? extends RequestWrapper> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException {
 		try {
-			String json = IOUtils.toString(inputMessage.getBody());
+			String json = IOUtils.toString(inputMessage.getBody(), "UTF-8");
 			return convertJsonToGivenClass(json, clazz);
 		} catch (IOException e) {
 			throw new HttpMessageNotReadableException("Could not read JSON: " + e.getMessage(), e);

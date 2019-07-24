@@ -36,7 +36,7 @@ public class SyncConfigurationUtils {
             if (in == null) {
                 throw new SyncException("Resource '" + file + "' doesn't exist");
             }
-            return IOUtils.toString(in);
+            return IOUtils.toString(in, "UTF-8");
         } catch (IOException e) {
             throw new SyncException(e);
         }
@@ -49,7 +49,7 @@ public class SyncConfigurationUtils {
             if (in == null) {
                 throw new SyncException("Resource '" + file + "' doesn't exist");
             }
-            return IOUtils.toString(in);
+            return IOUtils.toString(in, "UTF-8");
         } catch (IOException e) {
             throw new SyncException(e);
         }

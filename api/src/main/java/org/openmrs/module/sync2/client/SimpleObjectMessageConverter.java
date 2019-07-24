@@ -39,7 +39,7 @@ public class SimpleObjectMessageConverter extends AbstractHttpMessageConverter<S
 	protected SimpleObject readInternal(Class<? extends SimpleObject> clazz, HttpInputMessage inputMessage)
 			throws HttpMessageNotReadableException {
 		try {
-			String json = IOUtils.toString(inputMessage.getBody());
+			String json = IOUtils.toString(inputMessage.getBody(), "UTF-8");
 			return defaultJsonParser.fromJson(json, clazz);
 		}
 		catch (IOException e) {
