@@ -16,6 +16,7 @@ import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncHashcodeUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PAREN
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
+import static org.openmrs.module.sync2.api.utils.SimpleObjectSerializationUtils.serialize;
 
 @Component(value = SyncConstants.SYNC_PUSH_SERVICE_BEAN)
 public class SyncPushServiceImpl extends AbstractSynchronizationService implements SyncPushService {
@@ -81,7 +83,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
                 parentObjectHashcodeService.save(uuid, hashCode);
             }
 
-            auditMessage = successfulMessage(auditMessage);
+            auditMessage = successfulMessage(auditMessage, serialize(localObj.getSimpleObject()));
         } catch (Error | Exception e) {
             if (SyncUtils.isAuditMessageCategory(category) && SyncUtils.isUnauthorizedException(e)) {
                 shouldSynchronize = false;
@@ -114,7 +116,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
             }
         }
 
-        return syncAuditService.saveAuditMessage(combineForceAuditMessages(auditMessage, parentAudit, childAudit));
+        return syncAuditService.saveAuditMessage(combineForceAuditMessages(auditMessage, parentAudit, childAudit, merged));
     }
 
     @Override
@@ -182,7 +184,7 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
                     getPushUrl(resourceLinks, clientName, instance),
                     action,
                     instance);
-            message = successfulMessage(message);
+            message = successfulMessage(message, serialize((SimpleObject) merged));
         } catch (Error | Exception e) {
             message = failedMessage(message, e);
         }
@@ -190,10 +192,10 @@ public class SyncPushServiceImpl extends AbstractSynchronizationService implemen
         return syncAuditService.saveAuditMessageDuringSync(message);
     }
 
-    private AuditMessage combineForceAuditMessages(AuditMessage combined, AuditMessage msg,  AuditMessage msg2) {
+    private AuditMessage combineForceAuditMessages(AuditMessage combined, AuditMessage msg,  AuditMessage msg2, Object merged) {
         if (msg.getSuccess()) {
             if (msg2.getSuccess()) {
-                combined = successfulMessage(combined);
+                combined = successfulMessage(combined, serialize((SimpleObject)merged));
             } else {
                 combined.setDetails(msg2.getDetails());
                 combined.setSuccess(false);
