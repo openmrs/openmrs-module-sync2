@@ -12,13 +12,16 @@ package org.openmrs.module.sync2.web.controller;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.SyncMessageUtils;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.sync2.api.validator.Errors;
 import org.openmrs.module.sync2.client.reader.LocalFeedReader;
 import org.openmrs.module.sync2.client.reader.ParentFeedReader;
+import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +43,9 @@ public class Sync2ModuleController {
 	private static final String PUSH_FAILURE_MESSAGE = "sync2.sync.push.failure";
 	private static final String PULL_SUCCESS_MESSAGE = "sync2.sync.pull.success";
 	private static final String PULL_FAILURE_MESSAGE = "sync2.sync.pull.failure";
+	
+	@Autowired
+	private SyncAuditService syncAuditService;
 
 	/**
 	 * Sets the UI model attributes used to check if the parent instance URI is valid etc.
@@ -71,18 +77,18 @@ public class Sync2ModuleController {
 	 */
 	@RequestMapping(value = "/manualPush")
 	public String manualPush(ModelMap model) {
-		try {
-			LOGGER.info("Start Local Feed Reader...");
-			LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
-			localFeedReader.readAndPushAllFeeds();
+		
+		LOGGER.info("Start Local Feed Reader...");
+		LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
+		localFeedReader.readAndPushAllFeeds();
+		Integer lastAuditMsgId = syncAuditService.getCountOfMessages().intValue();
+		Boolean succes = syncAuditService.getMessageById(lastAuditMsgId).getSuccess();
+		if (succes) {
 			SyncMessageUtils.successMessage(model, PUSH_SUCCESS_MESSAGE);
-		} catch (SyncValidationException e) {
-			LOGGER.error("Error during reading feeds: ", e);
-			SyncMessageUtils.errorMessage(model, getFirstErrorCode(e.getErrors()));
-		} catch (Exception e) {
-			LOGGER.error("Error during pushing objects: ", e);
+		} else {
+			LOGGER.error("Error during pushing objects..");
 			SyncMessageUtils.errorMessage(model, PUSH_FAILURE_MESSAGE);
-		}
+		}	
 		return "redirect:/module/sync2/sync2.form";
 	}
 
@@ -94,17 +100,16 @@ public class Sync2ModuleController {
 	 */
 	@RequestMapping(value = "/manualPull")
 	public String manualPull(ModelMap model) {
-		try {
-			LOGGER.info("Start Parent Feed Reader...");
-			ParentFeedReader parentFeedReader = ContextUtils.getParentFeedReader();
-			parentFeedReader.pullAndProcessAllFeeds();
+		
+		LOGGER.info("Start Parent Feed Reader...");
+		ParentFeedReader parentFeedReader = ContextUtils.getParentFeedReader();
+		parentFeedReader.pullAndProcessAllFeeds();		
+		Integer lastAuditMsgId = syncAuditService.getCountOfMessages().intValue();
+		Boolean succes = syncAuditService.getMessageById(lastAuditMsgId).getSuccess();
+		if (succes) {
 			SyncMessageUtils.successMessage(model, PULL_SUCCESS_MESSAGE);
-		} catch (SyncValidationException e) {
-			LOGGER.error("Error during reading feeds: ", e);
-			SyncMessageUtils.errorMessage(model, getFirstErrorCode(e.getErrors()));
-
-		} catch (Exception e) {
-			LOGGER.error("Error during reading feeds: ", e);
+		} else {
+			LOGGER.error("Error during reading feeds");
 			SyncMessageUtils.errorMessage(model, PULL_FAILURE_MESSAGE);
 		}
 		return "redirect:/module/sync2/sync2.form";
