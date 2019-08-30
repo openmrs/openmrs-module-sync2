@@ -55,6 +55,11 @@
       "openMrsClass": "org.openmrs.PersonAddress",
       "enabled": true
     }, {
+      "classTitle": "PersonAttribute",
+      "category": "person_attribute",
+      "openMrsClass": "org.openmrs.PersonAttribute",
+      "enabled": true
+    }, {
       "classTitle": "PersonName",
       "category": "person_name",
       "openMrsClass": "org.openmrs.PersonName",
@@ -193,6 +198,11 @@
       "classTitle": "PatientIdentifier",
       "category": "patient_identifier",
       "openMrsClass": "org.openmrs.PatientIdentifier",
+      "enabled": true
+    }, {
+      "classTitle": "PersonAttribute",
+      "category": "person_attribute",
+      "openMrsClass": "org.openmrs.PersonAttribute",
       "enabled": true
     }, {
       "classTitle": "Relationship",

@@ -11,6 +11,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientProgram;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.Privilege;
 import org.openmrs.Program;
@@ -47,7 +48,8 @@ public enum CategoryEnum {
 	AUDIT_MESSAGE(SyncCategoryConstants.CATEGORY_AUDIT_MESSAGE, AuditMessage.class),
 	PERSON_ADDRESS(SyncCategoryConstants.CATEGORY_PERSON_ADDRESS, PersonAddress.class),
 	PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, PersonName.class),
-	PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, PatientIdentifier.class);
+	PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, PatientIdentifier.class),
+	PERSON_ATTRIBUTE(SyncCategoryConstants.CATEGORY_PERSON_ATTRIBUTE, PersonAttribute.class);
 
 	private static final Map<String, CategoryEnum> MAP;
 

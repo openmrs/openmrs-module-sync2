@@ -26,7 +26,8 @@ public enum Resources {
     USER(SyncCategoryConstants.CATEGORY_USER, SyncCategoryConstants.USER_LABEL),
     PROGRAM(SyncCategoryConstants.CATEGORY_PROGRAM, SyncCategoryConstants.PROGRAM_LABEL),
     PERSON_NAME(SyncCategoryConstants.CATEGORY_PERSON_NAME, SyncCategoryConstants.PERSON_NAME_LABEL),
-    PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, SyncCategoryConstants.PATIENT_IDENTIFIER_LABEL);
+    PATIENT_IDENTIFIER(SyncCategoryConstants.CATEGORY_PATIENT_IDENTIFIER, SyncCategoryConstants.PATIENT_IDENTIFIER_LABEL),
+    PERSON_ATTRIBUTE(SyncCategoryConstants.CATEGORY_PERSON_ATTRIBUTE, SyncCategoryConstants.PERSON_ATTRIBUTE_LABEL);
 
     private final String name;
 
