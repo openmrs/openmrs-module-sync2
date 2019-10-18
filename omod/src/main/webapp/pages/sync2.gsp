@@ -16,16 +16,16 @@
         <i class="icon-calendar"></i>
         ${ ui.message("sync2.configuration.label") }
     </a>
-    <a class="button app big ${emptyURI ? 'disabled' : ''}"
-        href="${emptyURI ? '#' : ui.pageLink("sync2", "ManualSyncPull")}"
-        title = "${emptyURI ? ui.message("sync2.configuration.parentUrl.empty") : ''}"
+    <a class="button app big ${emptyURI || pulltoogle == false ? 'disabled' : ''}"
+        href="${(emptyURI == false && pulltoogle == true) ? '#' : ui.pageLink("sync2", "ManualSyncPull")}"
+        title = "${emptyURI ? ui.message("sync2.configuration.parentUrl.empty") : '' || pulltoogle == false ? ui.message("sync2.globalProperty.parentpull.false") : ''}"
         id="sync.pull">
         <i class="icon-random"></i>
         ${ ui.message("sync2.sync.manual.pull.label") }
     </a>
-    <a class="button app big ${emptyURI ? 'disabled' : ''}"
-        href="${emptyURI ? '#' : ui.pageLink("sync2", "ManualSyncPush")}"
-        title = "${emptyURI ? ui.message("sync2.configuration.parentUrl.empty") : ''}"
+    <a class="button app big ${emptyURI || pushtoogle == false ? 'disabled' : ''}"
+        href="${(emptyURI == false && pushtoogle == true) ? '#' : ui.pageLink("sync2", "ManualSyncPush")}"
+        title = "${emptyURI ? ui.message("sync2.configuration.parentUrl.empty") : '' || pushtoogle == false ? ui.message("sync2.globalProperty.parentpush.false") : ''}" 
         id="sync.push">
         <i class="icon-random"></i>
         ${ ui.message("sync2.sync.manual.push.label") }

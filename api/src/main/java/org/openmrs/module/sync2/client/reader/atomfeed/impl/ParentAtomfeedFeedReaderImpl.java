@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service("sync2.parentFeedReader." + SyncConstants.ATOMFEED_EVENT_HANDLER)
 public class ParentAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader implements ParentFeedReader {
-
+    
 	public ParentAtomfeedFeedReaderImpl() {
 		super(new ParentAtomfeedFeedWorker());
 	}
@@ -26,12 +26,12 @@ public class ParentAtomfeedFeedReaderImpl extends AbstractAtomfeedFeedReader imp
 	}
 
 	@Override
-	public void pullAndProcessAllFeeds() {
-		readAndProcessAllFeeds();
+	public void pullAndProcessAllFeeds() throws SyncException {		
+			readAndProcessAllFeeds();		
 	}
 
 	@Override
 	public void pullAndProcessFeeds(SyncCategory category) throws SyncException {
-		readAndProcessFeedByCategory(category.getCategory());
+			readAndProcessFeedByCategory(category.getCategory());
 	}
 }

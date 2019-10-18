@@ -126,6 +126,18 @@
 		<description>Used merge behavior</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>${project.parent.artifactId}.enableManualPullFromParent</property>
+		<defaultValue>true</defaultValue>
+		<description>Toogles between enable/disable pull from parent</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>${project.parent.artifactId}.enableManualPushToParent</property>
+		<defaultValue>true</defaultValue>
+		<description>Toogles between enable/disable push to parent</description>
+	</globalProperty>
+	
 	<privilege>
 		<name>Load Sync2 config</name>
 		<description>Ability to load Sync 2 configuration from file.</description>

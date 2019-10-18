@@ -23,4 +23,5 @@ public interface ParentFeedReader {
 	 * @throws SyncException when event processing has failed.
 	 */
 	void pullAndProcessFeeds(SyncCategory category) throws SyncException;
+	
 }

@@ -15,22 +15,30 @@
         href="${pageContext.request.contextPath}/module/sync2/configuration.form">
         <spring:message code="sync2.configuration.label"/>
     </a>
-    <a class="button big ${emptyURI ? 'disabled' : ''}"
+    <a class="button big ${emptyURI || pushtoogle == false ? 'disabled' : ''}"
         <c:if test = "${emptyURI == true}">
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
         </c:if>
-         <c:if test = "${emptyURI == false}">
+        <c:if test = "${pushtoogle == false}">
+            href = "#"
+            title = "<spring:message code='sync2.globalProperty.parentpush.false'/>"
+        </c:if>
+         <c:if test = "${emptyURI && !pushtoogle == false}">
              href = "${pageContext.request.contextPath}/module/sync2/manualPull.form"
          </c:if>>
         <spring:message code="sync2.sync.manual.pull.label"/>
     </a>
-    <a class="button big ${emptyURI ? 'disabled' : ''}"
+    <a class="button big ${emptyURI || pulltoogle == false ? 'disabled' : ''}"
         <c:if test = "${emptyURI == true}">
             href = "#"
             title = "<spring:message code='sync2.configuration.parentUrl.empty'/>"
         </c:if>
-         <c:if test = "${emptyURI == false}">
+        <c:if test = "${pulltoogle == false}">
+            href = "#"
+            title = "<spring:message code='sync2.globalProperty.parentpull.false'/>"
+        </c:if>
+         <c:if test = "${emptyURI && !pulltoogle == false}">
              href="${pageContext.request.contextPath}/module/sync2/manualPush.form"
          </c:if>>
         <spring:message code="sync2.sync.manual.push.label"/>
