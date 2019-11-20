@@ -14,25 +14,21 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class RestResourceConverterTest extends BaseModuleWebContextSensitiveTest {
 	
 	private static final String WS_REST_V1 = "/ws/rest/v1/";
-	
+	private static final String CONCEPT_UUID = "some-concept-uuid";
 	@Autowired
 	private RestResourceConverter converter;
 
 
 	@Test
 	public void convertObject_shouldConvertAnObservation() {
-		SimpleObject obs = new SimpleObject();
-		final String conceptUuid = "some-concept-uuid";
-		SimpleObject concept = new SimpleObject();
-		concept.add("uuid", conceptUuid);
-		obs.add("uuid", "some-uuid");
-		obs.add("concept", concept);
+		SimpleObject obs = createObsSimpleObject();
 		converter.convertObject(WS_REST_V1 + "obs", obs);
-		assertEquals(conceptUuid, obs.get("concept"));
+		assertEquals(CONCEPT_UUID, obs.get("concept"));
 	}
 
 	@Test
@@ -81,5 +77,34 @@ public class RestResourceConverterTest extends BaseModuleWebContextSensitiveTest
 		assertEquals(1, uuids.size());
 		assertEquals(conceptUuid, uuids.get(0));
 	}
-	
+
+	@Test
+	public void convertObjectShouldConvertEncounterToSuitableRepresentationForRestPost() {
+		SimpleObject encounter = new SimpleObject();
+		final String ENCOUNTER_UUID = "some-encounter-uuid-who-gives-a-damn?";
+		encounter.add("uuid", ENCOUNTER_UUID);
+		SimpleObject obs = createObsSimpleObject();
+		obs.add("encounter", encounter);
+
+		converter.convertObject(WS_REST_V1 + "obs", obs);
+
+		assertEquals(ENCOUNTER_UUID, obs.get("encounter"));
+	}
+
+	@Test
+	public void convertObjectShouldNotAddEncounterIfNotIncludedYet() {
+		SimpleObject obs = createObsSimpleObject();
+		converter.convertObject(WS_REST_V1 + "obs", obs);
+		assertFalse(obs.containsKey("encounter"));
+	}
+
+	private SimpleObject createObsSimpleObject() {
+		SimpleObject obs = new SimpleObject();
+		SimpleObject concept = new SimpleObject();
+		concept.add("uuid", CONCEPT_UUID);
+		obs.add("uuid", "some-uuid");
+		obs.add("concept", concept);
+
+		return obs;
+	}
 }
