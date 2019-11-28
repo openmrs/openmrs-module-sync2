@@ -28,6 +28,7 @@ import static org.openmrs.module.sync2.api.model.enums.OpenMRSSyncInstance.PAREN
 import static org.openmrs.module.sync2.api.utils.SyncUtils.extractUUIDFromResourceLinks;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPullUrl;
 import static org.openmrs.module.sync2.api.utils.SyncUtils.getPushUrl;
+import static org.openmrs.module.sync2.api.utils.SimpleObjectSerializationUtils.serialize;
 
 @Component(value = SyncConstants.SYNC_PULL_SERVICE_BEAN)
 public class SyncPullServiceImpl extends AbstractSynchronizationService implements SyncPullService {
@@ -81,7 +82,7 @@ public class SyncPullServiceImpl extends AbstractSynchronizationService implemen
                 parentObjectHashcodeService.save(uuid, hashCode);
             }
 
-            auditMessage = successfulMessage(auditMessage);
+            auditMessage = successfulMessage(auditMessage, serialize(pulledObject.getSimpleObject()));
         } catch (Error | Exception e) {
             if (SyncUtils.isAuditMessageCategory(category) && SyncUtils.isUnauthorizedException(e)) {
                 shouldSynchronize = false;

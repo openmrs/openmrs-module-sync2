@@ -79,9 +79,9 @@ public abstract class AbstractSynchronizationService {
         return prepareAuditMessage(category, clientName, resourceLinks, action);
     }
 
-    protected AuditMessage successfulMessage(AuditMessage base) {
+    protected AuditMessage successfulMessage(AuditMessage base, String dataSent) {
         base.setSuccess(true);
-        base.setDetails(SUCCESS_MESSAGE);
+        base.setDetails(SUCCESS_MESSAGE + "\n" + "Data: " + dataSent);
         return base;
     }
 
