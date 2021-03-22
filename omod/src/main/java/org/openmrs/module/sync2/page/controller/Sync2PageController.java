@@ -1,6 +1,7 @@
 package org.openmrs.module.sync2.page.controller;
 
 import org.openmrs.annotation.OpenmrsProfile;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.sync2.api.utils.SyncUtils;
 import org.openmrs.module.uicommons.util.InfoErrorMessageUtil;
 import org.openmrs.ui.framework.UiUtils;
@@ -19,6 +20,14 @@ public class Sync2PageController {
 	private static final String ATTRIBUTE_EMPTY_URI = "emptyURI";
 
 	private static final String PARENT_URI_ERROR = "sync2.configuration.parentUrl.empty";
+	
+	private static final String ATTRIBUTE_PUSH_TOOGLE = "pushtoogle";
+	
+	private static final String PARENT_PUSH_ERROR = "sync2.globalProperty.parentpush.false";
+
+	private static final String ATTRIBUTE_PULL_TOOGLE = "pulltoogle";
+
+	private static final String PARENT_PULL_ERROR = "sync2.globalProperty.parentpull.false";
 
 	/**
 	 *
@@ -35,5 +44,18 @@ public class Sync2PageController {
 		if (emptyURI) {
 			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_URI_ERROR));
 		}
+		
+		boolean pushtoogle= Context.getAdministrationService().getGlobalPropertyValue("sync2.enableManualPushToParent", true);
+		model.addAttribute(ATTRIBUTE_PUSH_TOOGLE, pushtoogle);
+		if (pushtoogle == false) {
+			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_PUSH_ERROR));
+		}
+		
+		boolean pulltoogle= Context.getAdministrationService().getGlobalPropertyValue("sync2.enableManualPullFromParent", true);
+		model.addAttribute(ATTRIBUTE_PULL_TOOGLE, pulltoogle);
+		if (pulltoogle == false) {
+			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(PARENT_PULL_ERROR));
+		}
 	}
+
 }
