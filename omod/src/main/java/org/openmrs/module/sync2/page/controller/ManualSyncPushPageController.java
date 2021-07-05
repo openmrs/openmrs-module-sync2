@@ -3,6 +3,7 @@ package org.openmrs.module.sync2.page.controller;
 import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.sync2.SyncConstants;
 import org.openmrs.module.sync2.api.exceptions.SyncValidationException;
+import org.openmrs.module.sync2.api.service.SyncAuditService;
 import org.openmrs.module.sync2.api.service.SyncConfigurationService;
 import org.openmrs.module.sync2.api.utils.ContextUtils;
 import org.openmrs.module.sync2.api.validator.Errors;
@@ -29,19 +30,20 @@ public class ManualSyncPushPageController {
     
     public String controller(PageModel model,
                              @SpringBean("sync2.syncConfigurationService") SyncConfigurationService syncConfigurationService,
+                             @SpringBean("syncAuditService") SyncAuditService syncAuditService,
                              HttpSession session, UiUtils ui) {
-        try {
-            LOGGER.info("Start Local Feed Reader...");
-            LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
-            localFeedReader.readAndPushAllFeeds();
-            InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
-        } catch (SyncValidationException e) {
-            LOGGER.error("Error during pushing objects: ", e);
-            InfoErrorMessageUtil.flashErrorMessage(session, ui.message(getFirstErrorCode(e.getErrors())));
-        } catch (Exception e) {
-            LOGGER.error("Error during pushing objects: ", e);
-            InfoErrorMessageUtil.flashErrorMessage(session, ui.message(SYNC_FAILURE));
-        }
+    	
+		LOGGER.info("Start Local Feed Reader...");
+		LocalFeedReader localFeedReader = ContextUtils.getLocalFeedReader();
+		localFeedReader.readAndPushAllFeeds();
+		Integer lastAuditMsgId = syncAuditService.getCountOfMessages().intValue();
+		Boolean succes = syncAuditService.getMessageById(lastAuditMsgId).getSuccess();
+		if (succes) {
+			InfoErrorMessageUtil.flashInfoMessage(session, ui.message(SYNC_SUCCESS));
+		} else {
+			LOGGER.error("Error during pushing objects..");
+			InfoErrorMessageUtil.flashErrorMessage(session, ui.message(SYNC_FAILURE));
+		}
         return "redirect:/sync2/sync2.page";
     }
 
@@ -49,4 +51,3 @@ public class ManualSyncPushPageController {
         return errors.getErrorsCodes().get(SyncConstants.ZERO);
     }
 }
-

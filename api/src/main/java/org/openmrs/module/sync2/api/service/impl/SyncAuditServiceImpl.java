@@ -117,4 +117,9 @@ public class SyncAuditServiceImpl extends BaseOpenmrsService implements SyncAudi
 
         return gson.toJson(results);
     }
+
+	@Override
+	public Long getCountOfMessages() {
+		return dao.getCountOfMessages();
+	}
 }

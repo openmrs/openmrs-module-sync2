@@ -57,4 +57,7 @@ public interface SyncAuditService extends OpenmrsService {
 
     @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
     String getJsonMessage(AuditMessage message) throws APIException, JsonParseException;
+    
+    @Authorized(SyncModuleConfig.SYNC_AUDIT_PRIVILEGE)
+    Long getCountOfMessages();
 }
